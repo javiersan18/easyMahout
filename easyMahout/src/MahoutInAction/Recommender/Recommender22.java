@@ -13,7 +13,7 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
-class Recommender22 {
+public class Recommender22 {
 
 	public static void main(String[] args) throws Exception {
 
