@@ -15,10 +15,13 @@ import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.similarities.Similarity;
+import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
+import org.apache.mahout.cf.taste.impl.model.cassandra.CassandraDataModel;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
+import easyMahout.recommender.ExtendedDataModel;
 import MahoutInAction.Recommender.Recommender22;
 
 public class recommenderJPanel extends JPanel {
@@ -29,10 +32,12 @@ public class recommenderJPanel extends JPanel {
 
 	private JLabel labelType, labelDatamodel, labelSimilarity, labelDataSource;
 
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBox_type, comboBox_datamodel;
 
 	private JButton btnRun, btnImport;
 
+	@SuppressWarnings("rawtypes")
 	private DefaultComboBoxModel booleanModels, restModels;
 
 	private JTextField textPath;
@@ -49,6 +54,7 @@ public class recommenderJPanel extends JPanel {
 
 	private Similarity similarityMetric;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public recommenderJPanel() {
 		panelRecommender = new JPanel();
 		panelRecommender.setLayout(null);
@@ -59,7 +65,8 @@ public class recommenderJPanel extends JPanel {
 
 		comboBox_type = new JComboBox();
 		comboBox_type.setBounds(125, 8, 144, 25);
-		comboBox_type.setModel(new DefaultComboBoxModel(new String[] { "User-based", "Item-based", "Clustering" }));
+		comboBox_type.setModel(new DefaultComboBoxModel(new String[] { "User-based", "Item-based",
+				"Clustering" }));
 		panelRecommender.add(comboBox_type);
 
 		btnRun = new JButton("Run!");
@@ -72,8 +79,9 @@ public class recommenderJPanel extends JPanel {
 
 		comboBox_datamodel = new JComboBox();
 		booleanModels = new DefaultComboBoxModel(new String[] { "GenericBooleanPrefDataModel" });
-		restModels = new DefaultComboBoxModel(new String[] { "FileDataModel", "GenericDataModel", "ExtendedDataModel",
-				"CassandraDataModel", "HBaseDataModel", "KDDCupDataModel", "MongoDBDataModel", "PlusAnonymousConcurrentUserDataModel" });
+		restModels = new DefaultComboBoxModel(new String[] { "FileDataModel", "GenericDataModel",
+				"ExtendedDataModel", "CassandraDataModel", "HBaseDataModel", "KDDCupDataModel",
+				"MongoDBDataModel", "PlusAnonymousConcurrentUserDataModel" });
 		comboBox_datamodel.setModel(restModels);
 		comboBox_datamodel.setBounds(541, 8, 156, 25);
 		panelRecommender.add(comboBox_datamodel);
@@ -84,8 +92,10 @@ public class recommenderJPanel extends JPanel {
 		panelRecommender.add(labelSimilarity);
 
 		JComboBox comboBox_similarity = new JComboBox();
-		comboBox_similarity.setModel(new DefaultComboBoxModel(new String[] { "Abstract", "Average", "Caching", "CityBlock", "Euclidean",
-				"Generic", "Likelihood", "Pearson Correlation", "Spearman Correlation", "Tanimoto Coefficient", "Uncenter Cosine" }));
+		comboBox_similarity.setModel(new DefaultComboBoxModel(new String[] { "Abstract", "Average",
+				"Caching", "CityBlock", "Euclidean", "Generic", "Likelihood",
+				"Pearson Correlation", "Spearman Correlation", "Tanimoto Coefficient",
+				"Uncenter Cosine" }));
 		comboBox_similarity.setBounds(125, 83, 144, 25);
 		panelRecommender.add(comboBox_similarity);
 
@@ -156,33 +166,61 @@ public class recommenderJPanel extends JPanel {
 					File data = selectedFile.getSelectedFile();
 					String absPath = data.getAbsolutePath();
 					int selected = comboBox_datamodel.getSelectedIndex();
-					if (selected == 0) {
-						
-						
-						
-						try {
+
+					try {
+						//TODO: distintos tipos de modelos... 
+						switch (selected) {
+						case 0:
 							dataModel = new FileDataModel(new File(absPath));
-							textPath.setText(absPath);
-							mainGUI.writeResult("Data Model successfully created from file", "info");
-						} catch (IllegalArgumentException e1) {
-							mainGUI.writeResult("Error reading data file: " + e1.getMessage(), "error");
-							log.error("Error reading data file", e1);
-						} catch (Exception e1) {
-							mainGUI.writeResult("Error reading data file", "error");
-							log.error("Error reading data file", e1);
+							break;
+						case 1:
+							dataModel = new GenericDataModel(GenericDataModel
+									.toDataMap(new FileDataModel(new File(absPath))));
+							break;
+						case 2:
+							dataModel = new ExtendedDataModel(new File(absPath), ",");
+							break;
+						case 3:
+							//dataModel = new CassandraDataModel(new File(absPath));
+							break;
+						case 4:
+							dataModel = new FileDataModel(new File(absPath));
+							break;
+						case 5:
+							dataModel = new FileDataModel(new File(absPath));
+							break;
+						case 6:
+							dataModel = new FileDataModel(new File(absPath));
+							break;
+						case 7:
+							dataModel = new FileDataModel(new File(absPath));
+							break;
+						default:
+							dataModel = new FileDataModel(new File(absPath));
+							break;
 						}
 
-					} else if (selected != 1) {
-						mainGUI.writeResult("Error openig the file", "error");
-						log.error("Error opening data file");
+						// dataModel = new FileDataModel(new File(absPath));
+						textPath.setText(absPath);
+						mainGUI.writeResult("Data Model successfully created from file", "info");
+					} catch (IllegalArgumentException e1) {
+						mainGUI.writeResult("Error reading data file: " + e1.getMessage(), "error");
+						log.error("Error reading data file", e1);
+					} catch (Exception e1) {
+						mainGUI.writeResult("Error reading data file", "error");
+						log.error("Error reading data file", e1);
 					}
 
+				} else if (i == JFileChooser.ERROR_OPTION) {
+					mainGUI.writeResult("Error openig the file", "error");
+					log.error("Error opening data file");
 				}
 			}
 		});
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void checkBooleanPreferenceCheckbox() {
 		int selectedType = comboBox_type.getSelectedIndex();
 		if (selectedType == 0 || selectedType == 1) {
@@ -204,19 +242,21 @@ public class recommenderJPanel extends JPanel {
 		this.panelRecommender = panel_recommender;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public JComboBox getComboBox_type() {
 		return comboBox_type;
 	}
 
-	public void setComboBox_type(JComboBox comboBox_type) {
+	public void setComboBox_type(@SuppressWarnings("rawtypes") JComboBox comboBox_type) {
 		this.comboBox_type = comboBox_type;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public JComboBox getComboBox_datamodel() {
 		return comboBox_datamodel;
 	}
 
-	public void setComboBox_datamodel(JComboBox comboBox_datamodel) {
+	public void setComboBox_datamodel(@SuppressWarnings("rawtypes") JComboBox comboBox_datamodel) {
 		this.comboBox_datamodel = comboBox_datamodel;
 	}
 
@@ -236,19 +276,21 @@ public class recommenderJPanel extends JPanel {
 		this.btnImport = btnImport;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public DefaultComboBoxModel getBooleanModels() {
 		return booleanModels;
 	}
 
-	public void setBooleanModels(DefaultComboBoxModel booleanModels) {
+	public void setBooleanModels(@SuppressWarnings("rawtypes") DefaultComboBoxModel booleanModels) {
 		this.booleanModels = booleanModels;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public DefaultComboBoxModel getRestModels() {
 		return restModels;
 	}
 
-	public void setRestModels(DefaultComboBoxModel restModels) {
+	public void setRestModels(@SuppressWarnings("rawtypes") DefaultComboBoxModel restModels) {
 		this.restModels = restModels;
 	}
 
