@@ -56,6 +56,8 @@ public class mainGUI extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		//TODO: WindowUtilities.setNativeLookAndFeel();
 
 		BasicConfigurator.configure();
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");

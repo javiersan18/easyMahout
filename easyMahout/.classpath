@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Javier/workspace/easyMahout/mahout-math-0.8.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Javier/workspace/easyMahout/mahout-core-0.8.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Javier/workspace/easyMahout/mahout-core-0.8-job.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Javier/workspace/easyMahout/mahout-examples-0.8.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Javier/workspace/easyMahout/mahout-examples-0.8-job.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Javier/workspace/easyMahout/mahout-integration-0.8.jar"/>
-	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/j.gonzalez.sanchez/git/easyMahout/easyMahout/mahout-core-0.8.jar" sourcepath="C:/Users/j.gonzalez.sanchez/.m2/repository/org/apache/mahout/mahout-core/0.8/mahout-core-0.8-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/j.gonzalez.sanchez/git/easyMahout/easyMahout/mahout-core-0.8-job.jar" sourcepath="C:/Users/j.gonzalez.sanchez/.m2/repository/org/apache/mahout/mahout-core/0.8/mahout-core-0.8-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/j.gonzalez.sanchez/git/easyMahout/easyMahout/mahout-examples-0.8.jar" sourcepath="C:/Users/j.gonzalez.sanchez/.m2/repository/org/apache/mahout/mahout-examples/0.8/mahout-examples-0.8-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/j.gonzalez.sanchez/git/easyMahout/easyMahout/mahout-examples-0.8-job.jar"/>
+	<classpathentry kind="lib" path="C:/Users/j.gonzalez.sanchez/git/easyMahout/easyMahout/mahout-integration-0.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/j.gonzalez.sanchez/git/easyMahout/easyMahout/mahout-math-0.8.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
