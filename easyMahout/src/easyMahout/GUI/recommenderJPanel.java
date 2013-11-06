@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -11,14 +12,18 @@ import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
+
 import easyMahout.utils.DynamicTree;
+
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.awt.Color;
+
 import javax.swing.JSeparator;
 
 public class recommenderJPanel extends JPanel {
@@ -27,7 +32,9 @@ public class recommenderJPanel extends JPanel {
 
 	private JPanel panelRecommender;
 
-	private JPanel treePanel, configPanel;
+	private JPanel treePanel;
+	
+	private JTabbedPane configPanel;
 	
 	//private flagConfigView;
 
@@ -70,10 +77,13 @@ public class recommenderJPanel extends JPanel {
 		separator = new JSeparator();
 		separator.setBounds(225, 268, 1, 2);
 		treePanel.add(separator);
-		configPanel = new JPanel();
+		configPanel = new JTabbedPane();
 		configPanel.setBounds(238, 11, 481, 382);
-		treePanel.add(configPanel);
-		configPanel.setLayout(null);
+		panelRecommender.add(configPanel);
+		//configPanel.setLayout(null);
+		
+		JPanel p = new typeRecommenderPanel();
+		configPanel.addTab("Type", p);
 		// configPanel.setLayout(null);
 		//
 		// label = new JLabel("New label");
@@ -290,26 +300,26 @@ public class recommenderJPanel extends JPanel {
 							public void actionPerformed(ActionEvent e) {
 								String category = (String) node.getUserObject();
 								// TODO: iniciar panel para cada tipo;
-								if (category.equals("Type")) {
-									log.info("type");
-									panelRecommender.remove(configPanel);
-									configPanel = new typeRecommenderPanel();
-									panelRecommender.add(configPanel);
-									configPanel.updateUI();
-
-								} else if (category.equals("Data Model")) {
-									log.info("data");
-									configPanel = new typeRecommenderPanel();
-								} else if (category.equals("Similarity")) {
-									log.info("sim");
-									configPanel = new typeRecommenderPanel();
-								} else if (category.equals("Neighborhood")) {
-									log.info("cneigats");
-									configPanel = new typeRecommenderPanel();
-								} else if (category.equals("Evaluator")) {
-									log.info("eval");
-									configPanel = new typeRecommenderPanel();
-								}
+//								if (category.equals("Type")) {
+//									log.info("type");
+//									panelRecommender.remove(configPanel);
+//									configPanel = new typeRecommenderPanel();
+//									panelRecommender.add(configPanel);
+//									configPanel.updateUI();
+//
+//								} else if (category.equals("Data Model")) {
+//									log.info("data");
+//									configPanel = new typeRecommenderPanel();
+//								} else if (category.equals("Similarity")) {
+//									log.info("sim");
+//									configPanel = new typeRecommenderPanel();
+//								} else if (category.equals("Neighborhood")) {
+//									log.info("cneigats");
+//									configPanel = new typeRecommenderPanel();
+//								} else if (category.equals("Evaluator")) {
+//									log.info("eval");
+//									configPanel = new typeRecommenderPanel();
+//								}
 							}
 						});
 
