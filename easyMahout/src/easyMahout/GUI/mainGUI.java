@@ -72,11 +72,11 @@ public class mainGUI extends JFrame {
 		formEasymahout.getContentPane().setLayout(null);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 0, 742, 464);
+		tabbedPane.setBounds(0, 0, 734, 464);
 		formEasymahout.getContentPane().add(tabbedPane);
 
 		recommenderTab = new recommenderJPanel();
-		tabbedPane.addTab("Recommendation", null, recommenderTab.getPanel(), null);
+		tabbedPane.addTab("Recommendation", null, recommenderTab, null);
 
 		classificationTab = new classificationJPanel();
 		tabbedPane.addTab("Classification", null, classificationTab.getPanel(), null);

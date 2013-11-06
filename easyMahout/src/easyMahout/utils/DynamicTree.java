@@ -31,22 +31,8 @@
 
 package easyMahout.utils;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -54,9 +40,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.Logger;
-
-import easyMahout.GUI.recommenderJPanel;
-import easyMahout.GUI.typeRecommenderPanel;
 
 public class DynamicTree extends JTree {
 
@@ -66,12 +49,8 @@ public class DynamicTree extends JTree {
 
 	protected DefaultTreeModel treeModel;
 
-	// protected JTree tree;
-
-	// protected JScrollPane scrollPane;
-
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
-	
+
 	private final static Logger log = Logger.getLogger(DynamicTree.class);
 
 	public DynamicTree() {
@@ -80,7 +59,6 @@ public class DynamicTree extends JTree {
 		rootNode = new DefaultMutableTreeNode("Root Node");
 		treeModel = new DefaultTreeModel(rootNode);
 		this.setModel(treeModel);
-		// tree = new JTree(treeModel);
 		this.setEditable(true);
 		this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		this.setShowsRootHandles(true);
@@ -89,36 +67,19 @@ public class DynamicTree extends JTree {
 		// int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 		// scrollPane = new JScrollPane(tree, v, h);
 		// add(scrollPane, BorderLayout.CENTER);
-
-		this.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent me) {
-				doMouseClicked(me);
-			}
-		});
 
 	}
 
 	public DynamicTree(String root) {
-		super();
 
+		super();
 		rootNode = new DefaultMutableTreeNode(root);
 		treeModel = new DefaultTreeModel(rootNode);
 		this.setModel(treeModel);
-		// tree = new JTree(treeModel);
 		this.setEditable(true);
 		this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		this.setShowsRootHandles(true);
 
-		// int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-		// int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-		// scrollPane = new JScrollPane(tree, v, h);
-		// add(scrollPane, BorderLayout.CENTER);
-
-		this.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent me) {
-				doMouseClicked(me);
-			}
-		});
 	}
 
 	/** Remove all nodes except the root node. */
@@ -179,113 +140,4 @@ public class DynamicTree extends JTree {
 		return childNode;
 	}
 
-	void doMouseClicked(MouseEvent me) {
-		if (me.getButton() == MouseEvent.BUTTON3) {
-
-			// DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-			// (me.getTreePath().getLastPathComponent());
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.getModel().getRoot();
-			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.getPathForLocation(me.getX(), me.getY())
-						.getLastPathComponent();
-				if (node != null) {
-					if (node.equals(root)) {
-						log.info("root");
-
-					} else if (root.isNodeChild(node)) {
-						log.info("cats");
-						
-						JPopupMenu popupMenuRoot = new JPopupMenu();
-						// addPopup(popupMenuRoot);
-						JMenuItem _new = new JMenuItem("New");
-						_new.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								String category = (String) node.getUserObject();
-								//TODO: iniciar panel para cada tipo;
-								if (category.equals("Type")) {
-									log.info("type");
-								} else if (category.equals("Data Model")) {
-									log.info("data");
-								} else if (category.equals("Similarity")) {
-									log.info("sim");
-								} else if (category.equals("Neighborhood")) {
-									log.info("cneigats");
-								} else if (category.equals("Evaluator")) {
-									log.info("eval");
-								}
-							}
-						});
-
-						JMenuItem _deleteAll = new JMenuItem("Delete All");
-						_deleteAll.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								// TODO: borrar todas las configuraciones de
-								// cierta categoria
-								String category = (String) node.getUserObject();								
-								if (category.equals("Type")) {
-									log.info("type");
-									recommenderJPanel.setConfigPanel(new typeRecommenderPanel());
-								} else if (category.equals("Data Model")) {
-									log.info("data");
-								} else if (category.equals("Similarity")) {
-									log.info("sim");
-								} else if (category.equals("Neighborhood")) {
-									log.info("cneigats");
-								} else if (category.equals("Evaluator")) {
-									log.info("eval");
-								}
-							}
-						});
-
-						popupMenuRoot.add(_new);
-						popupMenuRoot.add(_deleteAll);
-
-						recommenderJPanel.addComponent(popupMenuRoot);
-						popupMenuRoot.show(me.getComponent(), me.getX(), me.getY());
-
-					} else {
-						System.out.println("elems");
-					}
-				}
-			} catch (Exception e1) {
-				// System.out.println("nada");
-			}
-
-			// System.out.println(node.toString());
-		}
-
-		// TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
-		// if (tp != null)
-		// System.out.println(tp.toString());
-		// else
-		// System.out.println("null");
-	}
-
-	class MyTreeModelListener implements TreeModelListener {
-		public void treeNodesChanged(TreeModelEvent e) {
-			DefaultMutableTreeNode node;
-			node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
-
-			/*
-			 * If the event lists children, then the changed node is the child
-			 * of the node we've already gotten. Otherwise, the changed node and
-			 * the specified node are the same.
-			 */
-
-			int index = e.getChildIndices()[0];
-			node = (DefaultMutableTreeNode) (node.getChildAt(index));
-
-			System.out.println("The user has finished editing the node.");
-			System.out.println("New value: " + node.getUserObject());
-		}
-
-		public void treeNodesInserted(TreeModelEvent e) {
-		}
-
-		public void treeNodesRemoved(TreeModelEvent e) {
-		}
-
-		public void treeStructureChanged(TreeModelEvent e) {
-		}
-	}
 }

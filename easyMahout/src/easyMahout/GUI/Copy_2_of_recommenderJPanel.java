@@ -4,81 +4,116 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.search.similarities.Similarity;
+import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
+import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.recommender.Recommender;
+
+import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.DynamicTree;
+import MahoutInAction.Recommender.Recommender22;
+
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import javax.swing.JSeparator;
+import java.awt.Container;
 
-public class recommenderJPanel extends JPanel {
+import javax.swing.BoxLayout;
+import javax.swing.border.BevelBorder;
+
+import java.awt.Component;
+import java.awt.FlowLayout;
+import javax.swing.JSplitPane;
+import java.awt.GridLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.CardLayout;
+import java.awt.GridBagLayout;
+
+public class Copy_2_of_recommenderJPanel extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private JPanel panelRecommender;
 
-	private JPanel treePanel, configPanel;
-	
-	//private flagConfigView;
+	private JPanel treePanel, configPanel;	
+
+	private JLabel labelDatamodel, labelSimilarity, labelDataSource, labelEvaluator, labelNeighborhood;
 
 	@SuppressWarnings("rawtypes")
-	private JComboBox comboBoxType, comboBoxDatamodel;
+	private JComboBox comboBoxType, comboBoxDatamodel, comboBoxNeighborhood, comboBoxSimilarity;
 
 	private JButton btnRun, btnImport;
 
 	@SuppressWarnings("rawtypes")
 	private DefaultComboBoxModel booleanModels, restModels;
 
-	private JTextField textPath;
+	private JTextField textPath, usersNeigborhood;
 
 	private JCheckBox chckbxBooleanPreference;
 
 	private DynamicTree treeMenu;
 
-	private final static Logger log = Logger.getLogger(recommenderJPanel.class);
+	private final static Logger log = Logger.getLogger(Copy_2_of_recommenderJPanel.class);
 
-	private JSeparator separator;
+	// Recommender atributes
+	private Recommender recomm;
+
+	@SuppressWarnings("unused")
+	private DataModel dataModel;
+
+	private Similarity similarityMetric;
+	private JLabel label;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public recommenderJPanel() {
-		super();
-		panelRecommender = this;
+	public Copy_2_of_recommenderJPanel() {
+		
+		panelRecommender = new JPanel();
 
 		treePanel = new JPanel();
-		treePanel.setBounds(0, 0, 220, 395);
 
 		treeMenu = new DynamicTree("Recommender");
-		treeMenu.setBounds(10, 11, 210, 380);
+		treeMenu.setBounds(10, 11, 216, 382);
 		populateTree(treeMenu);
 		treeMenu.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		treeMenu.expandRow(0);
-		setLayout(null);
+		panelRecommender.setLayout(new GridLayout(0, 1, 0, 0));
 		treePanel.setLayout(null);
 		treePanel.add(treeMenu);
-		this.add(treePanel);
-
-		separator = new JSeparator();
-		separator.setBounds(225, 268, 1, 2);
-		treePanel.add(separator);
-		configPanel = new JPanel();
-		configPanel.setBounds(238, 11, 481, 382);
+		panelRecommender.add(treePanel);
+		configPanel = new typeRecommenderPanel();
 		treePanel.add(configPanel);
+		configPanel.setForeground(Color.BLACK);
+		configPanel.setBounds(236, 11, 483, 382);
 		configPanel.setLayout(null);
-		// configPanel.setLayout(null);
-		//
-		// label = new JLabel("New label");
-		// label.setBounds(10, 157, 46, 14);
-		// configPanel.add(label);
+		//configPanel.setLayout(null);
+//		
+//		label = new JLabel("New label");
+//		label.setBounds(10, 157, 46, 14);
+		//configPanel.add(label);
 
 		// //Put everything together, using the content pane's BorderLayout.
 		// Container contentPane = getContentPane();
@@ -222,9 +257,9 @@ public class recommenderJPanel extends JPanel {
 		this.treePanel = treePanel;
 	}
 
-	// public static void addComponent(JComponent comp) {
-	// panelRecommender.add(comp);
-	// }
+//	public static void addComponent(JComponent comp) {
+//		panelRecommender.add(comp);
+//	}
 
 	public void populateTree(DynamicTree treeMenu) {
 
@@ -234,11 +269,13 @@ public class recommenderJPanel extends JPanel {
 		String cat4 = new String("Neighborhood");
 		String cat5 = new String("Evaluator");
 
-		treeMenu.addObject(null, cat1);
-		treeMenu.addObject(null, cat2);
-		treeMenu.addObject(null, cat3);
-		treeMenu.addObject(null, cat4);
-		treeMenu.addObject(null, cat5);
+		DefaultMutableTreeNode pRoot, pType, pModel, pSim, pNeigh, pEval;
+
+		pType = treeMenu.addObject(null, cat1);
+		pModel = treeMenu.addObject(null, cat2);
+		pSim = treeMenu.addObject(null, cat3);
+		pNeigh = treeMenu.addObject(null, cat4);
+		pEval = treeMenu.addObject(null, cat5);
 
 		treeMenu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -249,25 +286,6 @@ public class recommenderJPanel extends JPanel {
 	}
 
 	void doMouseClicked(MouseEvent me) {
-		if (me.getButton() == MouseEvent.BUTTON1) {
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu.getModel().getRoot();
-			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu.getPathForLocation(me.getX(), me.getY())
-						.getLastPathComponent();
-				if (node != null) {
-					if (node.equals(root)) {
-						log.info("root");
-
-					} else if (root.isNodeChild(node)) {
-						log.info("cats");
-						
-					}
-				}
-			} catch (Exception e1) {
-
-			}
-
-		}
 		if (me.getButton() == MouseEvent.BUTTON3) {
 
 			// DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -293,10 +311,12 @@ public class recommenderJPanel extends JPanel {
 								if (category.equals("Type")) {
 									log.info("type");
 									panelRecommender.remove(configPanel);
-									configPanel = new typeRecommenderPanel();
+									JPanel configPanel = new typeRecommenderPanel();
 									panelRecommender.add(configPanel);
 									configPanel.updateUI();
-
+									configPanel.repaint();
+									panelRecommender.updateUI();
+									panelRecommender.repaint();
 								} else if (category.equals("Data Model")) {
 									log.info("data");
 									configPanel = new typeRecommenderPanel();
@@ -358,9 +378,9 @@ public class recommenderJPanel extends JPanel {
 		// System.out.println("null");
 	}
 
-	// public static JPanel getPanel() {
-	// return panelRecommender;
-	// }
+//	public static JPanel getPanel() {
+//		return panelRecommender;
+//	}
 
 	public void setPanel(JPanel panel_recommender) {
 		this.panelRecommender = panel_recommender;
