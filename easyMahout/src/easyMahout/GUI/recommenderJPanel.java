@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
@@ -33,10 +34,12 @@ public class recommenderJPanel extends JPanel {
 	private JPanel panelRecommender;
 
 	private JPanel treePanel;
-	
+
 	private JTabbedPane configPanel;
-	
-	//private flagConfigView;
+
+	private JPanel p1, p2;
+
+	// private flagConfigView;
 
 	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxType, comboBoxDatamodel;
@@ -76,14 +79,20 @@ public class recommenderJPanel extends JPanel {
 
 		separator = new JSeparator();
 		separator.setBounds(225, 268, 1, 2);
-		treePanel.add(separator);
-		configPanel = new JTabbedPane();
-		configPanel.setBounds(238, 11, 481, 382);
-		panelRecommender.add(configPanel);
-		//configPanel.setLayout(null);
-		
-		JPanel p = new typeRecommenderPanel();
-		configPanel.addTab("Type", p);
+		treePanel.add(separator);		
+
+		p1 = new typeRecommenderPanel();
+		p1.setBounds(238, 11, 481, 382);
+		panelRecommender.add(p1);
+		p1.setLayout(null);
+		p1.setVisible(false);
+
+		p2 = new dataModelRecommenderPanel();
+		p2.setBounds(238, 11, 481, 382);
+		panelRecommender.add(p2);
+		p2.setLayout(null);
+		p2.setVisible(false);
+
 		// configPanel.setLayout(null);
 		//
 		// label = new JLabel("New label");
@@ -269,8 +278,38 @@ public class recommenderJPanel extends JPanel {
 						log.info("root");
 
 					} else if (root.isNodeChild(node)) {
-						log.info("cats");
-						
+						log.info("catsB1");
+
+						String category = (String) node.getUserObject();
+						// TODO: iniciar panel para cada tipo;
+						if (category.equals("Type")) {
+							log.info("typeB1");
+
+							p1.setVisible(true);
+							p2.setVisible(false);
+							// p3.setVisible(true);
+							// p4.setVisible(true);
+							// p5.setVisible(true);
+
+						} else if (category.equals("Data Model")) {
+							log.info("dataB1");
+							p1.setVisible(false);
+							p2.setVisible(true);
+							// p3.setVisible(true);
+							// p4.setVisible(true);
+							// p5.setVisible(true);
+							//
+						} else if (category.equals("Similarity")) {
+							log.info("sim");
+							// configPanel = new typeRecommenderPanel();
+						} else if (category.equals("Neighborhood")) {
+							log.info("cneigats");
+							// configPanel = new typeRecommenderPanel();
+						} else if (category.equals("Evaluator")) {
+							log.info("eval");
+							// configPanel = new typeRecommenderPanel();
+						}
+
 					}
 				}
 			} catch (Exception e1) {
@@ -300,26 +339,42 @@ public class recommenderJPanel extends JPanel {
 							public void actionPerformed(ActionEvent e) {
 								String category = (String) node.getUserObject();
 								// TODO: iniciar panel para cada tipo;
-//								if (category.equals("Type")) {
-//									log.info("type");
-//									panelRecommender.remove(configPanel);
-//									configPanel = new typeRecommenderPanel();
-//									panelRecommender.add(configPanel);
-//									configPanel.updateUI();
-//
-//								} else if (category.equals("Data Model")) {
-//									log.info("data");
-//									configPanel = new typeRecommenderPanel();
-//								} else if (category.equals("Similarity")) {
-//									log.info("sim");
-//									configPanel = new typeRecommenderPanel();
-//								} else if (category.equals("Neighborhood")) {
-//									log.info("cneigats");
-//									configPanel = new typeRecommenderPanel();
-//								} else if (category.equals("Evaluator")) {
-//									log.info("eval");
-//									configPanel = new typeRecommenderPanel();
-//								}
+								if (category.equals("Type")) {
+									log.info("type");
+//									int i = JOptionPane.showConfirmDialog(panelRecommender,
+//											"You have a configuration open, do you really want to create a new one whitout saving changes?",
+//											"Continue whitout saving changes",
+//											JOptionPane.YES_NO_OPTION);
+//									if (i == 0) {
+//										System.exit(0);
+//									}
+									// panelRecommender.remove(configPanel);
+									// configPanel = new typeRecommenderPanel();
+									// panelRecommender.add(configPanel);
+									// configPanel.updateUI();
+									// p1.setVisible(true);
+									// p2.setVisible(false);
+									// p3.setVisible(true);
+									// p4.setVisible(true);
+									// p5.setVisible(true);
+
+									// } else if (category.equals("Data Model"))
+									// {
+									// log.info("data");
+									// configPanel = new typeRecommenderPanel();
+									// } else if (category.equals("Similarity"))
+									// {
+									// log.info("sim");
+									// configPanel = new typeRecommenderPanel();
+									// } else if
+									// (category.equals("Neighborhood")) {
+									// log.info("cneigats");
+									// configPanel = new typeRecommenderPanel();
+									// } else if (category.equals("Evaluator"))
+									// {
+									// log.info("eval");
+									// configPanel = new typeRecommenderPanel();
+								}
 							}
 						});
 
@@ -355,25 +410,11 @@ public class recommenderJPanel extends JPanel {
 					}
 				}
 			} catch (Exception e1) {
-				// System.out.println("nada");
+
 			}
 
-			// System.out.println(node.toString());
 		}
 
-		// TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
-		// if (tp != null)
-		// System.out.println(tp.toString());
-		// else
-		// System.out.println("null");
-	}
-
-	// public static JPanel getPanel() {
-	// return panelRecommender;
-	// }
-
-	public void setPanel(JPanel panel_recommender) {
-		this.panelRecommender = panel_recommender;
 	}
 
 	@SuppressWarnings("rawtypes")
