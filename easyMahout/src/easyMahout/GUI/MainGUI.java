@@ -13,21 +13,25 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-public class mainGUI extends JFrame {
+import easyMahout.GUI.classification.ClassificationJPanel;
+import easyMahout.GUI.recommender.RecommenderJPanel;
+import easyMahout.utils.Constants;
+
+public class MainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private JFrame formEasymahout;
 
-	private recommenderJPanel recommenderTab;
+	private RecommenderJPanel recommenderTab;
 
-	private classificationJPanel classificationTab;
+	private ClassificationJPanel classificationTab;
 
 	private static JTextPane logTextPane;
 
 	private static StringBuilder textBuilder;
 
-	private final static Logger log = Logger.getLogger(mainGUI.class);
+	private final static Logger log = Logger.getLogger(MainGUI.class);
 
 	/**
 	 * Launch the application.
@@ -36,7 +40,7 @@ public class mainGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					mainGUI window = new mainGUI();
+					MainGUI window = new MainGUI();
 					window.formEasymahout.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +52,7 @@ public class mainGUI extends JFrame {
 	/**
 	 * Create the application.
 	 */
-	public mainGUI() {
+	public MainGUI() {
 		initialize();
 	}
 
@@ -75,11 +79,11 @@ public class mainGUI extends JFrame {
 		tabbedPane.setBounds(0, 0, 734, 464);
 		formEasymahout.getContentPane().add(tabbedPane);
 
-		recommenderTab = new recommenderJPanel();
+		recommenderTab = new RecommenderJPanel();
 		tabbedPane.addTab("Recommendation", null, recommenderTab, null);
 
-		classificationTab = new classificationJPanel();
-		tabbedPane.addTab("Classification", null, classificationTab.getPanel(), null);
+		classificationTab = new ClassificationJPanel();
+		tabbedPane.addTab("Classification", null, classificationTab, null);
 
 		createMenuBar();
 
@@ -92,15 +96,15 @@ public class mainGUI extends JFrame {
 		textBuilder = new StringBuilder();
 	}
 
-	protected static void writeResult(String text, String type) {
+	public static void writeResult(String text, String type) {
 		//TODO: poner la hora a los logs, scroll o popup para ver los resultados comodamente.
-		if (type.toLowerCase().equals("error")) {
+		if (type.toLowerCase().equals(Constants.Log.ERROR)) {
 			textBuilder.append("<font color=red>").append(text).append("</font><br>");
-		} else if (type.toLowerCase().equals("warning")) {
+		} else if (type.toLowerCase().equals(Constants.Log.WARNING)) {
 			textBuilder.append("<font color=yellow>").append(text).append("</font><br>");
-		} else if (type.toLowerCase().equals("result")) {
+		} else if (type.toLowerCase().equals(Constants.Log.RESULT)) {
 			textBuilder.append("<font color=black>").append(text).append("</font><br>");
-		} else if (type.toLowerCase().equals("info")) {
+		} else if (type.toLowerCase().equals(Constants.Log.INFO)) {
 			textBuilder.append("<font color=green>").append(text).append("</font><br>");
 		}
 
