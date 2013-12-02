@@ -32,6 +32,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxNeighborhood;
 
 	private JTextField tfSize;
@@ -50,6 +51,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 	private final static Logger log = Logger.getLogger(NeighborhoodRecommenderPanel.class);
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NeighborhoodRecommenderPanel() {
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setForeground(Color.BLACK);
@@ -179,8 +181,8 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String neighborhood = (String) ((JComboBox) e.getSource()).getSelectedItem();
 				if (neighborhood.equals(Constants.Neighborhood.NEAREST)) {
-					labelMinimun.setEnabled(false);
-					tfMinimun.setEnabled(false);
+					labelMinimun.setEnabled(true);
+					tfMinimun.setEnabled(true);
 					tfSize.setVisible(true);
 					labelSize.setText("Neighborhood size");
 					tfThreshold.setVisible(false);

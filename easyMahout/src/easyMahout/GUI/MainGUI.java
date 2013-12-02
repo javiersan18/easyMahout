@@ -16,6 +16,8 @@ import org.apache.log4j.PropertyConfigurator;
 import easyMahout.GUI.classification.ClassificationJPanel;
 import easyMahout.GUI.recommender.RecommenderJPanel;
 import easyMahout.utils.Constants;
+import javax.swing.JScrollPane;
+import java.awt.Color;
 
 public class MainGUI extends JFrame {
 
@@ -27,6 +29,8 @@ public class MainGUI extends JFrame {
 
 	private ClassificationJPanel classificationTab;
 
+	private JScrollPane logScrollPane;
+
 	private static JTextPane logTextPane;
 
 	private static StringBuilder textBuilder;
@@ -37,6 +41,11 @@ public class MainGUI extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			// Set System(Windows, Mac, linux) Look and fell
+			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -60,8 +69,6 @@ public class MainGUI extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
-		//TODO: WindowUtilities.setNativeLookAndFeel();
 
 		BasicConfigurator.configure();
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
@@ -70,13 +77,13 @@ public class MainGUI extends JFrame {
 		formEasymahout.setTitle("easyMahout 0.1");
 
 		formEasymahout.setMinimumSize(new Dimension(750, 650));
-		formEasymahout.setBounds(100, 100, 95, 279);
+		formEasymahout.setBounds(100, 100, 750, 700);
 
 		formEasymahout.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		formEasymahout.getContentPane().setLayout(null);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 0, 734, 464);
+		tabbedPane.setBounds(2, 0, 732, 463);
 		formEasymahout.getContentPane().add(tabbedPane);
 
 		recommenderTab = new RecommenderJPanel();
@@ -86,18 +93,25 @@ public class MainGUI extends JFrame {
 		tabbedPane.addTab("Classification", null, classificationTab, null);
 
 		createMenuBar();
+		textBuilder = new StringBuilder();
+
+		logScrollPane = new JScrollPane();
+		logScrollPane.setBounds(2, 463, 730, 176);
+		formEasymahout.getContentPane().add(logScrollPane);
 
 		// Result log textField
 		logTextPane = new JTextPane();
-		logTextPane.setBounds(0, 462, 732, 131);
-		formEasymahout.getContentPane().add(logTextPane);
+		logScrollPane.setViewportView(logTextPane);
+		logTextPane.setBackground(Color.WHITE);
+		logTextPane.setBounds(42, 501, 735, 131);
 		logTextPane.setEditable(false);
 		logTextPane.setContentType("text/html");
-		textBuilder = new StringBuilder();
+
 	}
 
 	public static void writeResult(String text, String type) {
-		//TODO: poner la hora a los logs, scroll o popup para ver los resultados comodamente.
+		// TODO: poner la hora a los logs, scroll o popup para ver los
+		// resultados comodamente.
 		if (type.toLowerCase().equals(Constants.Log.ERROR)) {
 			textBuilder.append("<font color=red>").append(text).append("</font><br>");
 		} else if (type.toLowerCase().equals(Constants.Log.WARNING)) {
@@ -122,5 +136,4 @@ public class MainGUI extends JFrame {
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 	}
-
 }

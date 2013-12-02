@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTree;
 
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
@@ -19,13 +20,14 @@ import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 import easyMahout.utils.Constants;
+import easyMahout.utils.DisabledNode;
+import easyMahout.utils.DisabledRenderer;
 import easyMahout.utils.DynamicTree;
 
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.awt.Color;
-
 import javax.swing.JSeparator;
 import javax.swing.JButton;
 
@@ -35,7 +37,7 @@ public class RecommenderJPanel extends JPanel {
 
 	private JPanel panelRecommender;
 
-	private JPanel treePanel;
+	private JPanel treePanel;	
 
 	private JPanel p5;
 
@@ -47,7 +49,7 @@ public class RecommenderJPanel extends JPanel {
 
 	private NeighborhoodRecommenderPanel neighborhoodPanel;
 
-	private DynamicTree treeMenu;
+	private JTree treeMenu;
 
 	private final static Logger log = Logger.getLogger(RecommenderJPanel.class);
 
@@ -60,15 +62,27 @@ public class RecommenderJPanel extends JPanel {
 	public RecommenderJPanel() {
 		super();
 		panelRecommender = this;
+		
+		treeMenu = new JTree(populateTree()[0]);
+		DisabledRenderer renderer = new DisabledRenderer();
+		treeMenu.setCellRenderer(renderer);
+		
+		treeMenu.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent me) {
+				doMouseClicked(me);
+			}
+		});
+		
 
 		treePanel = new JPanel();
 		treePanel.setBounds(0, 0, 220, 395);
 
-		treeMenu = new DynamicTree("Recommender");
+		//treeMenu = new DynamicTree("Recommender");
 		treeMenu.setBounds(10, 11, 210, 380);
-		populateTree(treeMenu);
+		//populateTree(treeMenu);
 		treeMenu.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		treeMenu.expandRow(0);
+		treeMenu.expandRow(1);
 		setLayout(null);
 		treePanel.setLayout(null);
 		treePanel.add(treeMenu);
@@ -135,10 +149,9 @@ public class RecommenderJPanel extends JPanel {
 
 		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
-			ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);			
+			ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);
 			return new GenericItemBasedRecommender(model, similarity);
-		}
-		else
+		} else
 			// mas posibles tipos de recomm
 			return null;
 	}
@@ -180,26 +193,34 @@ public class RecommenderJPanel extends JPanel {
 	//
 	// }
 
-	public void populateTree(DynamicTree treeMenu) {
+	public DisabledNode[] populateTree() {
 
-		String cat1 = new String("Type");
-		String cat2 = new String("Data Model");
-		String cat3 = new String("Similarity");
-		String cat4 = new String("Neighborhood");
-		String cat5 = new String("Evaluator");
+		String[] strs = { "Recommender", // 0
+				"Configure",
+				"Type", // 1
+				"Data Model", // 2
+				"Similarity", // 3
+				"Neighborhood", // 4
+				"Evaluator", // 5
+				"Saves",""
+				
+		};
 
-		treeMenu.addObject(null, cat1);
-		treeMenu.addObject(null, cat2);
-		treeMenu.addObject(null, cat3);
-		treeMenu.addObject(null, cat4);
-		treeMenu.addObject(null, cat5);
-
-		treeMenu.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent me) {
-				doMouseClicked(me);
-			}
-		});
-
+		DisabledNode[] nodes = new DisabledNode[strs.length];
+		for (int i = 0; i < strs.length; i++) {
+			nodes[i] = new DisabledNode(strs[i]);
+		}
+		nodes[0].add(nodes[1]);
+		nodes[1].add(nodes[2]);
+		nodes[1].add(nodes[3]);
+		nodes[1].add(nodes[4]);
+		nodes[1].add(nodes[5]);	
+		nodes[1].add(nodes[6]);	
+		nodes[0].add(nodes[7]);
+		nodes[7].add(nodes[8]);
+		
+		
+		return nodes;
 	}
 
 	void doMouseClicked(MouseEvent me) {
