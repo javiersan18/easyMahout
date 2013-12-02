@@ -39,7 +39,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 				Constants.Similarity.CITYBLOCK, Constants.Similarity.LOGARITHMIC, Constants.Similarity.TANIMOTO,
 				Constants.Similarity.COSINE });
 
-		restSimilarity = new DefaultComboBoxModel(new String[] { Constants.Similarity.AVERAGING });		
+		//restSimilarity = new DefaultComboBoxModel(new String[] { Constants.Similarity.AVERAGING });		
 
 		comboBoxSimilarity = new JComboBox();
 		comboBoxSimilarity.setMaximumRowCount(16);

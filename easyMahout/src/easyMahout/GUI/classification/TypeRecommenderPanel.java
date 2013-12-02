@@ -32,7 +32,7 @@ public class TypeRecommenderPanel extends JPanel {
 
 		comboBoxType = new JComboBox();
 		comboBoxType.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED,
-				Constants.RecommType.CLUSTERING }));
+				 }));
 		comboBoxType.setBounds(38, 36, 141, 20);
 		add(comboBoxType);
 

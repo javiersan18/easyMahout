@@ -15,11 +15,11 @@ public class Constants {
 
 	public class RecommType {
 
-		public static final String USERBASED = "User-based";
+		public static final String USERBASED = "User based";
 
-		public static final String ITEMBASED = "Item-based";
+		public static final String ITEMBASED = "Item based";
 
-		public static final String CLUSTERING = "Clustering";
+		//public static final String CLUSTERING = "Clustering";
 	}
 
 	public class DataModel {
@@ -50,13 +50,13 @@ public class Constants {
 
 		//public static final String ABSTRACT = "Abstract";
 
-		public static final String AVERAGING = "Averaging Preference Inferrer";
+		//public static final String AVERAGING = "Averaging Preference Inferrer";
 
 		//public static final String CACHING_ITEM = "Caching Item";
 
 		//public static final String CACHING_USER = "Caching User";
 
-		public static final String CITYBLOCK = "City Block (Manhatan Distance)";
+		public static final String CITYBLOCK = "City Block (Manhattan Distance)";
 
 		public static final String EUCLIDEAN = "Euclidean Distance";
 
@@ -66,7 +66,7 @@ public class Constants {
 
 		public static final String LOGARITHMIC = "Logarithmic Likelihood";
 
-		public static final String LONGPAIR = "Long Pair Match Predicate";
+		//public static final String LONGPAIR = "Long Pair Match Predicate";
 
 		public static final String PEARSON = "Pearson Correlation";
 
@@ -80,9 +80,9 @@ public class Constants {
 
 	public class Neighborhood {
 
-		public static final String ABSTRACT = "Abstract";
+		//public static final String ABSTRACT = "Abstract";
 
-		public static final String CACHING = "Caching";
+		//public static final String CACHING = "Caching";
 
 		public static final String NEAREST = "Nearest N";
 

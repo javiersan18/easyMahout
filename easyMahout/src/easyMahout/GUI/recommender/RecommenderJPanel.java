@@ -10,6 +10,15 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import org.apache.log4j.Logger;
+import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+
+import easyMahout.utils.Constants;
 import easyMahout.utils.DynamicTree;
 
 import javax.swing.border.LineBorder;
@@ -28,20 +37,24 @@ public class RecommenderJPanel extends JPanel {
 
 	private JPanel treePanel;
 
-	private JPanel p4, p5;
-	
+	private JPanel p5;
+
 	private static TypeRecommenderPanel typePanel;
-	
+
 	private DataModelRecommenderPanel dataModelPanel;
-	
+
 	private static SimilarityRecommenderPanel similarityPanel;
+
+	private NeighborhoodRecommenderPanel neighborhoodPanel;
 
 	private DynamicTree treeMenu;
 
 	private final static Logger log = Logger.getLogger(RecommenderJPanel.class);
 
 	private JSeparator separator;
+
 	private JButton btnRun;
+
 	private JButton btnEvaluate;
 
 	public RecommenderJPanel() {
@@ -84,21 +97,21 @@ public class RecommenderJPanel extends JPanel {
 		similarityPanel.setLayout(null);
 		similarityPanel.setVisible(false);
 
-		p4 = new NeighborhoodRecommenderPanel();
-		p4.setBounds(238, 11, 481, 382);
-		panelRecommender.add(p4);
-		p4.setLayout(null);
-		p4.setVisible(false);
+		neighborhoodPanel = new NeighborhoodRecommenderPanel();
+		neighborhoodPanel.setBounds(238, 11, 481, 382);
+		panelRecommender.add(neighborhoodPanel);
+		neighborhoodPanel.setLayout(null);
+		neighborhoodPanel.setVisible(false);
 
 		p5 = new EvaluatorRecommenderPanel();
 		p5.setBounds(238, 11, 481, 382);
 		panelRecommender.add(p5);
 		p5.setLayout(null);
-		
+
 		btnRun = new JButton("Run");
 		btnRun.setBounds(630, 404, 89, 23);
 		add(btnRun);
-		
+
 		btnEvaluate = new JButton("Evaluate");
 		btnEvaluate.setBounds(531, 404, 89, 23);
 		add(btnEvaluate);
@@ -113,22 +126,59 @@ public class RecommenderJPanel extends JPanel {
 		this.treePanel = treePanel;
 	}
 
-	
-//	private RecommenderBuilder buildRecommender(){
-//		DataModel model = dataModelPanel.getDataModel();
-//		Object similarity = getSimilarity(model, similarityPanel.getSelectedSimilarity());
-//		
-//		
-//		
-//		
-//		return null;
-//		
-//	}
-//	
-//	
-//	private Object getSimilarity(DataModel model, Object selectedSimilarity) {
-//		
-//	}
+	private Recommender buildRecommender() {
+		if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
+			DataModel model = dataModelPanel.getDataModel();
+			UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
+			UserNeighborhood neighborhood = neighborhoodPanel.getNeighborhood(similarity, model);
+			return new GenericUserBasedRecommender(model, neighborhood, similarity);
+
+		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
+			DataModel model = dataModelPanel.getDataModel();
+			ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);			
+			return new GenericItemBasedRecommender(model, similarity);
+		}
+		else
+			// mas posibles tipos de recomm
+			return null;
+	}
+
+	// private RecommenderBuilder buildRecommender() {
+	// if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
+	// // DataModel model = dataModelPanel.getDataModel();
+	//
+	// RecommenderBuilder recommenderBuilder = new RecommenderBuilder() {
+	// public Recommender buildRecommender(DataModel model) throws
+	// TasteException {
+	// UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
+	// UserNeighborhood neighborhood =
+	// neighborhoodPanel.getNeighborhood(similarity, model);
+	// return new GenericUserBasedRecommender(model, neighborhood, similarity);
+	// }
+	// };
+	//
+	// return recommenderBuilder;
+	//
+	// } else if
+	// (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
+	// // DataModel model = dataModelPanel.getDataModel();
+	// // final ItemSimilarity similarity = getItemSimilarity(model);
+	// // //final UserNeighborhood neighborhood =
+	// // neighborhoodPanel.getNeighborhood(similarity, model);
+	// //
+	// // RecommenderBuilder recommenderBuilder = new RecommenderBuilder()
+	// // {
+	// // public Recommender buildRecommender(DataModel model) throws
+	// // TasteException {
+	// // return new GenericItemBasedRecommender(model,similarity);
+	// // }
+	// // };
+	// return null;
+	// }// mas posibles tipos de recomm
+	// else
+	// return null;
+	//
+	// }
 
 	public void populateTree(DynamicTree treeMenu) {
 
@@ -171,7 +221,7 @@ public class RecommenderJPanel extends JPanel {
 							typePanel.setVisible(true);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
-							p4.setVisible(false);
+							neighborhoodPanel.setVisible(false);
 							p5.setVisible(false);
 
 						} else if (category.equals("Data Model")) {
@@ -179,7 +229,7 @@ public class RecommenderJPanel extends JPanel {
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(true);
 							similarityPanel.setVisible(false);
-							p4.setVisible(false);
+							neighborhoodPanel.setVisible(false);
 							p5.setVisible(false);
 
 						} else if (category.equals("Similarity")) {
@@ -187,7 +237,7 @@ public class RecommenderJPanel extends JPanel {
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(true);
-							p4.setVisible(false);
+							neighborhoodPanel.setVisible(false);
 							p5.setVisible(false);
 
 						} else if (category.equals("Neighborhood")) {
@@ -195,7 +245,7 @@ public class RecommenderJPanel extends JPanel {
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
-							p4.setVisible(true);
+							neighborhoodPanel.setVisible(true);
 							p5.setVisible(false);
 
 						} else if (category.equals("Evaluator")) {
@@ -203,7 +253,7 @@ public class RecommenderJPanel extends JPanel {
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
-							p4.setVisible(false);
+							neighborhoodPanel.setVisible(false);
 							p5.setVisible(true);
 						}
 
@@ -314,15 +364,13 @@ public class RecommenderJPanel extends JPanel {
 		}
 
 	}
-	
+
 	public static TypeRecommenderPanel getTypePanel() {
 		return typePanel;
 	}
-	
+
 	public static SimilarityRecommenderPanel getSimilarityPanel() {
 		return similarityPanel;
 	}
 
-
-	
 }

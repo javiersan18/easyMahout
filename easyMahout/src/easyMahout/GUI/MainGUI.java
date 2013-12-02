@@ -89,7 +89,7 @@ public class MainGUI extends JFrame {
 
 		// Result log textField
 		logTextPane = new JTextPane();
-		logTextPane.setBounds(0, 462, 742, 131);
+		logTextPane.setBounds(0, 462, 732, 131);
 		formEasymahout.getContentPane().add(logTextPane);
 		logTextPane.setEditable(false);
 		logTextPane.setContentType("text/html");
