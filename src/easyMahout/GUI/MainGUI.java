@@ -74,7 +74,7 @@ public class MainGUI extends JFrame {
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
 		formEasymahout = new JFrame();
-		formEasymahout.setTitle("easyMahout 0.1");
+		formEasymahout.setTitle("easyMahout 0.2");
 
 		formEasymahout.setMinimumSize(new Dimension(750, 650));
 		formEasymahout.setBounds(100, 100, 750, 700);
@@ -113,13 +113,13 @@ public class MainGUI extends JFrame {
 		// TODO: poner la hora a los logs, scroll o popup para ver los
 		// resultados comodamente.
 		if (type.toLowerCase().equals(Constants.Log.ERROR)) {
-			textBuilder.append("<font color=red>").append(text).append("</font><br>");
+			textBuilder.append("<font color=red>ERROR: ").append(text).append("</font><br>");
 		} else if (type.toLowerCase().equals(Constants.Log.WARNING)) {
-			textBuilder.append("<font color=yellow>").append(text).append("</font><br>");
+			textBuilder.append("<font color=yellow>WARNING: ").append(text).append("</font><br>");
 		} else if (type.toLowerCase().equals(Constants.Log.RESULT)) {
-			textBuilder.append("<font color=black>").append(text).append("</font><br>");
+			textBuilder.append("<font color=black>RESULT: ").append(text).append("</font><br>");
 		} else if (type.toLowerCase().equals(Constants.Log.INFO)) {
-			textBuilder.append("<font color=green>").append(text).append("</font><br>");
+			textBuilder.append("<font color=green>INFO: ").append(text).append("</font><br>");
 		}
 
 		logTextPane.setText(textBuilder.toString());

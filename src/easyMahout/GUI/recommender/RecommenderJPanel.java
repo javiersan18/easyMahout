@@ -11,14 +11,17 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
 import org.apache.log4j.Logger;
+import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
+import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
@@ -26,8 +29,12 @@ import easyMahout.utils.DynamicTree;
 
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import java.awt.Color;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.JSeparator;
 import javax.swing.JButton;
 
@@ -37,7 +44,7 @@ public class RecommenderJPanel extends JPanel {
 
 	private JPanel panelRecommender;
 
-	private JPanel treePanel;	
+	private JPanel treePanel;
 
 	private JPanel p5;
 
@@ -60,26 +67,25 @@ public class RecommenderJPanel extends JPanel {
 	private JButton btnEvaluate;
 
 	public RecommenderJPanel() {
-		super();
+		// super();
 		panelRecommender = this;
-		
+
 		treeMenu = new JTree(populateTree()[0]);
 		DisabledRenderer renderer = new DisabledRenderer();
 		treeMenu.setCellRenderer(renderer);
-		
+
 		treeMenu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				doMouseClicked(me);
 			}
 		});
-		
 
 		treePanel = new JPanel();
 		treePanel.setBounds(0, 0, 220, 395);
 
-		//treeMenu = new DynamicTree("Recommender");
+		// treeMenu = new DynamicTree("Recommender");
 		treeMenu.setBounds(10, 11, 210, 380);
-		//populateTree(treeMenu);
+		// populateTree(treeMenu);
 		treeMenu.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		treeMenu.expandRow(0);
 		treeMenu.expandRow(1);
@@ -130,6 +136,33 @@ public class RecommenderJPanel extends JPanel {
 		btnEvaluate.setBounds(531, 404, 89, 23);
 		add(btnEvaluate);
 		p5.setVisible(false);
+
+		btnRun.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				List<RecommendedItem> recommendations;
+				try {
+					Recommender recomm= buildRecommender();
+					recommendations = buildRecommender().recommend(1, 1);
+					if (recommendations != null && !recommendations.isEmpty()) {
+
+						Iterator<RecommendedItem> it = recommendations.iterator();
+
+						while (it.hasNext()) {
+							RecommendedItem item = it.next();
+							System.out.println(item);
+							MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
+						}
+					}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
+					e1.printStackTrace();
+				}
+
+			}
+		});
+
 	}
 
 	public JPanel getTreePanel() {
@@ -143,14 +176,27 @@ public class RecommenderJPanel extends JPanel {
 	private Recommender buildRecommender() {
 		if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
-			UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
-			UserNeighborhood neighborhood = neighborhoodPanel.getNeighborhood(similarity, model);
-			return new GenericUserBasedRecommender(model, neighborhood, similarity);
+			if (model != null) {
+				UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
+				UserNeighborhood neighborhood = neighborhoodPanel.getNeighborhood(similarity, model);
+				return new GenericUserBasedRecommender(model, neighborhood, similarity);
+			} else {
+				log.error("Trying to run a recommender without datamodel loaded");
+				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
+				return null;
+			}
 
 		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
-			ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);
-			return new GenericItemBasedRecommender(model, similarity);
+			if (model != null) {
+				ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);
+				return new GenericItemBasedRecommender(model, similarity);
+			} else {
+				log.error("Trying to run a recommender without datamodel loaded");
+				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
+				return null;
+			}
+
 		} else
 			// mas posibles tipos de recomm
 			return null;
@@ -196,14 +242,15 @@ public class RecommenderJPanel extends JPanel {
 	public DisabledNode[] populateTree() {
 
 		String[] strs = { "Recommender", // 0
-				"Configure",
-				"Type", // 1
-				"Data Model", // 2
-				"Similarity", // 3
-				"Neighborhood", // 4
-				"Evaluator", // 5
-				"Saves",""
-				
+				"Configure", // 1
+				"Type", // 2
+				"Data Model", // 3
+				"Similarity", // 4
+				"Neighborhood", // 5
+				"Evaluator", // 6
+				"Saves", // 7
+				"Example1" // 8
+
 		};
 
 		DisabledNode[] nodes = new DisabledNode[strs.length];
@@ -214,27 +261,27 @@ public class RecommenderJPanel extends JPanel {
 		nodes[1].add(nodes[2]);
 		nodes[1].add(nodes[3]);
 		nodes[1].add(nodes[4]);
-		nodes[1].add(nodes[5]);	
-		nodes[1].add(nodes[6]);	
+		nodes[1].add(nodes[5]);
+		nodes[1].add(nodes[6]);
 		nodes[0].add(nodes[7]);
 		nodes[7].add(nodes[8]);
-		
-		
+
 		return nodes;
 	}
 
 	void doMouseClicked(MouseEvent me) {
 		if (me.getButton() == MouseEvent.BUTTON1) {
 			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu.getModel().getRoot();
+			DefaultMutableTreeNode recommender = (DefaultMutableTreeNode) root.getFirstChild();
 			try {
 				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu.getPathForLocation(me.getX(), me.getY())
 						.getLastPathComponent();
 				if (node != null) {
-					if (node.equals(root)) {
-						log.info("root");
+					if (node.equals(root) || node.equals(recommender)) {
+						log.info("root or recommender node B1");
 
-					} else if (root.isNodeChild(node)) {
-						log.info("catsB1");
+					} else if (recommender.isNodeChild(node)) {
+						log.info("recomender childs B1");
 
 						String category = (String) node.getUserObject();
 						if (category.equals("Type")) {

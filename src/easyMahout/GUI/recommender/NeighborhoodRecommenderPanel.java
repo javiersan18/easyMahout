@@ -164,13 +164,13 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 						return true;
 					} else {
 						log.error(text + " is out of range");
-						MainGUI.writeResult("ERROR: Sampling Rate has to be a real number in range (0,1]", Constants.Log.ERROR);
+						MainGUI.writeResult("Sampling Rate has to be a real number in range (0,1]", Constants.Log.ERROR);
 						tfSamplingRate.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
 					log.error(text + " is not a number, focus not lost");
-					MainGUI.writeResult("ERROR: Sampling Rate has to be a real number in range (0,1]", Constants.Log.ERROR);
+					MainGUI.writeResult("Sampling Rate has to be a real number in range (0,1]", Constants.Log.ERROR);
 					tfSamplingRate.setBackground(new Color(240, 128, 128));
 					return false;
 				}
