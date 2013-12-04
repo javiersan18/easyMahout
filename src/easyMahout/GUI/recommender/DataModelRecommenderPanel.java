@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
@@ -23,6 +24,10 @@ import org.apache.mahout.cf.taste.model.DataModel;
 import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
+
+import java.awt.ComponentOrientation;
+
+import javax.swing.SwingConstants;
 
 public class DataModelRecommenderPanel extends JPanel {
 
@@ -34,20 +39,25 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private final static Logger log = Logger.getLogger(DataModelRecommenderPanel.class);
 
-	private JTextField textPath;
+	private JTextField textPath, tfDelimiter;
+
+	private JLabel lblDelimiter, lblDataSource, lblSelectModel;
+
+	private JButton btnSelect;
+
+	private JCheckBox chckbxBooleanPreferences;
 
 	private DataModel dataModel;
 
 	public DataModelRecommenderPanel() {
-		//super();
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(236, 11, 483, 382);
 
-		JLabel labelSelectModel = new JLabel("Select type of Data Model:");
-		labelSelectModel.setBounds(21, 11, 216, 14);
-		add(labelSelectModel);
+		lblSelectModel = new JLabel("Select type of Data Model:");
+		lblSelectModel.setBounds(21, 11, 216, 14);
+		add(lblSelectModel);
 
 		comboBoxDatamodel = new JComboBox();
 		booleanModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC_BOOLEAN });
@@ -58,27 +68,121 @@ public class DataModelRecommenderPanel extends JPanel {
 		comboBoxDatamodel.setBounds(38, 68, 216, 20);
 		add(comboBoxDatamodel);
 
-		JCheckBox chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
+		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
 		chckbxBooleanPreferences.setBounds(38, 38, 199, 23);
 		add(chckbxBooleanPreferences);
 
-		JLabel labelDataSource = new JLabel("Data source:");
-		labelDataSource.setBounds(21, 106, 89, 14);
-		add(labelDataSource);
+		lblDataSource = new JLabel("Data source:");
+		lblDataSource.setBounds(21, 106, 89, 14);
+		add(lblDataSource);
 
 		textPath = new JTextField();
-		textPath.setBounds(38, 131, 313, 20);
+		textPath.setBounds(38, 131, 401, 20);
 		add(textPath);
 		textPath.setColumns(10);
 
-		JButton btnImport = new JButton("Import...");
-		btnImport.setBounds(361, 130, 89, 23);
-		add(btnImport);
+		btnSelect = new JButton("Select File...");
+		btnSelect.setBounds(130, 162, 107, 23);
+		add(btnSelect);
+
+		lblDelimiter = new JLabel("Delimiter");
+		lblDelimiter.setBounds(274, 71, 68, 14);
+		add(lblDelimiter);
+		lblDelimiter.setEnabled(false);
+
+		tfDelimiter = new JTextField();
+		tfDelimiter.setHorizontalAlignment(SwingConstants.CENTER);
+		tfDelimiter.setBounds(329, 68, 46, 20);
+		add(tfDelimiter);
+		tfDelimiter.setColumns(10);
+		tfDelimiter.setText(",");
+		tfDelimiter.setEnabled(false);
+
+		JButton btnCreate = new JButton("Create Model");
+		btnCreate.setBounds(241, 162, 107, 23);
+		add(btnCreate);
+
+		btnSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser selectedFile = new JFileChooser();
+				int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File data = selectedFile.getSelectedFile();
+					String absPath = data.getAbsolutePath();
+					textPath.setText(absPath);
+				} else if (i == JFileChooser.ERROR_OPTION) {
+					MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
+					log.error("Error opening data file");
+				}
+			}
+		});
+		
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selected = comboBoxDatamodel.getSelectedIndex();
+				String filePath = textPath.getText();
+				try {
+					// TODO: distintos tipos de modelos...
+					switch (selected) {
+						case 0:
+							setDataModel(new FileDataModel(new File(filePath)));							
+							MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+							break;
+						case 1:
+							setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(filePath)))));							
+							MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+							break;
+						case 2:
+							String delimiter = tfDelimiter.getText();
+							if (StringUtils.isBlank(delimiter)) {
+								tfDelimiter.setBackground(new Color(240, 128, 128));
+								log.error("Delimiter for ExtendedDataModel is empty.");
+								MainGUI.writeResult("Delimiter for Extended Data Model is empty.", Constants.Log.ERROR);
+							} else {
+								tfDelimiter.setBackground(Color.WHITE);
+								setDataModel(new ExtendedDataModel(new File(filePath), tfDelimiter.getText()));								
+								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+							}
+							break;
+						case 3:
+							// dataModel = new CassandraDataModel(new
+							// File(absPath));
+							break;
+						case 4:
+							setDataModel(new FileDataModel(new File(filePath)));
+							break;
+						case 5:
+							setDataModel(new FileDataModel(new File(filePath)));
+							break;
+						case 6:
+							setDataModel(new FileDataModel(new File(filePath)));
+							break;
+						case 7:
+							setDataModel(new FileDataModel(new File(filePath)));
+							break;
+						default:
+							setDataModel(new FileDataModel(new File(filePath)));
+							break;
+					}
+					// TODO: revisar errores de excepciones mostrados en
+					// consola
+				} catch (IllegalArgumentException e1) {
+					MainGUI.writeResult("Error reading data file: " + e1.getMessage(), Constants.Log.ERROR);
+					log.error("Error reading data file", e1);
+				} catch (Exception e1) {
+					MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
+					log.error("Error reading data file", e1);
+				}
+
+			}
+		});
 
 		chckbxBooleanPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (((JCheckBox) e.getSource()).isSelected()) {
 					comboBoxDatamodel.setModel(booleanModels);
+					lblDelimiter.setEnabled(false);
+					tfDelimiter.setEnabled(false);
 					log.info("boolean");
 				} else {
 					comboBoxDatamodel.setModel(restModels);
@@ -88,65 +192,92 @@ public class DataModelRecommenderPanel extends JPanel {
 			}
 		});
 
-		btnImport.addActionListener(new ActionListener() {
+		comboBoxDatamodel.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser selectedFile = new JFileChooser();
-				int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
-				if (i == JFileChooser.APPROVE_OPTION) {
-					File data = selectedFile.getSelectedFile();
-					String absPath = data.getAbsolutePath();
-					int selected = comboBoxDatamodel.getSelectedIndex();
-
-					try {
-						// TODO: distintos tipos de modelos...
-						switch (selected) {
-							case 0:
-								setDataModel(new FileDataModel(new File(absPath)));
-								break;
-							case 1:
-								setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(absPath)))));
-								break;
-							case 2:
-								setDataModel(new ExtendedDataModel(new File(absPath), ","));
-								break;
-							case 3:
-								// dataModel = new CassandraDataModel(new
-								// File(absPath));
-								break;
-							case 4:
-								setDataModel(new FileDataModel(new File(absPath)));
-								break;
-							case 5:
-								setDataModel(new FileDataModel(new File(absPath)));
-								break;
-							case 6:
-								setDataModel(new FileDataModel(new File(absPath)));
-								break;
-							case 7:
-								setDataModel(new FileDataModel(new File(absPath)));
-								break;
-							default:
-								setDataModel(new FileDataModel(new File(absPath)));
-								break;
-						}
-						textPath.setText(absPath);
-						MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-						// TODO: revisar errores de excepciones mostrados en
-						// consola
-					} catch (IllegalArgumentException e1) {
-						MainGUI.writeResult("Error reading data file: " + e1.getMessage(), Constants.Log.ERROR);
-						log.error("Error reading data file", e1);
-					} catch (Exception e1) {
-						MainGUI.writeResult("Error reading data file", Constants.Log.ERROR);
-						log.error("Error reading data file", e1);
-					}
-
-				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
-					log.error("Error opening data file");
+				String model = (String) ((JComboBox) e.getSource()).getSelectedItem();
+				if (model.equals(Constants.DataModel.EXTENDED)) {
+					lblDelimiter.setEnabled(true);
+					tfDelimiter.setEnabled(true);
+				} else {
+					lblDelimiter.setEnabled(false);
+					tfDelimiter.setEnabled(false);
 				}
+
 			}
 		});
+
+//		btnSelect.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				JFileChooser selectedFile = new JFileChooser();
+//				int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
+//				if (i == JFileChooser.APPROVE_OPTION) {
+//					File data = selectedFile.getSelectedFile();
+//					String absPath = data.getAbsolutePath();
+//					int selected = comboBoxDatamodel.getSelectedIndex();
+//
+//					try {
+//						// TODO: distintos tipos de modelos...
+//						switch (selected) {
+//							case 0:
+//								setDataModel(new FileDataModel(new File(absPath)));
+//								textPath.setText(absPath);
+//								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+//								break;
+//							case 1:
+//								setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(absPath)))));
+//								textPath.setText(absPath);
+//								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+//								break;
+//							case 2:
+//								String delimiter = tfDelimiter.getText();
+//								if (StringUtils.isBlank(delimiter)) {
+//									tfDelimiter.setBackground(new Color(240, 128, 128));
+//									log.error("Delimiter for ExtendedDataModel is empty.");
+//									MainGUI.writeResult("Delimiter for Extended Data Model is empty.", Constants.Log.ERROR);
+//								} else {
+//									tfDelimiter.setBackground(Color.WHITE);
+//									setDataModel(new ExtendedDataModel(new File(absPath), tfDelimiter.getText()));
+//									textPath.setText(absPath);
+//									MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+//								}
+//								break;
+//							case 3:
+//								// dataModel = new CassandraDataModel(new
+//								// File(absPath));
+//								break;
+//							case 4:
+//								setDataModel(new FileDataModel(new File(absPath)));
+//								break;
+//							case 5:
+//								setDataModel(new FileDataModel(new File(absPath)));
+//								break;
+//							case 6:
+//								setDataModel(new FileDataModel(new File(absPath)));
+//								break;
+//							case 7:
+//								setDataModel(new FileDataModel(new File(absPath)));
+//								break;
+//							default:
+//								setDataModel(new FileDataModel(new File(absPath)));
+//								break;
+//						}
+//						// TODO: revisar errores de excepciones mostrados en
+//						// consola
+//					} catch (IllegalArgumentException e1) {
+//						MainGUI.writeResult("Error reading data file: " + e1.getMessage(), Constants.Log.ERROR);
+//						log.error("Error reading data file", e1);
+//					} catch (Exception e1) {
+//						MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
+//						log.error("Error reading data file", e1);
+//					}
+//
+//				} else if (i == JFileChooser.ERROR_OPTION) {
+//					MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
+//					log.error("Error opening data file");
+//				}
+//			}
+//		});
 
 	}
 

@@ -30,7 +30,7 @@ public class TypeRecommenderPanel extends JPanel {
 		add(labelSelectType);
 
 		comboBoxType = new JComboBox();
-		comboBoxType.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED}));
+		comboBoxType.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED }));
 		comboBoxType.setBounds(38, 36, 141, 20);
 		add(comboBoxType);
 
@@ -39,7 +39,9 @@ public class TypeRecommenderPanel extends JPanel {
 				String type = (String) ((JComboBox) e.getSource()).getSelectedItem();
 				RecommenderJPanel.getSimilarityPanel().setModelSimilarity(type);
 				if (type.equals(Constants.RecommType.ITEMBASED)) {
-					// TODO: desactivar del tree el neighborhood
+					RecommenderJPanel.setEnableNeighborhood(false);
+				} else if (type.equals(Constants.RecommType.USERBASED)) {
+					RecommenderJPanel.setEnableNeighborhood(true);
 				}
 			}
 		});

@@ -44,9 +44,7 @@ public class RecommenderJPanel extends JPanel {
 
 	private JPanel panelRecommender;
 
-	private JPanel treePanel;
-
-	private JPanel p5;
+	private JPanel treePanel;	
 
 	private static TypeRecommenderPanel typePanel;
 
@@ -55,8 +53,12 @@ public class RecommenderJPanel extends JPanel {
 	private static SimilarityRecommenderPanel similarityPanel;
 
 	private NeighborhoodRecommenderPanel neighborhoodPanel;
+	
+	private QueriesRecommenderPanel queriesPanel;
+	
+	private EvaluatorRecommenderPanel evaluatorPanel;
 
-	private JTree treeMenu;
+	private static JTree treeMenu;
 
 	private final static Logger log = Logger.getLogger(RecommenderJPanel.class);
 
@@ -66,9 +68,15 @@ public class RecommenderJPanel extends JPanel {
 
 	private JButton btnEvaluate;
 
+	private static boolean itembased;
+
+	private static DisabledNode nodeNeighborhood;
+
 	public RecommenderJPanel() {
 		// super();
 		panelRecommender = this;
+		
+		itembased= true;
 
 		treeMenu = new JTree(populateTree()[0]);
 		DisabledRenderer renderer = new DisabledRenderer();
@@ -123,10 +131,17 @@ public class RecommenderJPanel extends JPanel {
 		neighborhoodPanel.setLayout(null);
 		neighborhoodPanel.setVisible(false);
 
-		p5 = new EvaluatorRecommenderPanel();
-		p5.setBounds(238, 11, 481, 382);
-		panelRecommender.add(p5);
-		p5.setLayout(null);
+		evaluatorPanel = new EvaluatorRecommenderPanel();
+		evaluatorPanel.setBounds(238, 11, 481, 382);
+		panelRecommender.add(evaluatorPanel);
+		evaluatorPanel.setLayout(null);
+		evaluatorPanel.setVisible(false);
+		
+		queriesPanel = new QueriesRecommenderPanel();
+		queriesPanel.setBounds(238, 11, 481, 382);
+		panelRecommender.add(queriesPanel);
+		queriesPanel.setLayout(null);
+		queriesPanel.setVisible(false);
 
 		btnRun = new JButton("Run");
 		btnRun.setBounds(630, 404, 89, 23);
@@ -135,24 +150,32 @@ public class RecommenderJPanel extends JPanel {
 		btnEvaluate = new JButton("Evaluate");
 		btnEvaluate.setBounds(531, 404, 89, 23);
 		add(btnEvaluate);
-		p5.setVisible(false);
+		
 
 		btnRun.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+
 				List<RecommendedItem> recommendations;
 				try {
-					Recommender recomm= buildRecommender();
-					recommendations = buildRecommender().recommend(1, 1);
-					if (recommendations != null && !recommendations.isEmpty()) {
+					Recommender recomm = buildRecommender();
+					if (recomm != null) {
+						recommendations = buildRecommender().recommend(1, 1);
+						if (recommendations != null && !recommendations.isEmpty()) {
 
-						Iterator<RecommendedItem> it = recommendations.iterator();
+							Iterator<RecommendedItem> it = recommendations.iterator();
 
-						while (it.hasNext()) {
-							RecommendedItem item = it.next();
-							System.out.println(item);
-							MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
+							while (it.hasNext()) {
+								RecommendedItem item = it.next();
+								System.out.println(item);
+								MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
+							}
 						}
+
+					} else {
+						// TODO sobra??? puede fallar la creacion del recomm si
+						// tiene dataModel?
+						MainGUI.writeResult("error building the recommender", Constants.Log.ERROR);
 					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -248,8 +271,9 @@ public class RecommenderJPanel extends JPanel {
 				"Similarity", // 4
 				"Neighborhood", // 5
 				"Evaluator", // 6
-				"Saves", // 7
-				"Example1" // 8
+				"Queries", //7
+				"Saves", // 8
+				"Example1" // 9
 
 		};
 
@@ -263,8 +287,11 @@ public class RecommenderJPanel extends JPanel {
 		nodes[1].add(nodes[4]);
 		nodes[1].add(nodes[5]);
 		nodes[1].add(nodes[6]);
-		nodes[0].add(nodes[7]);
-		nodes[7].add(nodes[8]);
+		nodes[1].add(nodes[7]);
+		nodes[0].add(nodes[8]);
+		nodes[8].add(nodes[9]);
+
+		nodeNeighborhood = nodes[5];
 
 		return nodes;
 	}
@@ -281,7 +308,7 @@ public class RecommenderJPanel extends JPanel {
 						log.info("root or recommender node B1");
 
 					} else if (recommender.isNodeChild(node)) {
-						log.info("recomender childs B1");
+						log.info("recomender children B1");
 
 						String category = (String) node.getUserObject();
 						if (category.equals("Type")) {
@@ -290,7 +317,8 @@ public class RecommenderJPanel extends JPanel {
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
-							p5.setVisible(false);
+							evaluatorPanel.setVisible(false);
+							queriesPanel.setVisible(false);
 
 						} else if (category.equals("Data Model")) {
 							log.info("dataB1");
@@ -298,7 +326,8 @@ public class RecommenderJPanel extends JPanel {
 							dataModelPanel.setVisible(true);
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
-							p5.setVisible(false);
+							evaluatorPanel.setVisible(false);
+							queriesPanel.setVisible(false);
 
 						} else if (category.equals("Similarity")) {
 							log.info("similarityB1");
@@ -306,24 +335,38 @@ public class RecommenderJPanel extends JPanel {
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(true);
 							neighborhoodPanel.setVisible(false);
-							p5.setVisible(false);
+							evaluatorPanel.setVisible(false);
+							queriesPanel.setVisible(false);
 
 						} else if (category.equals("Neighborhood")) {
-							log.info("neighB1");
-							typePanel.setVisible(false);
-							dataModelPanel.setVisible(false);
-							similarityPanel.setVisible(false);
-							neighborhoodPanel.setVisible(true);
-							p5.setVisible(false);
-
+							if (itembased) {
+								log.info("neighB1");
+								typePanel.setVisible(false);
+								dataModelPanel.setVisible(false);
+								similarityPanel.setVisible(false);
+								neighborhoodPanel.setVisible(true);
+								evaluatorPanel.setVisible(false);
+								queriesPanel.setVisible(false);
+							}
+							
 						} else if (category.equals("Evaluator")) {
 							log.info("evalB1");
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
-							p5.setVisible(true);
+							evaluatorPanel.setVisible(true);
+							queriesPanel.setVisible(false);
 						}
+					 else if (category.equals("Queries")) {
+						log.info("queriesB1");
+						typePanel.setVisible(false);
+						dataModelPanel.setVisible(false);
+						similarityPanel.setVisible(false);
+						neighborhoodPanel.setVisible(false);
+						evaluatorPanel.setVisible(false);
+						queriesPanel.setVisible(true);
+					}
 
 					}
 				}
@@ -439,6 +482,12 @@ public class RecommenderJPanel extends JPanel {
 
 	public static SimilarityRecommenderPanel getSimilarityPanel() {
 		return similarityPanel;
+	}
+
+	public static void setEnableNeighborhood(boolean enabled) {
+		nodeNeighborhood.setEnabled(enabled);
+		itembased = enabled;
+		treeMenu.repaint();
 	}
 
 }

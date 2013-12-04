@@ -85,13 +85,13 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 						return true;
 					} else {
 						log.error(text + " is out of range");
-						MainGUI.writeResult("ERROR: Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
+						MainGUI.writeResult("Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
 						tfSize.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
 					log.error(text + " is not a number, focus not lost");
-					MainGUI.writeResult("ERROR: Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
+					MainGUI.writeResult("Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
 					tfSize.setBackground(new Color(240, 128, 128));
 					return false;
 				}
@@ -115,13 +115,13 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 						return true;
 					} else {
 						log.error(text + " is out of range");
-						MainGUI.writeResult("ERROR: Threshold has to be an real number in range [-1..1]", Constants.Log.ERROR);
+						MainGUI.writeResult("Threshold has to be an real number in range [-1..1]", Constants.Log.ERROR);
 						tfThreshold.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
 					log.error(text + " is not a number, focus not lost");
-					MainGUI.writeResult("ERROR: Threshold has to be an real number in range [-1..1]", Constants.Log.ERROR);
+					MainGUI.writeResult("Threshold has to be an real number in range [-1..1]", Constants.Log.ERROR);
 					tfThreshold.setBackground(new Color(240, 128, 128));
 					return false;
 				}
