@@ -27,6 +27,7 @@ import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import javax.swing.border.TitledBorder;
 
 public class NeighborhoodRecommenderPanel extends JPanel {
 
@@ -53,14 +54,10 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NeighborhoodRecommenderPanel() {
-		setBorder(new LineBorder(new Color(0, 0, 0)));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Neighborhood function", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
-		setBounds(236, 11, 483, 382);
-
-		JLabel labelSelectNeighborhood = new JLabel("Select neighborhood user function:");
-		labelSelectNeighborhood.setBounds(21, 11, 216, 14);
-		add(labelSelectNeighborhood);
+		setBounds(228, 11, 480, 408);
 
 		comboBoxNeighborhood = new JComboBox();
 		comboBoxNeighborhood.setMaximumRowCount(16);

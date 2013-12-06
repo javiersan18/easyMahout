@@ -11,12 +11,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
 import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
-import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
@@ -25,18 +23,11 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
-import easyMahout.utils.DynamicTree;
-
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-
 import java.awt.Color;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.JSeparator;
 import javax.swing.JButton;
+import javax.swing.border.TitledBorder;
 
 public class RecommenderJPanel extends JPanel {
 
@@ -44,25 +35,23 @@ public class RecommenderJPanel extends JPanel {
 
 	private JPanel panelRecommender;
 
-	private JPanel treePanel;	
+	private JPanel treePanel;
 
 	private static TypeRecommenderPanel typePanel;
 
-	private DataModelRecommenderPanel dataModelPanel;
+	private static DataModelRecommenderPanel dataModelPanel;
 
 	private static SimilarityRecommenderPanel similarityPanel;
 
-	private NeighborhoodRecommenderPanel neighborhoodPanel;
-	
+	private static NeighborhoodRecommenderPanel neighborhoodPanel;
+
 	private QueriesRecommenderPanel queriesPanel;
-	
+
 	private EvaluatorRecommenderPanel evaluatorPanel;
 
 	private static JTree treeMenu;
 
 	private final static Logger log = Logger.getLogger(RecommenderJPanel.class);
-
-	private JSeparator separator;
 
 	private JButton btnRun;
 
@@ -73,10 +62,9 @@ public class RecommenderJPanel extends JPanel {
 	private static DisabledNode nodeNeighborhood;
 
 	public RecommenderJPanel() {
-		// super();
 		panelRecommender = this;
-		
-		itembased= true;
+
+		itembased = true;
 
 		treeMenu = new JTree(populateTree()[0]);
 		DisabledRenderer renderer = new DisabledRenderer();
@@ -89,102 +77,100 @@ public class RecommenderJPanel extends JPanel {
 		});
 
 		treePanel = new JPanel();
-		treePanel.setBounds(0, 0, 220, 395);
+		treePanel.setBorder(null);
+		treePanel.setBounds(20, 11, 202, 410);
 
-		// treeMenu = new DynamicTree("Recommender");
-		treeMenu.setBounds(10, 11, 210, 380);
-		// populateTree(treeMenu);
-		treeMenu.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		treeMenu.setBounds(0, 0, 202, 410);
+		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
+				null, null));
+		treeMenu.setRootVisible(false);
+		treeMenu.setShowsRootHandles(true);
 		treeMenu.expandRow(0);
-		treeMenu.expandRow(1);
 		setLayout(null);
+
 		treePanel.setLayout(null);
 		treePanel.add(treeMenu);
 		this.add(treePanel);
 
-		separator = new JSeparator();
-		separator.setBounds(225, 268, 1, 2);
-		treePanel.add(separator);
-
 		// Create different panes
 		typePanel = new TypeRecommenderPanel();
-		typePanel.setBounds(238, 11, 481, 382);
+		typePanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(typePanel);
 		typePanel.setLayout(null);
 		typePanel.setVisible(false);
 
 		dataModelPanel = new DataModelRecommenderPanel();
-		dataModelPanel.setBounds(238, 11, 481, 382);
+		dataModelPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(dataModelPanel);
 		dataModelPanel.setLayout(null);
 		dataModelPanel.setVisible(false);
 
 		similarityPanel = new SimilarityRecommenderPanel();
-		similarityPanel.setBounds(238, 11, 481, 382);
+		similarityPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(similarityPanel);
 		similarityPanel.setLayout(null);
 		similarityPanel.setVisible(false);
 
 		neighborhoodPanel = new NeighborhoodRecommenderPanel();
-		neighborhoodPanel.setBounds(238, 11, 481, 382);
+		neighborhoodPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(neighborhoodPanel);
 		neighborhoodPanel.setLayout(null);
 		neighborhoodPanel.setVisible(false);
 
 		evaluatorPanel = new EvaluatorRecommenderPanel();
-		evaluatorPanel.setBounds(238, 11, 481, 382);
+		evaluatorPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(evaluatorPanel);
 		evaluatorPanel.setLayout(null);
 		evaluatorPanel.setVisible(false);
-		
+
 		queriesPanel = new QueriesRecommenderPanel();
-		queriesPanel.setBounds(238, 11, 481, 382);
+		queriesPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(queriesPanel);
 		queriesPanel.setLayout(null);
 		queriesPanel.setVisible(false);
 
-		btnRun = new JButton("Run");
-		btnRun.setBounds(630, 404, 89, 23);
-		add(btnRun);
+		// btnRun = new JButton("Run");
+		// btnRun.setBounds(630, 404, 89, 23);
+		// add(btnRun);
+		//
+		// btnEvaluate = new JButton("Evaluate");
+		// btnEvaluate.setBounds(531, 404, 89, 23);
+		// add(btnEvaluate);
 
-		btnEvaluate = new JButton("Evaluate");
-		btnEvaluate.setBounds(531, 404, 89, 23);
-		add(btnEvaluate);
-		
-
-		btnRun.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				List<RecommendedItem> recommendations;
-				try {
-					Recommender recomm = buildRecommender();
-					if (recomm != null) {
-						recommendations = buildRecommender().recommend(1, 1);
-						if (recommendations != null && !recommendations.isEmpty()) {
-
-							Iterator<RecommendedItem> it = recommendations.iterator();
-
-							while (it.hasNext()) {
-								RecommendedItem item = it.next();
-								System.out.println(item);
-								MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
-							}
-						}
-
-					} else {
-						// TODO sobra??? puede fallar la creacion del recomm si
-						// tiene dataModel?
-						MainGUI.writeResult("error building the recommender", Constants.Log.ERROR);
-					}
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
-					e1.printStackTrace();
-				}
-
-			}
-		});
+		// btnRun.addActionListener(new ActionListener() {
+		//
+		// public void actionPerformed(ActionEvent e) {
+		//
+		// List<RecommendedItem> recommendations;
+		// try {
+		// Recommender recomm = buildRecommender();
+		// if (recomm != null) {
+		// recommendations = buildRecommender().recommend(1, 1);
+		// if (recommendations != null && !recommendations.isEmpty()) {
+		//
+		// Iterator<RecommendedItem> it = recommendations.iterator();
+		//
+		// while (it.hasNext()) {
+		// RecommendedItem item = it.next();
+		// System.out.println(item);
+		// MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
+		// }
+		// }
+		//
+		// } else {
+		// // TODO sobra??? puede fallar la creacion del recomm si
+		// // tiene dataModel?
+		// MainGUI.writeResult("error building the recommender",
+		// Constants.Log.ERROR);
+		// }
+		// } catch (Exception e1) {
+		// // TODO Auto-generated catch block
+		// MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
+		// e1.printStackTrace();
+		// }
+		//
+		// }
+		// });
 
 	}
 
@@ -196,7 +182,7 @@ public class RecommenderJPanel extends JPanel {
 		this.treePanel = treePanel;
 	}
 
-	private Recommender buildRecommender() {
+	public static Recommender buildRecommender() {
 		if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
 			if (model != null) {
@@ -264,14 +250,14 @@ public class RecommenderJPanel extends JPanel {
 
 	public DisabledNode[] populateTree() {
 
-		String[] strs = { "Recommender", // 0
+		String[] strs = { "Root", // 0
 				"Configure", // 1
 				"Type", // 2
 				"Data Model", // 3
 				"Similarity", // 4
 				"Neighborhood", // 5
 				"Evaluator", // 6
-				"Queries", //7
+				"Queries", // 7
 				"Saves", // 8
 				"Example1" // 9
 
@@ -348,7 +334,7 @@ public class RecommenderJPanel extends JPanel {
 								evaluatorPanel.setVisible(false);
 								queriesPanel.setVisible(false);
 							}
-							
+
 						} else if (category.equals("Evaluator")) {
 							log.info("evalB1");
 							typePanel.setVisible(false);
@@ -357,16 +343,15 @@ public class RecommenderJPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(true);
 							queriesPanel.setVisible(false);
+						} else if (category.equals("Queries")) {
+							log.info("queriesB1");
+							typePanel.setVisible(false);
+							dataModelPanel.setVisible(false);
+							similarityPanel.setVisible(false);
+							neighborhoodPanel.setVisible(false);
+							evaluatorPanel.setVisible(false);
+							queriesPanel.setVisible(true);
 						}
-					 else if (category.equals("Queries")) {
-						log.info("queriesB1");
-						typePanel.setVisible(false);
-						dataModelPanel.setVisible(false);
-						similarityPanel.setVisible(false);
-						neighborhoodPanel.setVisible(false);
-						evaluatorPanel.setVisible(false);
-						queriesPanel.setVisible(true);
-					}
 
 					}
 				}

@@ -28,6 +28,7 @@ import easyMahout.utils.Constants;
 import java.awt.ComponentOrientation;
 
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 public class DataModelRecommenderPanel extends JPanel {
 
@@ -41,7 +42,7 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private JTextField textPath, tfDelimiter;
 
-	private JLabel lblDelimiter, lblDataSource, lblSelectModel;
+	private JLabel lblDelimiter, lblDataSource;
 
 	private JButton btnSelect;
 
@@ -50,14 +51,10 @@ public class DataModelRecommenderPanel extends JPanel {
 	private DataModel dataModel;
 
 	public DataModelRecommenderPanel() {
-		setBorder(new LineBorder(new Color(0, 0, 0)));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Data Model", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
-		setBounds(236, 11, 483, 382);
-
-		lblSelectModel = new JLabel("Select type of Data Model:");
-		lblSelectModel.setBounds(21, 11, 216, 14);
-		add(lblSelectModel);
+		setBounds(228, 11, 480, 408);
 
 		comboBoxDatamodel = new JComboBox();
 		booleanModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC_BOOLEAN });
@@ -69,11 +66,11 @@ public class DataModelRecommenderPanel extends JPanel {
 		add(comboBoxDatamodel);
 
 		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
-		chckbxBooleanPreferences.setBounds(38, 38, 199, 23);
+		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
 
 		lblDataSource = new JLabel("Data source:");
-		lblDataSource.setBounds(21, 106, 89, 14);
+		lblDataSource.setBounds(38, 105, 89, 14);
 		add(lblDataSource);
 
 		textPath = new JTextField();
@@ -82,7 +79,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		textPath.setColumns(10);
 
 		btnSelect = new JButton("Select File...");
-		btnSelect.setBounds(130, 162, 107, 23);
+		btnSelect.setBounds(130, 165, 107, 23);
 		add(btnSelect);
 
 		lblDelimiter = new JLabel("Delimiter");
@@ -99,7 +96,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		tfDelimiter.setEnabled(false);
 
 		JButton btnCreate = new JButton("Create Model");
-		btnCreate.setBounds(241, 162, 107, 23);
+		btnCreate.setBounds(241, 165, 107, 23);
 		add(btnCreate);
 
 		btnSelect.addActionListener(new ActionListener() {

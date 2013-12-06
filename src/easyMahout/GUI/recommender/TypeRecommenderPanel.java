@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import easyMahout.utils.Constants;
+import javax.swing.border.TitledBorder;
 
 public class TypeRecommenderPanel extends JPanel {
 
@@ -20,17 +21,13 @@ public class TypeRecommenderPanel extends JPanel {
 
 	public TypeRecommenderPanel() {
 		// super();
-		setBorder(new LineBorder(new Color(0, 0, 0)));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Type of recommender", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
-		setBounds(236, 11, 483, 382);
-
-		JLabel labelSelectType = new JLabel("Select type of recommender:");
-		labelSelectType.setBounds(21, 11, 216, 14);
-		add(labelSelectType);
+		setBounds(228, 11, 480, 408);
 
 		comboBoxType = new JComboBox();
-		comboBoxType.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED }));
+		comboBoxType.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED}));
 		comboBoxType.setBounds(38, 36, 141, 20);
 		add(comboBoxType);
 
@@ -40,7 +37,8 @@ public class TypeRecommenderPanel extends JPanel {
 				RecommenderJPanel.getSimilarityPanel().setModelSimilarity(type);
 				if (type.equals(Constants.RecommType.ITEMBASED)) {
 					RecommenderJPanel.setEnableNeighborhood(false);
-				} else if (type.equals(Constants.RecommType.USERBASED)) {
+				}
+				else if (type.equals(Constants.RecommType.USERBASED)) {
 					RecommenderJPanel.setEnableNeighborhood(true);
 				}
 			}

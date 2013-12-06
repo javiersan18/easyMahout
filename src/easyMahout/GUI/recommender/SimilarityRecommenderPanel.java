@@ -28,6 +28,7 @@ import org.apache.mahout.cf.taste.impl.similarity.UncenteredCosineSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import javax.swing.border.TitledBorder;
 
 public class SimilarityRecommenderPanel extends JPanel {
 
@@ -41,16 +42,11 @@ public class SimilarityRecommenderPanel extends JPanel {
 
 	private final static Logger log = Logger.getLogger(SimilarityRecommenderPanel.class);
 
-	public SimilarityRecommenderPanel() {
-		// super();
-		setBorder(new LineBorder(new Color(0, 0, 0)));
+	public SimilarityRecommenderPanel() {		
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Similarity metric", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
-		setBounds(236, 11, 483, 382);
-
-		JLabel labelSelectSimilarity = new JLabel("Select similarity metric:");
-		labelSelectSimilarity.setBounds(21, 11, 216, 14);
-		add(labelSelectSimilarity);
+		setBounds(228, 11, 480, 408);
 
 		userSimilarity = new DefaultComboBoxModel(new String[] { Constants.Similarity.PEARSON, Constants.Similarity.EUCLIDEAN,
 				Constants.Similarity.CITYBLOCK, Constants.Similarity.LOGARITHMIC, Constants.Similarity.SPEARMAN,
