@@ -1,23 +1,21 @@
 package easyMahout.GUI.recommender;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Component;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
-
-import java.awt.Component;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
 
+import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
@@ -39,6 +37,8 @@ public class QueriesRecommenderPanel extends JPanel {
 	private JButton btnRun;
 
 	private DefaultTableModel tableModel;
+	
+	private final static Logger log = Logger.getLogger(QueriesRecommenderPanel.class);
 
 	public QueriesRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Add Queries", TitledBorder.CENTER, TitledBorder.TOP, null,
