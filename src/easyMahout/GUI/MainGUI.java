@@ -6,30 +6,22 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import easyMahout.GUI.classification.ClassificationJPanel;
 import easyMahout.GUI.recommender.RecommenderJPanel;
+import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 
 import javax.swing.JScrollPane;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
 
 public class MainGUI extends JFrame {
 
@@ -119,107 +111,9 @@ public class MainGUI extends JFrame {
 		logTextPane.setEditable(false);
 		logTextPane.setContentType("text/html");
 
-		loadXMLFile();
-		
-	}
+		RecommenderXMLPreferences.loadXMLFile();
+		RecommenderXMLPreferences.saveXMLFile();
 
-	private boolean loadXMLFile() {
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = null;
-		try {
-			docBuilder = docBuilderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			Document doc = docBuilder.parse(new File("prueba.xml"));
-			doc.getDocumentElement().normalize();
-
-			if (doc.getDocumentElement().getNodeName().equals(Constants.XML.RECOMMENDER)) {
-
-				Element element;
-
-				NodeList xmlNodes = doc.getElementsByTagName("type");
-				Node xmlNode = xmlNodes.item(0);
-
-				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
-					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("value", element));
-				}
-
-				xmlNodes = doc.getElementsByTagName("datamodel");
-				xmlNode = xmlNodes.item(0);
-
-				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
-					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("boolean", element));
-					System.out.println("Nombre : " + getTagValue("model", element));
-					System.out.println("Nombre : " + getTagValue("delimiter", element));
-					System.out.println("Nombre : " + getTagValue("path", element));
-				}
-
-				xmlNodes = doc.getElementsByTagName("similarity");
-				xmlNode = xmlNodes.item(0);
-
-				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
-					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("metric", element));
-					System.out.println("Nombre : " + getTagValue("weighted", element));
-				}
-
-				xmlNodes = doc.getElementsByTagName("neighborhood");
-				xmlNode = xmlNodes.item(0);
-
-				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
-					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("function", element));
-					System.out.println("Nombre : " + getTagValue("size", element));
-					System.out.println("Nombre : " + getTagValue("threshold", element));
-					System.out.println("Nombre : " + getTagValue("minimum", element));
-					System.out.println("Nombre : " + getTagValue("sampling", element));
-				}
-
-				xmlNodes = doc.getElementsByTagName("evaluator");
-				xmlNode = xmlNodes.item(0);
-
-				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
-					element = (Element) xmlNode;
-				}
-				xmlNodes = doc.getElementsByTagName("query");
-				int numQueries = xmlNodes.getLength();
-
-				for (int i = 0; i < numQueries; i++) {
-
-					xmlNode = xmlNodes.item(i);
-
-					if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
-						element = (Element) xmlNode;
-						System.out.println("Nombre : " + getTagValue("selected", element));
-						System.out.println("Nombre : " + getTagValue("userID", element));
-						System.out.println("Nombre : " + getTagValue("howMany", element));
-					}
-				}
-			} else {
-				log.debug("The file is not a RECOMMENDER preferences file.");
-				MainGUI.writeResult("The file is not a RECOMMENDER preferences file.", Constants.Log.ERROR);
-			}
-
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static String getTagValue(String sTag, Element eElement) {
-		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
-		Node nValue = (Node) nlList.item(0);
-
-		return nValue.getNodeValue();
 	}
 
 	public static void writeResult(String text, String type) {
@@ -248,5 +142,9 @@ public class MainGUI extends JFrame {
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
+		
+		JMenuItem about=new JMenuItem("About EasyMahout");		
+        mnHelp.add(about); 
+		
 	}
 }
