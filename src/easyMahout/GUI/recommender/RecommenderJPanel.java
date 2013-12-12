@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -23,9 +24,13 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
+
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 import java.awt.Color;
+
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 
@@ -53,13 +58,11 @@ public class RecommenderJPanel extends JPanel {
 
 	private final static Logger log = Logger.getLogger(RecommenderJPanel.class);
 
-	private JButton btnRun;
-
-	private JButton btnEvaluate;
-
 	private static boolean itembased;
 
 	private static DisabledNode nodeNeighborhood;
+	
+	private static DisabledNode nodeSaves;
 
 	public RecommenderJPanel() {
 		panelRecommender = this;
@@ -81,7 +84,8 @@ public class RecommenderJPanel extends JPanel {
 		treePanel.setBounds(20, 11, 202, 410);
 
 		treeMenu.setBounds(0, 0, 202, 410);
-		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
+		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0),
+				1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
 				null, null));
 		treeMenu.setRootVisible(false);
 		treeMenu.setShowsRootHandles(true);
@@ -129,49 +133,6 @@ public class RecommenderJPanel extends JPanel {
 		queriesPanel.setLayout(null);
 		queriesPanel.setVisible(false);
 
-		// btnRun = new JButton("Run");
-		// btnRun.setBounds(630, 404, 89, 23);
-		// add(btnRun);
-		//
-		// btnEvaluate = new JButton("Evaluate");
-		// btnEvaluate.setBounds(531, 404, 89, 23);
-		// add(btnEvaluate);
-
-		// btnRun.addActionListener(new ActionListener() {
-		//
-		// public void actionPerformed(ActionEvent e) {
-		//
-		// List<RecommendedItem> recommendations;
-		// try {
-		// Recommender recomm = buildRecommender();
-		// if (recomm != null) {
-		// recommendations = buildRecommender().recommend(1, 1);
-		// if (recommendations != null && !recommendations.isEmpty()) {
-		//
-		// Iterator<RecommendedItem> it = recommendations.iterator();
-		//
-		// while (it.hasNext()) {
-		// RecommendedItem item = it.next();
-		// System.out.println(item);
-		// MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
-		// }
-		// }
-		//
-		// } else {
-		// // TODO sobra??? puede fallar la creacion del recomm si
-		// // tiene dataModel?
-		// MainGUI.writeResult("error building the recommender",
-		// Constants.Log.ERROR);
-		// }
-		// } catch (Exception e1) {
-		// // TODO Auto-generated catch block
-		// MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
-		// e1.printStackTrace();
-		// }
-		//
-		// }
-		// });
-
 	}
 
 	public JPanel getTreePanel() {
@@ -186,23 +147,32 @@ public class RecommenderJPanel extends JPanel {
 		if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
 			if (model != null) {
-				UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
-				UserNeighborhood neighborhood = neighborhoodPanel.getNeighborhood(similarity, model);
-				return new GenericUserBasedRecommender(model, neighborhood, similarity);
+				UserSimilarity similarity = similarityPanel
+						.getUserSimilarity(model);
+				UserNeighborhood neighborhood = neighborhoodPanel
+						.getNeighborhood(similarity, model);
+				return new GenericUserBasedRecommender(model, neighborhood,
+						similarity);
 			} else {
 				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
+				MainGUI.writeResult(
+						"Trying to run a recommender without a dataModel loaded",
+						Constants.Log.ERROR);
 				return null;
 			}
 
-		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
+		} else if (typePanel.getSelectedType().equals(
+				Constants.RecommType.ITEMBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
 			if (model != null) {
-				ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);
+				ItemSimilarity similarity = similarityPanel
+						.getItemSimilarity(model);
 				return new GenericItemBasedRecommender(model, similarity);
 			} else {
 				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
+				MainGUI.writeResult(
+						"Trying to run a recommender without a dataModel loaded",
+						Constants.Log.ERROR);
 				return null;
 			}
 
@@ -278,16 +248,22 @@ public class RecommenderJPanel extends JPanel {
 		nodes[8].add(nodes[9]);
 
 		nodeNeighborhood = nodes[5];
+		nodeSaves = nodes[8];
 
 		return nodes;
 	}
 
+	// Mouse Events in JTree nodes
 	void doMouseClicked(MouseEvent me) {
+		// Left button
 		if (me.getButton() == MouseEvent.BUTTON1) {
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu.getModel().getRoot();
-			DefaultMutableTreeNode recommender = (DefaultMutableTreeNode) root.getFirstChild();
+			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu
+					.getModel().getRoot();
+			DefaultMutableTreeNode recommender = (DefaultMutableTreeNode) root
+					.getFirstChild();
 			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu.getPathForLocation(me.getX(), me.getY())
+				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu
+						.getPathForLocation(me.getX(), me.getY())
 						.getLastPathComponent();
 				if (node != null) {
 					if (node.equals(root) || node.equals(recommender)) {
@@ -360,70 +336,52 @@ public class RecommenderJPanel extends JPanel {
 			}
 
 		}
+		// Right button
 		if (me.getButton() == MouseEvent.BUTTON3) {
-
-			// DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-			// (me.getTreePath().getLastPathComponent());
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu.getModel().getRoot();
+			final DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu
+					.getModel().getRoot();
+			final DefaultMutableTreeNode savesNode = (DefaultMutableTreeNode) treeMenu
+					.getModel().getChild(root, 1);
 			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu.getPathForLocation(me.getX(), me.getY())
+				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu
+						.getPathForLocation(me.getX(), me.getY())
 						.getLastPathComponent();
-				if (node != null) {
-					if (node.equals(root)) {
-						log.info("root");
 
-					} else if (root.isNodeChild(node)) {
-						log.info("cats");
+				if (node != null) {
+
+					if (node.equals(savesNode)) {
+						log.info("node: " + node.toString());
+						JPopupMenu popupMenuAdd = new JPopupMenu();
+						JMenuItem addItem = new JMenuItem("Add");
+						addItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {								
+								String name = JOptionPane.showInputDialog(null,
+										"Write a new preferences file name?",
+										"Enter a name",
+										JOptionPane.QUESTION_MESSAGE);								
+								nodeSaves.add(new DisabledNode(name));								
+							}
+							
+						});
+						popupMenuAdd.add(addItem);
+						this.add(popupMenuAdd);
+						popupMenuAdd.show(me.getComponent(), me.getX(),
+								me.getY());
+
+					} else if (savesNode.isNodeChild(node)) {
+						log.info("node: " + node.toString());
 
 						JPopupMenu popupMenuRoot = new JPopupMenu();
 						// addPopup(popupMenuRoot);
-						JMenuItem _new = new JMenuItem("New");
-						_new.addActionListener(new ActionListener() {
+						JMenuItem loadItem = new JMenuItem("Load");
+						loadItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								String category = (String) node.getUserObject();
-								// TODO: iniciar panel para cada tipo;
-								if (category.equals("Type")) {
-									log.info("type");
-									// int i =
-									// JOptionPane.showConfirmDialog(panelRecommender,
-									// "You have a configuration open, do you really want to create a new one whitout saving changes?",
-									// "Continue whitout saving changes",
-									// JOptionPane.YES_NO_OPTION);
-									// if (i == 0) {
-									// System.exit(0);
-									// }
-									// panelRecommender.remove(configPanel);
-									// configPanel = new typeRecommenderPanel();
-									// panelRecommender.add(configPanel);
-									// configPanel.updateUI();
-									// p1.setVisible(true);
-									// p2.setVisible(false);
-									// p3.setVisible(true);
-									// p4.setVisible(true);
-									// p5.setVisible(true);
-
-									// } else if (category.equals("Data Model"))
-									// {
-									// log.info("data");
-									// configPanel = new typeRecommenderPanel();
-									// } else if (category.equals("Similarity"))
-									// {
-									// log.info("sim");
-									// configPanel = new typeRecommenderPanel();
-									// } else if
-									// (category.equals("Neighborhood")) {
-									// log.info("cneigats");
-									// configPanel = new typeRecommenderPanel();
-									// } else if (category.equals("Evaluator"))
-									// {
-									// log.info("eval");
-									// configPanel = new typeRecommenderPanel();
-								}
+								
 							}
 						});
 
-						JMenuItem _deleteAll = new JMenuItem("Delete All");
-						_deleteAll.addActionListener(new ActionListener() {
+						JMenuItem deleteItem = new JMenuItem("Delete");
+						deleteItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								// TODO: borrar todas las configuraciones de
 								// cierta categoria
@@ -443,18 +401,19 @@ public class RecommenderJPanel extends JPanel {
 							}
 						});
 
-						popupMenuRoot.add(_new);
-						popupMenuRoot.add(_deleteAll);
+						popupMenuRoot.add(loadItem);
+						popupMenuRoot.add(deleteItem);
 
 						this.add(popupMenuRoot);
-						popupMenuRoot.show(me.getComponent(), me.getX(), me.getY());
+						popupMenuRoot.show(me.getComponent(), me.getX(),
+								me.getY());
 
-					} else {
-						System.out.println("elems");
 					}
 				}
 			} catch (Exception e1) {
-
+				// TODO Por que entra por aqui???
+				MainGUI.writeResult("catch no sabemos x que",
+						Constants.Log.ERROR);
 			}
 
 		}
