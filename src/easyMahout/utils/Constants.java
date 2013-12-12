@@ -19,7 +19,7 @@ public class Constants {
 
 		public static final String ITEMBASED = "Item based";
 
-		// public static final String CLUSTERING = "Clustering";
+	
 	}
 
 	public class DataModel {
@@ -107,15 +107,6 @@ public class Constants {
 
 		public static final String RECOMM_DATAMODEL_DELIMITER = "delimiter";
 		
-		
-		
-		
-		
-		
-		
-		
-		// quita 
-
 		public static final String RECOMM_DATAMODEL_PATH = "path";		
 
 		public static final String RECOMM_SIMILARITY = "similarity";
@@ -151,5 +142,28 @@ public class Constants {
 		public static final String CLUSTERING = "clustering";
 
 	}
+	public class ClusterAlg {
 
+		public static final String CANOPY = "CANOPY";
+
+		public static final String KMEANS = "K-MEANS";
+		
+		public static final String FUZZYKMEANS = "Fuzzy K-MEANS";
+
+	
+	}
+	public class ClusterDist {
+		
+		public static final String EUCLIDEAN = "EUCLIDEAN";
+		
+		public static final String SQUAREDEUCLIDEAN = "SQUARED EUCLIDEAN";
+		
+		public static final String MANHATTAN = "MANHATTAN";
+		
+		public static final String COSINE = "COSINE";
+		
+		public static final String TANIMOTO = "TANIMOTO";
+		
+		public static final String WEIGHTED = "WEIGHTED";
+	}
 }
