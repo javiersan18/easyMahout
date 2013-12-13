@@ -91,9 +91,13 @@ public class Constants {
 
 	}
 
-	public class XML {
+	public class RecommenderXML {
 
 		public static final String RECOMMENDER = "recommender";
+		
+		public static final String RECOMM_NAME = "name";
+		
+		public static final String RECOMM_NAME_VALUE = "value";
 
 		public static final String RECOMM_TYPE = "type";
 

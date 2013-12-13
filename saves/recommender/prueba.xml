@@ -1,4 +1,9 @@
 <recommender>
+
+	<name>
+		<value>Example 1</value>
+	</name>
+
 	<type>
 		<value>User Based</value>
 	</type>
@@ -38,4 +43,4 @@
 		<howMany>2</howMany>
 	</query>
 	
-</recommender>
+	</recommender>

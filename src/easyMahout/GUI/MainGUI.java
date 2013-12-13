@@ -117,8 +117,9 @@ public class MainGUI extends JFrame {
 		logTextPane.setEditable(false);
 		logTextPane.setContentType("text/html");
 
-		//RecommenderXMLPreferences.loadXMLFile();
 		//RecommenderXMLPreferences.saveXMLFile();
+		//RecommenderXMLPreferences.loadXMLFile();
+		
 
 	}
 

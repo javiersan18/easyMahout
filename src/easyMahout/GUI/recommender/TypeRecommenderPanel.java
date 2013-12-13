@@ -1,16 +1,11 @@
 package easyMahout.GUI.recommender;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
@@ -38,9 +33,9 @@ public class TypeRecommenderPanel extends JPanel {
 		comboBoxType.setBounds(38, 36, 141, 20);
 		add(comboBoxType);
 		
-		JPanel panel = new IconHelpPanel(25,25);
-		panel.setBounds(190, 33, 25, 25);
-		add(panel);
+//		JPanel panel = new IconHelpPanel(25,25);
+//		panel.setBounds(190, 33, 25, 25);
+//		add(panel);
 
 		comboBoxType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

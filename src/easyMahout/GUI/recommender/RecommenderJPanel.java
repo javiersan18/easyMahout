@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
+import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
@@ -27,11 +29,11 @@ import easyMahout.utils.DisabledRenderer;
 
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 import java.awt.Color;
+import java.io.File;
+import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 
 public class RecommenderJPanel extends JPanel {
@@ -61,7 +63,7 @@ public class RecommenderJPanel extends JPanel {
 	private static boolean itembased;
 
 	private static DisabledNode nodeNeighborhood;
-	
+
 	private static DisabledNode nodeSaves;
 
 	public RecommenderJPanel() {
@@ -220,7 +222,7 @@ public class RecommenderJPanel extends JPanel {
 
 	public DisabledNode[] populateTree() {
 
-		String[] strs = { "Root", // 0
+		String[] categories = { "Root", // 0
 				"Configure", // 1
 				"Type", // 2
 				"Data Model", // 3
@@ -229,13 +231,11 @@ public class RecommenderJPanel extends JPanel {
 				"Evaluator", // 6
 				"Queries", // 7
 				"Saves", // 8
-				"Example1" // 9
-
 		};
 
-		DisabledNode[] nodes = new DisabledNode[strs.length];
-		for (int i = 0; i < strs.length; i++) {
-			nodes[i] = new DisabledNode(strs[i]);
+		DisabledNode[] nodes = new DisabledNode[categories.length];
+		for (int i = 0; i < categories.length; i++) {
+			nodes[i] = new DisabledNode(categories[i]);
 		}
 		nodes[0].add(nodes[1]);
 		nodes[1].add(nodes[2]);
@@ -245,10 +245,17 @@ public class RecommenderJPanel extends JPanel {
 		nodes[1].add(nodes[6]);
 		nodes[1].add(nodes[7]);
 		nodes[0].add(nodes[8]);
-		nodes[8].add(nodes[9]);
+		// nodes[8].add(nodes[9]);
 
 		nodeNeighborhood = nodes[5];
 		nodeSaves = nodes[8];
+
+		DisabledNode[] savesNodes = getSavesFiles();
+		nodes = (DisabledNode[]) ArrayUtils.addAll(nodes, savesNodes);
+
+		for (int i = categories.length; i < nodes.length; i++) {
+			nodeSaves.add(nodes[i]);			
+		}
 
 		return nodes;
 	}
@@ -354,14 +361,15 @@ public class RecommenderJPanel extends JPanel {
 						JPopupMenu popupMenuAdd = new JPopupMenu();
 						JMenuItem addItem = new JMenuItem("Add");
 						addItem.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {								
+							public void actionPerformed(ActionEvent e) {
 								String name = JOptionPane.showInputDialog(null,
 										"Write a new preferences file name?",
 										"Enter a name",
-										JOptionPane.QUESTION_MESSAGE);								
-								nodeSaves.add(new DisabledNode(name));								
+										JOptionPane.QUESTION_MESSAGE);
+								nodeSaves.add(new DisabledNode(name));
+								// TODO añadir nodo al arbol, no funciona
 							}
-							
+
 						});
 						popupMenuAdd.add(addItem);
 						this.add(popupMenuAdd);
@@ -376,7 +384,7 @@ public class RecommenderJPanel extends JPanel {
 						JMenuItem loadItem = new JMenuItem("Load");
 						loadItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								
+
 							}
 						});
 
@@ -416,6 +424,28 @@ public class RecommenderJPanel extends JPanel {
 						Constants.Log.ERROR);
 			}
 
+		}
+
+	}
+
+	private DisabledNode[] getSavesFiles() {
+
+		String savesDirectory = "saves/recommender";
+		File dir = new File(savesDirectory);
+
+		if (dir.exists()) {
+			File[] files = dir.listFiles();
+			DisabledNode[] nodes = new DisabledNode[files.length];
+			for (int x = 0; x < files.length; x++) {
+				nodes[x] = new DisabledNode(files[x].getName(),
+						files[x].getPath());
+				System.out.println(files[x].getName());
+			}
+			return nodes;
+
+		} else {
+			log.error("Preferences folder (saves/recommender/) doesnt exist.");
+			return null;
 		}
 
 	}

@@ -25,8 +25,6 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 
-import java.awt.ComponentOrientation;
-
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 

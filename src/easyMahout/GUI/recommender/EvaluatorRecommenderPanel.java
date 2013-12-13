@@ -5,7 +5,6 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 public class EvaluatorRecommenderPanel extends JPanel {

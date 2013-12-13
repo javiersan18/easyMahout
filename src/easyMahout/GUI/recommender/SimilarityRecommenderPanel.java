@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.border.LineBorder;
-import javax.swing.JLabel;
-
 import easyMahout.utils.Constants;
 
 import javax.swing.JCheckBox;
