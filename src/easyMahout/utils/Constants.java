@@ -19,7 +19,6 @@ public class Constants {
 
 		public static final String ITEMBASED = "Item based";
 
-	
 	}
 
 	public class DataModel {
@@ -94,9 +93,9 @@ public class Constants {
 	public class RecommenderXML {
 
 		public static final String RECOMMENDER = "recommender";
-		
+
 		public static final String RECOMM_NAME = "name";
-		
+
 		public static final String RECOMM_NAME_VALUE = "value";
 
 		public static final String RECOMM_TYPE = "type";
@@ -110,35 +109,35 @@ public class Constants {
 		public static final String RECOMM_DATAMODEL_MODEL = "model";
 
 		public static final String RECOMM_DATAMODEL_DELIMITER = "delimiter";
-		
-		public static final String RECOMM_DATAMODEL_PATH = "path";		
+
+		public static final String RECOMM_DATAMODEL_PATH = "path";
 
 		public static final String RECOMM_SIMILARITY = "similarity";
-		
+
 		public static final String RECOMM_SIMILARITY_METRIC = "metric";
-		
+
 		public static final String RECOMM_SIMILARITY_WEIGHTED = "weighted";
 
 		public static final String RECOMM_NEIGHBORHOOD = "neighborhood";
-		
+
 		public static final String RECOMM_NEIGHBORHOOD_FUNCTION = "function";
-		
+
 		public static final String RECOMM_NEIGHBORHOOD_SIZE = "size";
-		
+
 		public static final String RECOMM_NEIGHBORHOOD_MINIMUM = "minimum";
-		
+
 		public static final String RECOMM_NEIGHBORHOOD_SAMPLING = "sampling";
-		
+
 		public static final String RECOMM_NEIGHBORHOOD_THRESHOLD = "threshold";
 
 		public static final String RECOMM_EVALUATOR = "evaluator";
 
 		public static final String RECOMM_QUERY = "query";
-		
+
 		public static final String RECOMM_QUERY_SELECTED = "selected";
-		
+
 		public static final String RECOMM_QUERY_USERID = "userID";
-		
+
 		public static final String RECOMM_QUERY_HOWMANY = "howMany";
 
 		public static final String CLASSIFICATION = "classification";
@@ -146,28 +145,41 @@ public class Constants {
 		public static final String CLUSTERING = "clustering";
 
 	}
+	
+	public class SavesPaths {
+
+		public static final String RECOMMENDER = "saves/recommender/";
+
+		public static final String CLUSTERING = "saves/clustering/";
+		
+		public static final String CLASSIFICATION = "saves/classification/";
+		
+		public static final String EXTENSION = ".xml";
+	
+	}
+
 	public class ClusterAlg {
 
 		public static final String CANOPY = "CANOPY";
 
 		public static final String KMEANS = "K-MEANS";
-		
+
 		public static final String FUZZYKMEANS = "Fuzzy K-MEANS";
 
-	
 	}
+
 	public class ClusterDist {
-		
+
 		public static final String EUCLIDEAN = "EUCLIDEAN";
-		
+
 		public static final String SQUAREDEUCLIDEAN = "SQUARED EUCLIDEAN";
-		
+
 		public static final String MANHATTAN = "MANHATTAN";
-		
+
 		public static final String COSINE = "COSINE";
-		
+
 		public static final String TANIMOTO = "TANIMOTO";
-		
+
 		public static final String WEIGHTED = "WEIGHTED";
 	}
 }

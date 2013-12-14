@@ -89,6 +89,22 @@ public class MainGUI extends JFrame {
 		formEasymahout.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		formEasymahout.getContentPane().setLayout(null);
 
+		textBuilder = new StringBuilder();
+		
+		createMenuBar();		
+
+		logScrollPane = new JScrollPane();
+		logScrollPane.setBounds(2, 463, 730, 176);
+		formEasymahout.getContentPane().add(logScrollPane);
+
+		// Result log textField
+		logTextPane = new JTextPane();
+		logScrollPane.setViewportView(logTextPane);
+		logTextPane.setBackground(Color.WHITE);
+		logTextPane.setBounds(42, 501, 735, 131);
+		logTextPane.setEditable(false);
+		logTextPane.setContentType("text/html");
+		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(2, 0, 732, 463);
 		formEasymahout.getContentPane().add(tabbedPane);
@@ -102,20 +118,7 @@ public class MainGUI extends JFrame {
 		clusterTab = new ClusterJPanel();
 		tabbedPane.addTab("Clustering", null, clusterTab, null);
 		
-		createMenuBar();
-		textBuilder = new StringBuilder();
-
-		logScrollPane = new JScrollPane();
-		logScrollPane.setBounds(2, 463, 730, 176);
-		formEasymahout.getContentPane().add(logScrollPane);
-
-		// Result log textField
-		logTextPane = new JTextPane();
-		logScrollPane.setViewportView(logTextPane);
-		logTextPane.setBackground(Color.WHITE);
-		logTextPane.setBounds(42, 501, 735, 131);
-		logTextPane.setEditable(false);
-		logTextPane.setContentType("text/html");
+		
 
 		//RecommenderXMLPreferences.saveXMLFile();
 		//RecommenderXMLPreferences.loadXMLFile();

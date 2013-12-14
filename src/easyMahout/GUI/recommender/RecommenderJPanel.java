@@ -11,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
-import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
@@ -23,16 +21,18 @@ import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
 
 import javax.swing.border.LineBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.Map;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.border.TitledBorder;
 
@@ -62,14 +62,26 @@ public class RecommenderJPanel extends JPanel {
 
 	private static boolean itembased;
 
+	private ArrayList<DisabledNode> treeNodes;
+
 	private static DisabledNode nodeNeighborhood;
 
 	private static DisabledNode nodeSaves;
 
+	private static DisabledNode nodeRoot;
+
+	private static DisabledNode nodeConfigure;
+
+	private static DisabledNode nodeSelected;
+
+	private static boolean configurationModified;
+
 	public RecommenderJPanel() {
+
 		panelRecommender = this;
 
 		itembased = true;
+		configurationModified = false;
 
 		treeMenu = new JTree(populateTree()[0]);
 		DisabledRenderer renderer = new DisabledRenderer();
@@ -86,16 +98,17 @@ public class RecommenderJPanel extends JPanel {
 		treePanel.setBounds(20, 11, 202, 410);
 
 		treeMenu.setBounds(0, 0, 202, 410);
-		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0),
-				1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
-				null, null));
+		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		treeMenu.setRootVisible(false);
 		treeMenu.setShowsRootHandles(true);
 		treeMenu.expandRow(0);
-		setLayout(null);
 
 		treePanel.setLayout(null);
 		treePanel.add(treeMenu);
+
+		nodeRoot = (DisabledNode) treeMenu.getModel().getRoot();
+
+		this.setLayout(null);
 		this.add(treePanel);
 
 		// Create different panes
@@ -149,32 +162,23 @@ public class RecommenderJPanel extends JPanel {
 		if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
 			if (model != null) {
-				UserSimilarity similarity = similarityPanel
-						.getUserSimilarity(model);
-				UserNeighborhood neighborhood = neighborhoodPanel
-						.getNeighborhood(similarity, model);
-				return new GenericUserBasedRecommender(model, neighborhood,
-						similarity);
+				UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
+				UserNeighborhood neighborhood = neighborhoodPanel.getNeighborhood(similarity, model);
+				return new GenericUserBasedRecommender(model, neighborhood, similarity);
 			} else {
 				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult(
-						"Trying to run a recommender without a dataModel loaded",
-						Constants.Log.ERROR);
+				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
 				return null;
 			}
 
-		} else if (typePanel.getSelectedType().equals(
-				Constants.RecommType.ITEMBASED)) {
+		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
 			DataModel model = dataModelPanel.getDataModel();
 			if (model != null) {
-				ItemSimilarity similarity = similarityPanel
-						.getItemSimilarity(model);
+				ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);
 				return new GenericItemBasedRecommender(model, similarity);
 			} else {
 				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult(
-						"Trying to run a recommender without a dataModel loaded",
-						Constants.Log.ERROR);
+				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
 				return null;
 			}
 
@@ -220,7 +224,7 @@ public class RecommenderJPanel extends JPanel {
 	//
 	// }
 
-	public DisabledNode[] populateTree() {
+	private DisabledNode[] populateTree() {
 
 		String[] categories = { "Root", // 0
 				"Configure", // 1
@@ -233,53 +237,49 @@ public class RecommenderJPanel extends JPanel {
 				"Saves", // 8
 		};
 
-		DisabledNode[] nodes = new DisabledNode[categories.length];
+		treeNodes = new ArrayList<DisabledNode>();
 		for (int i = 0; i < categories.length; i++) {
-			nodes[i] = new DisabledNode(categories[i]);
-		}
-		nodes[0].add(nodes[1]);
-		nodes[1].add(nodes[2]);
-		nodes[1].add(nodes[3]);
-		nodes[1].add(nodes[4]);
-		nodes[1].add(nodes[5]);
-		nodes[1].add(nodes[6]);
-		nodes[1].add(nodes[7]);
-		nodes[0].add(nodes[8]);
-		// nodes[8].add(nodes[9]);
-
-		nodeNeighborhood = nodes[5];
-		nodeSaves = nodes[8];
-
-		DisabledNode[] savesNodes = getSavesFiles();
-		nodes = (DisabledNode[]) ArrayUtils.addAll(nodes, savesNodes);
-
-		for (int i = categories.length; i < nodes.length; i++) {
-			nodeSaves.add(nodes[i]);			
+			treeNodes.add(new DisabledNode(categories[i]));
 		}
 
-		return nodes;
+		treeNodes.get(0).add(treeNodes.get(1));
+		treeNodes.get(1).add(treeNodes.get(2));
+		treeNodes.get(1).add(treeNodes.get(3));
+		treeNodes.get(1).add(treeNodes.get(4));
+		treeNodes.get(1).add(treeNodes.get(5));
+		treeNodes.get(1).add(treeNodes.get(6));
+		treeNodes.get(1).add(treeNodes.get(7));
+		treeNodes.get(0).add(treeNodes.get(8));
+
+		nodeNeighborhood = treeNodes.get(5);
+		nodeSaves = treeNodes.get(8);
+		nodeConfigure = treeNodes.get(1);
+
+		ArrayList<DisabledNode> savesNodes = getSavesFiles();
+		treeNodes.addAll(savesNodes);
+
+		for (int i = categories.length; i < treeNodes.size(); i++) {
+			nodeSaves.add(treeNodes.get(i));
+		}
+
+		return treeNodes.toArray(new DisabledNode[treeNodes.size()]);
 	}
 
 	// Mouse Events in JTree nodes
 	void doMouseClicked(MouseEvent me) {
 		// Left button
 		if (me.getButton() == MouseEvent.BUTTON1) {
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu
-					.getModel().getRoot();
-			DefaultMutableTreeNode recommender = (DefaultMutableTreeNode) root
-					.getFirstChild();
 			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu
-						.getPathForLocation(me.getX(), me.getY())
-						.getLastPathComponent();
-				if (node != null) {
-					if (node.equals(root) || node.equals(recommender)) {
-						log.info("root or recommender node B1");
 
-					} else if (recommender.isNodeChild(node)) {
-						log.info("recomender children B1");
+				nodeSelected = (DisabledNode) treeMenu.getPathForLocation(me.getX(), me.getY()).getLastPathComponent();
 
-						String category = (String) node.getUserObject();
+				if (nodeSelected != null) {
+					if (nodeSelected.equals(nodeConfigure)) {
+						log.info("configureNode");
+					} else if (nodeConfigure.isNodeChild(nodeSelected)) {
+						log.info("recomender configure  children B1");
+
+						String category = (String) nodeSelected.getUserObject();
 						if (category.equals("Type")) {
 							log.info("typeB1");
 							typePanel.setVisible(true);
@@ -326,6 +326,7 @@ public class RecommenderJPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(true);
 							queriesPanel.setVisible(false);
+
 						} else if (category.equals("Queries")) {
 							log.info("queriesB1");
 							typePanel.setVisible(false);
@@ -335,119 +336,169 @@ public class RecommenderJPanel extends JPanel {
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(true);
 						}
-
 					}
 				}
 			} catch (Exception e1) {
-
+				// The place where we clicked is not a tree node, do nothing.
 			}
-
 		}
 		// Right button
 		if (me.getButton() == MouseEvent.BUTTON3) {
-			final DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu
-					.getModel().getRoot();
-			final DefaultMutableTreeNode savesNode = (DefaultMutableTreeNode) treeMenu
-					.getModel().getChild(root, 1);
 			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu
-						.getPathForLocation(me.getX(), me.getY())
-						.getLastPathComponent();
 
-				if (node != null) {
+				nodeSelected = (DisabledNode) treeMenu.getPathForLocation(me.getX(), me.getY()).getLastPathComponent();
 
-					if (node.equals(savesNode)) {
-						log.info("node: " + node.toString());
+				if (nodeSelected != null) {
+					if (nodeSelected.equals(nodeSaves)) {
+						log.info("node: " + nodeSelected.toString());
 						JPopupMenu popupMenuAdd = new JPopupMenu();
 						JMenuItem addItem = new JMenuItem("Add");
 						addItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								String name = JOptionPane.showInputDialog(null,
-										"Write a new preferences file name?",
-										"Enter a name",
-										JOptionPane.QUESTION_MESSAGE);
-								nodeSaves.add(new DisabledNode(name));
-								// TODO añadir nodo al arbol, no funciona
+								if (configurationModified) {
+									int dialogResult = JOptionPane.showConfirmDialog(null, "The actual configuration is not saved, would yo like to save it?",
+											"Save preferences", JOptionPane.YES_NO_CANCEL_OPTION);
+									if (dialogResult == JOptionPane.YES_OPTION) {
+										// TODO salvar y nuevo
+										addPreferencesFile();
+									} else if (dialogResult == JOptionPane.NO_OPTION) {
+										// nuevo directamente
+										addPreferencesFile();
+									}
+								} else {
+									// añadir directamente
+									addPreferencesFile();
+								}
 							}
-
 						});
+
 						popupMenuAdd.add(addItem);
 						this.add(popupMenuAdd);
-						popupMenuAdd.show(me.getComponent(), me.getX(),
-								me.getY());
+						popupMenuAdd.show(me.getComponent(), me.getX(), me.getY());
 
-					} else if (savesNode.isNodeChild(node)) {
-						log.info("node: " + node.toString());
-
-						JPopupMenu popupMenuRoot = new JPopupMenu();
-						// addPopup(popupMenuRoot);
+					} else if (nodeSaves.isNodeChild(nodeSelected)) {
+						log.info("node: " + nodeSelected.toString());
+						JPopupMenu popupMenuSaves = new JPopupMenu();
 						JMenuItem loadItem = new JMenuItem("Load");
 						loadItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
+								String name = (String) nodeSelected.getUserObject();
+								String filePath = ((DisabledNode) nodeSelected).getPathFile();
+								int dialogButton = JOptionPane.YES_NO_OPTION;
+								int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to delete \"" + name + "\"?", "Delete File",
+										dialogButton);
+								if (dialogResult == JOptionPane.YES_OPTION) {
+									File fichero = new File(filePath);
+									if (fichero.delete()) {
+										System.out.println("El fichero ha sido borrado satisfactoriamente");
+										treeNodes.remove(nodeSelected);
 
+										// nodeSaves.add(treeNodes.get(treeNodes.size()
+										// - 1));
+										// DefaultTreeModel model = new
+										// DefaultTreeModel(nodeRoot);
+										//
+										// treeMenu.setModel(model);
+										// treeMenu.expandRow(0);
+										// treeMenu.expandRow(7);
+										MainGUI.writeResult("Preferences file \"" + name + "\" successfully deleted.", Constants.Log.INFO);
+									} else
+										System.out.println("El fichero no puede ser borrado");
+								}
 							}
 						});
 
 						JMenuItem deleteItem = new JMenuItem("Delete");
 						deleteItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								// TODO: borrar todas las configuraciones de
-								// cierta categoria
-								String category = (String) node.getUserObject();
-								if (category.equals("Type")) {
-									log.info("type");
+								String name = (String) nodeSelected.getUserObject();
+								String filePath = ((DisabledNode) nodeSelected).getPathFile();
+								int dialogButton = JOptionPane.YES_NO_OPTION;
+								int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to delete \"" + name + "\"?", "Delete File",
+										dialogButton);
+								if (dialogResult == JOptionPane.YES_OPTION) {
+									File fichero = new File(filePath);
+									if (fichero.delete()) {
 
-								} else if (category.equals("Data Model")) {
-									log.info("data");
-								} else if (category.equals("Similarity")) {
-									log.info("sim");
-								} else if (category.equals("Neighborhood")) {
-									log.info("cneigats");
-								} else if (category.equals("Evaluator")) {
-									log.info("eval");
+										treeNodes.remove(nodeSelected);
+										nodeSaves.remove(nodeSelected);
+
+										DefaultTreeModel model = new DefaultTreeModel(nodeRoot);
+
+										treeMenu.setModel(model);
+										treeMenu.expandRow(0);
+										treeMenu.expandRow(7);
+
+										MainGUI.writeResult("Preferences file \"" + name + "\" successfully deleted.", Constants.Log.INFO);
+
+									} else {
+										MainGUI.writeResult("Preferences file \"" + name + "\" cannot be deleted.", Constants.Log.ERROR);
+									}
 								}
 							}
 						});
 
-						popupMenuRoot.add(loadItem);
-						popupMenuRoot.add(deleteItem);
+						popupMenuSaves.add(loadItem);
+						popupMenuSaves.add(deleteItem);
 
-						this.add(popupMenuRoot);
-						popupMenuRoot.show(me.getComponent(), me.getX(),
-								me.getY());
+						this.add(popupMenuSaves);
+						popupMenuSaves.show(me.getComponent(), me.getX(), me.getY());
 
 					}
 				}
 			} catch (Exception e1) {
-				// TODO Por que entra por aqui???
-				MainGUI.writeResult("catch no sabemos x que",
-						Constants.Log.ERROR);
+				// The place where we clicked is not a tree node, do nothing.
 			}
 
 		}
 
 	}
 
-	private DisabledNode[] getSavesFiles() {
+	private ArrayList<DisabledNode> getSavesFiles() {
 
-		String savesDirectory = "saves/recommender";
-		File dir = new File(savesDirectory);
+		File dir = new File(Constants.SavesPaths.RECOMMENDER);
 
 		if (dir.exists()) {
 			File[] files = dir.listFiles();
-			DisabledNode[] nodes = new DisabledNode[files.length];
-			for (int x = 0; x < files.length; x++) {
-				nodes[x] = new DisabledNode(files[x].getName(),
-						files[x].getPath());
-				System.out.println(files[x].getName());
+			ArrayList<DisabledNode> nodes = new ArrayList<DisabledNode>();
+			for (int i = 0; i < files.length; i++) {
+				nodes.add(new DisabledNode(RecommenderXMLPreferences.getTagName(files[i].getPath()), files[i].getPath()));
+				System.out.println(files[i].getName());
 			}
 			return nodes;
 
 		} else {
-			log.error("Preferences folder (saves/recommender/) doesnt exist.");
+			log.error("Preferences folder (" + Constants.SavesPaths.RECOMMENDER + ") doesnt exist.");
 			return null;
 		}
 
+	}
+
+	private void addPreferencesFile() {
+		String name = JOptionPane.showInputDialog(null, "Write a new preferences file name?", "Enter a name", JOptionPane.QUESTION_MESSAGE);
+
+		if (name != null && !name.isEmpty()) {
+
+			String filePath = Constants.SavesPaths.RECOMMENDER + name + Constants.SavesPaths.EXTENSION;
+
+			treeNodes.add(new DisabledNode(name, filePath));
+			nodeSaves.add(treeNodes.get(treeNodes.size() - 1));
+			DefaultTreeModel model = new DefaultTreeModel(nodeRoot);
+
+			File file = new File(filePath);
+			try {
+				if (file.createNewFile())
+					System.out.println("El fichero se ha creado correctamente");
+				else
+					System.out.println("No ha podido ser creado el fichero");
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+
+			treeMenu.setModel(model);
+			treeMenu.expandRow(0);
+			treeMenu.expandRow(7);
+		}
 	}
 
 	public static TypeRecommenderPanel getTypePanel() {
