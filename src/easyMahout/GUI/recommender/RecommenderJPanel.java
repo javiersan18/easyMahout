@@ -19,6 +19,7 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.w3c.dom.Document;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.RecommenderXMLPreferences;
@@ -74,16 +75,27 @@ public class RecommenderJPanel extends JPanel {
 
 	private static DisabledNode nodeSelected;
 
-	private static boolean configurationModified;
+	private boolean configurationModified;
+
+	private boolean configurationNew;
+
+	private String activeConfigutation;
+	
+	private Document actualDoc;
 
 	public RecommenderJPanel() {
+
+		this.setLayout(null);
 
 		panelRecommender = this;
 
 		itembased = true;
 		configurationModified = false;
-
+		configurationNew = false;
+		actualDoc = RecommenderXMLPreferences.createDefaultXMLDoc();		
+		
 		treeMenu = new JTree(populateTree()[0]);
+
 		DisabledRenderer renderer = new DisabledRenderer();
 		treeMenu.setCellRenderer(renderer);
 
@@ -108,7 +120,6 @@ public class RecommenderJPanel extends JPanel {
 
 		nodeRoot = (DisabledNode) treeMenu.getModel().getRoot();
 
-		this.setLayout(null);
 		this.add(treePanel);
 
 		// Create different panes
@@ -256,10 +267,11 @@ public class RecommenderJPanel extends JPanel {
 		nodeConfigure = treeNodes.get(1);
 
 		ArrayList<DisabledNode> savesNodes = getSavesFiles();
-		treeNodes.addAll(savesNodes);
-
-		for (int i = categories.length; i < treeNodes.size(); i++) {
-			nodeSaves.add(treeNodes.get(i));
+		if (savesNodes != null) {
+			treeNodes.addAll(savesNodes);
+			for (int i = categories.length; i < treeNodes.size(); i++) {
+				nodeSaves.add(treeNodes.get(i));
+			}
 		}
 
 		return treeNodes.toArray(new DisabledNode[treeNodes.size()]);
@@ -359,15 +371,27 @@ public class RecommenderJPanel extends JPanel {
 									int dialogResult = JOptionPane.showConfirmDialog(null, "The actual configuration is not saved, would yo like to save it?",
 											"Save preferences", JOptionPane.YES_NO_CANCEL_OPTION);
 									if (dialogResult == JOptionPane.YES_OPTION) {
-										// TODO salvar y nuevo
-										addPreferencesFile();
+										if (activeConfigutation == null) {
+											// jfilechooser save as...
+											log.debug("modified, default config");
+										} else {
+											// salvar y nuevo
+											RecommenderXMLPreferences.saveXMLFile(activeConfigutation);
+											// configurationNew = true;
+											addPreferencesFile();
+											log.debug("modified, saving added configuration");
+										}
 									} else if (dialogResult == JOptionPane.NO_OPTION) {
 										// nuevo directamente
+										// configurationNew = true;
 										addPreferencesFile();
+										log.debug("modified, no save");
 									}
 								} else {
 									// añadir directamente
+									// configurationNew = true;
 									addPreferencesFile();
+									log.debug("no modified");
 								}
 							}
 						});
@@ -464,6 +488,7 @@ public class RecommenderJPanel extends JPanel {
 			for (int i = 0; i < files.length; i++) {
 				nodes.add(new DisabledNode(RecommenderXMLPreferences.getTagName(files[i].getPath()), files[i].getPath()));
 				System.out.println(files[i].getName());
+
 			}
 			return nodes;
 
@@ -480,6 +505,8 @@ public class RecommenderJPanel extends JPanel {
 		if (name != null && !name.isEmpty()) {
 
 			String filePath = Constants.SavesPaths.RECOMMENDER + name + Constants.SavesPaths.EXTENSION;
+
+			activeConfigutation = filePath;
 
 			treeNodes.add(new DisabledNode(name, filePath));
 			nodeSaves.add(treeNodes.get(treeNodes.size() - 1));
@@ -513,6 +540,30 @@ public class RecommenderJPanel extends JPanel {
 		nodeNeighborhood.setEnabled(enabled);
 		itembased = enabled;
 		treeMenu.repaint();
+	}
+
+	public boolean isConfigurationModified() {
+		return configurationModified;
+	}
+
+	public void setConfigurationModified(boolean configurationModified) {
+		this.configurationModified = configurationModified;
+	}
+
+	public boolean isConfigurationNew() {
+		return configurationNew;
+	}
+
+	public void setConfigurationNew(boolean configurationNew) {
+		this.configurationNew = configurationNew;
+	}
+
+	public String getActiveConfigutation() {
+		return activeConfigutation;
+	}
+
+	public void setActiveConfigutation(String activeConfigutation) {
+		this.activeConfigutation = activeConfigutation;
 	}
 
 }

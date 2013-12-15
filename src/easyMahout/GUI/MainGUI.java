@@ -1,12 +1,17 @@
 package easyMahout.GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 
@@ -20,18 +25,14 @@ import easyMahout.GUI.recommender.RecommenderJPanel;
 import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 
-import javax.swing.JScrollPane;
-
-import java.awt.Color;
-
 public class MainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private JFrame formEasymahout;
+	// private JFrame formEasymahout;
 
 	private RecommenderJPanel recommenderTab;
-	
+
 	private ClusterJPanel clusterTab;
 
 	private ClassificationJPanel classificationTab;
@@ -40,7 +41,7 @@ public class MainGUI extends JFrame {
 
 	private static JTextPane logTextPane;
 
-	private static StringBuilder textBuilder;
+	private static StringBuilder textBuilder;	
 
 	private final static Logger log = Logger.getLogger(MainGUI.class);
 
@@ -57,7 +58,7 @@ public class MainGUI extends JFrame {
 			public void run() {
 				try {
 					MainGUI window = new MainGUI();
-					window.formEasymahout.setVisible(true);
+					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -69,6 +70,7 @@ public class MainGUI extends JFrame {
 	 * Create the application.
 	 */
 	public MainGUI() {
+		super();
 		initialize();
 	}
 
@@ -80,22 +82,22 @@ public class MainGUI extends JFrame {
 		BasicConfigurator.configure();
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
-		formEasymahout = new JFrame();
-		formEasymahout.setTitle("easyMahout 0.2");
+		// this = new JFrame();
+		this.setTitle("easyMahout 0.2");
 
-		formEasymahout.setMinimumSize(new Dimension(750, 650));
-		formEasymahout.setBounds(100, 100, 750, 700);
+		this.setMinimumSize(new Dimension(750, 650));
+		this.setBounds(100, 100, 750, 700);
 
-		formEasymahout.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		formEasymahout.getContentPane().setLayout(null);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.getContentPane().setLayout(null);
 
 		textBuilder = new StringBuilder();
-		
-		createMenuBar();		
+
+		createMenuBar();
 
 		logScrollPane = new JScrollPane();
 		logScrollPane.setBounds(2, 463, 730, 176);
-		formEasymahout.getContentPane().add(logScrollPane);
+		this.getContentPane().add(logScrollPane);
 
 		// Result log textField
 		logTextPane = new JTextPane();
@@ -104,10 +106,10 @@ public class MainGUI extends JFrame {
 		logTextPane.setBounds(42, 501, 735, 131);
 		logTextPane.setEditable(false);
 		logTextPane.setContentType("text/html");
-		
+
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(2, 0, 732, 463);
-		formEasymahout.getContentPane().add(tabbedPane);
+		this.getContentPane().add(tabbedPane);
 
 		recommenderTab = new RecommenderJPanel();
 		tabbedPane.addTab("Recommendation", null, recommenderTab, null);
@@ -117,12 +119,31 @@ public class MainGUI extends JFrame {
 
 		clusterTab = new ClusterJPanel();
 		tabbedPane.addTab("Clustering", null, clusterTab, null);
-		
-		
 
-		//RecommenderXMLPreferences.saveXMLFile();
-		//RecommenderXMLPreferences.loadXMLFile();
-		
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent evt) {
+				if (recommenderTab.isConfigurationModified()) {
+					int dialogResult = JOptionPane.showConfirmDialog(null, "The actual configuration is not saved, would yo like to save it?",
+							"Recommender preferences", JOptionPane.YES_NO_CANCEL_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						// modified configuration
+						if (recommenderTab.getActiveConfigutation() == null) {
+							// crear fichero (jfilechooser)
+							// salvar config en fichero
+							// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+						} else {
+							// salvar config en fichero
+							RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+						}
+					} else if (dialogResult == JOptionPane.NO_OPTION) {
+						System.exit(0);
+					}
+				}
+			}
+		});
+
+		// RecommenderXMLPreferences.saveXMLFile();
+		// RecommenderXMLPreferences.loadXMLFile();
 
 	}
 
@@ -145,16 +166,16 @@ public class MainGUI extends JFrame {
 
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		formEasymahout.setJMenuBar(menuBar);
+		this.setJMenuBar(menuBar);
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
-		
-		JMenuItem about=new JMenuItem("About EasyMahout");		
-        mnHelp.add(about); 
-		
+
+		JMenuItem about = new JMenuItem("About EasyMahout");
+		mnHelp.add(about);
+
 	}
 }
