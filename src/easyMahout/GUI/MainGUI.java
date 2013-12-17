@@ -32,8 +32,6 @@ import javax.swing.JSeparator;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JRadioButtonMenuItem;
-
 public class MainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -90,7 +88,7 @@ public class MainGUI extends JFrame {
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
-		
+
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
 
 		this.setMinimumSize(new Dimension(750, 650));
@@ -209,10 +207,11 @@ public class MainGUI extends JFrame {
 				AboutUsPopupDialogBox dialogBox = new AboutUsPopupDialogBox();
 			}
 		});
-		
-		JMenuItem mntmHelpContents = new JMenuItem("Help Contents");		
+
+		JMenuItem mntmHelpContents = new JMenuItem("Help Contents");
+		mntmHelpContents.setIcon(new ImageIcon(MainGUI.class.getResource("/easyMahout/GUI/images/helpIcon32.png")));
 		mnHelp.add(mntmHelpContents);
-		
+
 		JSeparator separator_1 = new JSeparator();
 		mnHelp.add(separator_1);
 		mnHelp.add(mnItemAbout);
