@@ -31,6 +31,7 @@ import javax.swing.JSeparator;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Rectangle;
 
 public class MainGUI extends JFrame {
 
@@ -76,6 +77,7 @@ public class MainGUI extends JFrame {
 	 */
 	public MainGUI() {
 		super();
+		setResizable(false);
 		initialize();
 	}
 
@@ -91,7 +93,8 @@ public class MainGUI extends JFrame {
 
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
 
-		this.setMinimumSize(new Dimension(750, 650));
+		this.setMinimumSize(new Dimension(750, 700));
+		this.setMaximumSize(new Dimension(750, 700));
 		this.setBounds(100, 100, 750, 700);
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

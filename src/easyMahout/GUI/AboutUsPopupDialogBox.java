@@ -30,6 +30,7 @@ public class AboutUsPopupDialogBox extends JFrame {
 
 	public AboutUsPopupDialogBox() {
 		super("About easyMahout");
+		setResizable(false);
 		frmAboutEasymahout = this;
 		this.setMaximumSize(new Dimension(520, 350));
 		this.setMinimumSize(new Dimension(520, 350));
