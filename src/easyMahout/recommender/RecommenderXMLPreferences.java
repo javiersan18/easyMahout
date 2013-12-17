@@ -49,7 +49,7 @@ public class RecommenderXMLPreferences {
 			Element type = doc.createElement(Constants.RecommenderXML.RECOMM_TYPE);
 			rootElement.appendChild(type);
 
-			value = doc.createElement(Constants.Recommender-XML.RECOMM_TYPE_VALUE);
+			value = doc.createElement(Constants.RecommenderXML.RECOMM_TYPE_VALUE);
 			value.appendChild(doc.createTextNode("User Based"));
 			type.appendChild(value);
 

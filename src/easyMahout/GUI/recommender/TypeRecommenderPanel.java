@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import easyMahout.utils.Constants;
-import easyMahout.utils.IconHelpPanel;
+//import easyMahout.utils.IconHelpPanel;
 
 import javax.swing.border.TitledBorder;
 

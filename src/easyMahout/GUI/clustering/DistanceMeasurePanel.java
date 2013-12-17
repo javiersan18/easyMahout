@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import easyMahout.utils.Constants;
-import easyMahout.utils.IconHelpPanel;
+//import easyMahout.utils.IconHelpPanel;
 
 import javax.swing.border.TitledBorder;
 
@@ -45,9 +45,9 @@ public class DistanceMeasurePanel extends JPanel {
 		comboBoxDistance.setBounds(38, 36, 141, 20);
 		add(comboBoxDistance);
 		
-		JPanel panel = new IconHelpPanel(25,25);
-		panel.setBounds(190, 33, 25, 25);
-		add(panel);
+//		JPanel panel = new IconHelpPanel(25,25);
+//		panel.setBounds(190, 33, 25, 25);
+//		add(panel);
 
 		comboBoxDistance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

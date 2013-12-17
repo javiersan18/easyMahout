@@ -15,7 +15,7 @@ package easyMahout.GUI.clustering;
 	import javax.swing.border.LineBorder;
 
 	import easyMahout.utils.Constants;
-	import easyMahout.utils.IconHelpPanel;
+	//import easyMahout.utils.IconHelpPanel;
 
 	import javax.swing.border.TitledBorder;
 
@@ -38,9 +38,9 @@ package easyMahout.GUI.clustering;
 			comboBoxType.setBounds(38, 36, 141, 20);
 			add(comboBoxType);
 			
-			JPanel panel = new IconHelpPanel(25,25);
-			panel.setBounds(190, 33, 25, 25);
-			add(panel);
+//			//JPanel panel = new IconHelpPanel(25,25);
+//			panel.setBounds(190, 33, 25, 25);
+//			add(panel);
 
 			comboBoxType.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {

@@ -2,6 +2,16 @@ package easyMahout.utils;
 
 public class Constants {
 
+	public class EasyMahout {
+
+		public static final String VERSION = "0.2a";
+		
+		public static final String VERSION_DATE = "December 2013";
+		
+		public static final String WEBSITE = "www.easymahout.coomingsoon.xxx";
+
+	}
+
 	public class Log {
 
 		public static final String ERROR = "error";
@@ -145,17 +155,17 @@ public class Constants {
 		public static final String CLUSTERING = "clustering";
 
 	}
-	
+
 	public class SavesPaths {
 
 		public static final String RECOMMENDER = "saves/recommender/";
 
 		public static final String CLUSTERING = "saves/clustering/";
-		
+
 		public static final String CLASSIFICATION = "saves/classification/";
-		
+
 		public static final String EXTENSION = ".xml";
-	
+
 	}
 
 	public class ClusterAlg {

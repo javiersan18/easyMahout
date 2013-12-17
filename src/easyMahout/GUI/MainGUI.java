@@ -3,9 +3,11 @@ package easyMahout.GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -25,11 +27,16 @@ import easyMahout.GUI.recommender.RecommenderJPanel;
 import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 
+import javax.swing.JSeparator;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JRadioButtonMenuItem;
+
 public class MainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-
-	// private JFrame formEasymahout;
 
 	private RecommenderJPanel recommenderTab;
 
@@ -41,7 +48,7 @@ public class MainGUI extends JFrame {
 
 	private static JTextPane logTextPane;
 
-	private static StringBuilder textBuilder;	
+	private static StringBuilder textBuilder;
 
 	private final static Logger log = Logger.getLogger(MainGUI.class);
 
@@ -82,13 +89,15 @@ public class MainGUI extends JFrame {
 		BasicConfigurator.configure();
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
-		// this = new JFrame();
-		this.setTitle("easyMahout 0.2");
+		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
+		
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
 
 		this.setMinimumSize(new Dimension(750, 650));
 		this.setBounds(100, 100, 750, 700);
 
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(null);
 
 		textBuilder = new StringBuilder();
@@ -122,23 +131,7 @@ public class MainGUI extends JFrame {
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				if (recommenderTab.isConfigurationModified()) {
-					int dialogResult = JOptionPane.showConfirmDialog(null, "The actual configuration is not saved, would yo like to save it?",
-							"Recommender preferences", JOptionPane.YES_NO_CANCEL_OPTION);
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						// modified configuration
-						if (recommenderTab.getActiveConfigutation() == null) {
-							// crear fichero (jfilechooser)
-							// salvar config en fichero
-							// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
-						} else {
-							// salvar config en fichero
-							RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
-						}
-					} else if (dialogResult == JOptionPane.NO_OPTION) {
-						System.exit(0);
-					}
-				}
+				onClose();
 			}
 		});
 
@@ -164,6 +157,30 @@ public class MainGUI extends JFrame {
 
 	}
 
+	private void onClose() {
+		if (recommenderTab.isConfigurationModified()) {
+			int dialogResult = JOptionPane.showConfirmDialog(null,
+					"The actual configuration is not saved, would yo like to save it?",
+					"Recommender preferences",
+					JOptionPane.YES_NO_CANCEL_OPTION);
+			if (dialogResult == JOptionPane.YES_OPTION) {
+				// modified configuration
+				if (recommenderTab.getActiveConfigutation() == null) {
+					// crear fichero (jfilechooser)
+					// salvar config en fichero
+					// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+				} else {
+					// salvar config en fichero
+					RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+				}
+			} else if (dialogResult == JOptionPane.NO_OPTION) {
+				System.exit(0);
+			}
+		} else {
+			System.exit(0);
+		}
+	}
+
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
@@ -171,11 +188,34 @@ public class MainGUI extends JFrame {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
+		JSeparator separator = new JSeparator();
+		mnFile.add(separator);
+
+		JMenuItem mnItemExit = new JMenuItem("Exit");
+		mnItemExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onClose();
+			}
+		});
+		mnFile.add(mnItemExit);
+
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 
-		JMenuItem about = new JMenuItem("About EasyMahout");
-		mnHelp.add(about);
+		JMenuItem mnItemAbout = new JMenuItem("About EasyMahout");
+		mnItemAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unused")
+				AboutUsPopupDialogBox dialogBox = new AboutUsPopupDialogBox();
+			}
+		});
+		
+		JMenuItem mntmHelpContents = new JMenuItem("Help Contents");		
+		mnHelp.add(mntmHelpContents);
+		
+		JSeparator separator_1 = new JSeparator();
+		mnHelp.add(separator_1);
+		mnHelp.add(mnItemAbout);
 
 	}
 }
