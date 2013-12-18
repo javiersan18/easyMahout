@@ -2,6 +2,7 @@ package easyMahout.utils;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import net.java.balloontip.BalloonTip;
 import net.java.balloontip.examples.complete.CompleteExample;
 import net.java.balloontip.styles.BalloonTipStyle;
 import net.java.balloontip.styles.EdgedBalloonStyle;
+import net.java.balloontip.styles.RoundedBalloonStyle;
 import net.java.balloontip.styles.TexturedBalloonStyle;
 import net.java.balloontip.utils.FadingUtils;
 
@@ -25,22 +27,22 @@ public class HelpTooltip extends BalloonTip {
 	HelpTooltip bt;
 
 	public HelpTooltip(JComponent attachedComponent, JComponent contents) {
-		super(attachedComponent, contents, new EdgedBalloonStyle(Color.WHITE, Color.BLACK), BalloonTip.Orientation.LEFT_ABOVE,
+		super(attachedComponent, contents, new RoundedBalloonStyle(5,5,SystemColor.info, Color.BLACK), BalloonTip.Orientation.LEFT_ABOVE,
 				BalloonTip.AttachLocation.ALIGNED, 38, 10, true);
 
-		BalloonTipStyle balloontipStyle = null;
-
-		try {
-			balloontipStyle = new TexturedBalloonStyle(5, 5, CompleteExample.class.getResource("/easyMahout/GUI/images/bgPattern.png"),
-					Color.BLACK);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		if (balloontipStyle != null) {
-			this.setStyle(balloontipStyle);
-		}
+//		BalloonTipStyle balloontipStyle = null;
+//
+//		try {
+//			balloontipStyle = new TexturedBalloonStyle(5, 5, CompleteExample.class.getResource("/easyMahout/GUI/images/bgPattern.png"),
+//					Color.BLACK);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		if (balloontipStyle != null) {
+//			this.setStyle(balloontipStyle);
+//		}
 
 		this.setPadding(10);
 
