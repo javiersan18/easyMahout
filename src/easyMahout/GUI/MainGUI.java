@@ -22,7 +22,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import easyMahout.GUI.classification.ClassificationJPanel;
 import easyMahout.GUI.clustering.ClusterJPanel;
-import easyMahout.GUI.recommender.RecommenderJPanel;
+import easyMahout.GUI.recommender.MainRecommenderPanel;
 import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 
@@ -35,7 +35,7 @@ public class MainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private RecommenderJPanel recommenderTab;
+	private MainRecommenderPanel recommenderTab;
 
 	private ClusterJPanel clusterTab;
 
@@ -115,7 +115,7 @@ public class MainGUI extends JFrame {
 		tabbedPane.setBounds(2, 0, 732, 463);
 		this.getContentPane().add(tabbedPane);
 
-		recommenderTab = new RecommenderJPanel();
+		recommenderTab = new MainRecommenderPanel();
 		tabbedPane.addTab("Recommendation", null, recommenderTab, null);
 
 		classificationTab = new ClassificationJPanel();

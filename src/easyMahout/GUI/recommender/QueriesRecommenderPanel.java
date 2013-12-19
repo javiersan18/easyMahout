@@ -113,7 +113,7 @@ public class QueriesRecommenderPanel extends JPanel {
 				// cuando se ejecuta el recomm con la celda recien modificada,
 				// no actualiza el valor				
 				try {
-					Recommender recomm = RecommenderJPanel.buildRecommender();
+					Recommender recomm = MainRecommenderPanel.buildRecommender();
 					if (recomm != null) {
 						int i = 0;
 						while (i < tableModel.getRowCount()) {

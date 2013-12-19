@@ -21,4 +21,11 @@ public class RecommenderTips {
 
 	public static final String RECOMM_QUERY = "docs/tooltips/recommender/query.html";
 
+	public static final String RECOMM_CONFIG = "<html>"
+			+ "<h4>Steps to build a recommender</h4>"
+			+ "<br><p><u><b>1.</b></u> The system generates recommendations using only information</p>"
+			+ "<br><p><u><b>2.</b></u> about rating profiles for different users.</p><p>User based recommenders locate peer users with a rating history similar to the </p>"
+			+ "<br><p><u><b>3.</b></u> current user and generate recommendations using this neighborhood.</p>" + "<br>"
+			+ "<p><u><b>4.</b></u></p>" + "</html>";;
+
 }

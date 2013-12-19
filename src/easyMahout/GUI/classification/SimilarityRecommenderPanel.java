@@ -9,7 +9,7 @@ import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 
-import easyMahout.GUI.recommender.RecommenderJPanel;
+
 import easyMahout.utils.Constants;
 
 public class SimilarityRecommenderPanel extends JPanel {

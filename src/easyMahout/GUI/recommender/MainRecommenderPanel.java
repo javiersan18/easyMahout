@@ -36,14 +36,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.border.TitledBorder;
+import javax.swing.JLabel;
 
-public class RecommenderJPanel extends JPanel {
+public class MainRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private JPanel panelRecommender;
 
 	private JPanel treePanel;
+	
+	private static ConfigureRecommenderPanel configPanel;
 
 	private static TypeRecommenderPanel typePanel;
 
@@ -59,7 +62,7 @@ public class RecommenderJPanel extends JPanel {
 
 	private static JTree treeMenu;
 
-	private final static Logger log = Logger.getLogger(RecommenderJPanel.class);
+	private final static Logger log = Logger.getLogger(MainRecommenderPanel.class);
 
 	private static boolean itembased;
 
@@ -83,7 +86,7 @@ public class RecommenderJPanel extends JPanel {
 
 	private Document actualDoc;
 
-	public RecommenderJPanel() {
+	public MainRecommenderPanel() {
 
 		this.setLayout(null);
 
@@ -124,6 +127,13 @@ public class RecommenderJPanel extends JPanel {
 		this.add(treePanel);
 
 		// Create different panes
+		
+		configPanel = new ConfigureRecommenderPanel();
+		configPanel.setBounds(228, 11, 481, 410);
+		panelRecommender.add(configPanel);
+		configPanel.setLayout(null);
+		configPanel.setVisible(true);
+		
 		typePanel = new TypeRecommenderPanel();
 		typePanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(typePanel);
@@ -289,12 +299,21 @@ public class RecommenderJPanel extends JPanel {
 				if (nodeSelected != null) {
 					if (nodeSelected.equals(nodeConfigure)) {
 						log.info("configureNode");
+						configPanel.setVisible(true);
+						typePanel.setVisible(false);
+						dataModelPanel.setVisible(false);
+						similarityPanel.setVisible(false);
+						neighborhoodPanel.setVisible(false);
+						evaluatorPanel.setVisible(false);
+						queriesPanel.setVisible(false);
+						disableHelpTips();
 					} else if (nodeConfigure.isNodeChild(nodeSelected)) {
 						log.info("recomender configure  children B1");
 
 						String category = (String) nodeSelected.getUserObject();
 						if (category.equals("Type")) {
 							log.info("typeB1");
+							configPanel.setVisible(false);
 							typePanel.setVisible(true);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
@@ -304,6 +323,7 @@ public class RecommenderJPanel extends JPanel {
 
 						} else if (category.equals("Data Model")) {
 							log.info("dataB1");
+							configPanel.setVisible(false);
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(true);
 							similarityPanel.setVisible(false);
@@ -314,6 +334,7 @@ public class RecommenderJPanel extends JPanel {
 
 						} else if (category.equals("Similarity")) {
 							log.info("similarityB1");
+							configPanel.setVisible(false);
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(true);
@@ -325,6 +346,7 @@ public class RecommenderJPanel extends JPanel {
 						} else if (category.equals("Neighborhood")) {
 							if (itembased) {
 								log.info("neighB1");
+								configPanel.setVisible(false);
 								typePanel.setVisible(false);
 								dataModelPanel.setVisible(false);
 								similarityPanel.setVisible(false);
@@ -336,6 +358,7 @@ public class RecommenderJPanel extends JPanel {
 
 						} else if (category.equals("Evaluator")) {
 							log.info("evalB1");
+							configPanel.setVisible(false);
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
@@ -346,6 +369,7 @@ public class RecommenderJPanel extends JPanel {
 
 						} else if (category.equals("Queries")) {
 							log.info("queriesB1");
+							configPanel.setVisible(false);
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
@@ -560,5 +584,4 @@ public class RecommenderJPanel extends JPanel {
 	public void setActiveConfigutation(String activeConfigutation) {
 		this.activeConfigutation = activeConfigutation;
 	}
-
 }

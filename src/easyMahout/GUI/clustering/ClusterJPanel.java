@@ -11,18 +11,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
 	import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
-import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
-import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
-import org.apache.mahout.cf.taste.recommender.Recommender;
-import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
-import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-
-	import easyMahout.GUI.MainGUI;
-import easyMahout.GUI.recommender.RecommenderJPanel;
-import easyMahout.GUI.recommender.TypeRecommenderPanel;
-import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
 import javax.swing.border.LineBorder;
