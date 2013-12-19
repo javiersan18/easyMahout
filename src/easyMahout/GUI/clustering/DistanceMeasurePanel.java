@@ -45,16 +45,11 @@ public class DistanceMeasurePanel extends JPanel {
 		comboBoxDistance.setBounds(38, 36, 141, 20);
 		add(comboBoxDistance);
 		
-<<<<<<< HEAD
-		JPanel panel = new IconHelpPanel(25,25);
-		panel.setBounds(190, 33, 25, 25);
-		panel.setToolTipText("Define how you want to measure the distance"); 
-		add(panel);
-=======
+
 //		JPanel panel = new IconHelpPanel(25,25);
 //		panel.setBounds(190, 33, 25, 25);
 //		add(panel);
->>>>>>> 0d00b11e14c3fb4f9d70f488ac54fa2cad1f7ece
+
 
 		comboBoxDistance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

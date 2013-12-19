@@ -175,14 +175,11 @@ public class Constants {
 		public static final String KMEANS = "K-MEANS";
 
 		public static final String FUZZYKMEANS = "Fuzzy K-MEANS";
-<<<<<<< HEAD
+
 		
 		public static final String DIRICHLET = "DIRICHLET";
 		
 		public static final String USER_DEFINED = "USER_DEFINED";
-=======
-
->>>>>>> 0d00b11e14c3fb4f9d70f488ac54fa2cad1f7ece
 	}
 
 	public class ClusterDist {

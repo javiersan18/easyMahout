@@ -20,7 +20,7 @@ package easyMahout.GUI.clustering;
 	import javax.swing.border.LineBorder;
 
 	import easyMahout.utils.Constants;
-	import easyMahout.utils.IconHelpPanel;
+	
 
 	import javax.swing.border.TitledBorder;
 
@@ -57,10 +57,10 @@ package easyMahout.GUI.clustering;
 			boton.setBounds(200, 190, 70, 30);
 			add(boton);
 			
-			JPanel panel = new IconHelpPanel(25,25);
-			panel.setBounds(280, 193, 25, 25);
-			panel.setToolTipText("Number of iterations you wish the algortihm to have"); 
-			add(panel);
+//			JPanel panel = new IconHelpPanel(25,25);
+//			panel.setBounds(280, 193, 25, 25);
+//			panel.setToolTipText("Number of iterations you wish the algortihm to have"); 
+//			add(panel);
 
 			boton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
