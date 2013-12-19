@@ -45,6 +45,12 @@ import javax.swing.border.TitledBorder;
 		
 		private static DistanceMeasurePanel distanceClusterPanel;
 		
+		private static NumberClusterPanel numberClusterPanel;
+		
+		private static NumberIterationsPanel numberIterationsPanel;
+		
+		private static DataModelClusterPanel dataModelClusterPanel;
+		
 		private static boolean canopy;
 		
 		private static JTree treeMenu;
@@ -98,6 +104,25 @@ import javax.swing.border.TitledBorder;
 			panelCluster.add(distanceClusterPanel);
 			distanceClusterPanel.setLayout(null);
 			distanceClusterPanel.setVisible(false);
+			
+			numberClusterPanel = new NumberClusterPanel();
+			numberClusterPanel.setBounds(228, 11, 481, 410);
+			panelCluster.add(numberClusterPanel);
+			numberClusterPanel.setLayout(null);
+			numberClusterPanel.setVisible(false);
+			
+			numberIterationsPanel = new NumberIterationsPanel();
+			numberIterationsPanel.setBounds(228, 11, 481, 410);
+			panelCluster.add(numberIterationsPanel);
+			numberIterationsPanel.setLayout(null);
+			numberIterationsPanel.setVisible(false);
+			
+			
+			dataModelClusterPanel = new DataModelClusterPanel();
+			dataModelClusterPanel.setBounds(228, 11, 481, 410);
+			panelCluster.add(dataModelClusterPanel);
+			dataModelClusterPanel.setLayout(null);
+			dataModelClusterPanel.setVisible(false);
 		}
 		
 	public DisabledNode[] populateTree() {
@@ -106,12 +131,10 @@ import javax.swing.border.TitledBorder;
 				"Configure", // 1
 				"Algorithm", // 2
 				"Distance Measure", // 3
-				"Similarity", // 4
-				"Neighborhood", // 5
-				"Evaluator", // 6
-				"Queries", // 7
-				"Saves", // 8
-				"Example1" // 9
+				"Number of Clusters", //4
+				"Number of Iterations",//5
+				"Data Model"//6
+				
 
 		};
 
@@ -123,10 +146,10 @@ import javax.swing.border.TitledBorder;
 		nodes[1].add(nodes[4]);
 		nodes[1].add(nodes[5]);
 		nodes[1].add(nodes[6]);
-		nodes[1].add(nodes[7]);
+		/*nodes[1].add(nodes[7]);
 		nodes[0].add(nodes[8]);
 		nodes[8].add(nodes[9]);
-
+*/
 		//nodeNeighborhood = nodes[5];
 
 		return nodes;
@@ -151,23 +174,47 @@ import javax.swing.border.TitledBorder;
 								log.info("algorithmB1");
 								algorithmClusterPanel.setVisible(true);
 								distanceClusterPanel.setVisible(false);
-								/*dataModelPanel.setVisible(false);
-								similarityPanel.setVisible(false);
-								neighborhoodPanel.setVisible(false);
-								evaluatorPanel.setVisible(false);
-								queriesPanel.setVisible(false);*/
+								numberClusterPanel.setVisible(false);
+								numberIterationsPanel.setVisible(true);
+								dataModelClusterPanel.setVisible(false);
 
 							} else if (category.equals("Distance Measure")) {
 								log.info("distanceB1");
 								algorithmClusterPanel.setVisible(false);
 								distanceClusterPanel.setVisible(true);
-								/*similarityPanel.setVisible(false);
-								neighborhoodPanel.setVisible(false);
-								evaluatorPanel.setVisible(false);
-								queriesPanel.setVisible(false);*/
+								numberClusterPanel.setVisible(false);
+								numberIterationsPanel.setVisible(true);
+								dataModelClusterPanel.setVisible(false);
 
 							} 
+							else if (category.equals("Number of Clusters")) {
+								log.info("numberOfClustersB1");
+								algorithmClusterPanel.setVisible(false);
+								distanceClusterPanel.setVisible(false);
+								numberClusterPanel.setVisible(true);
+								numberIterationsPanel.setVisible(true);
+								dataModelClusterPanel.setVisible(false);
 
+							} 
+							else if (category.equals("Number of Iterations")) {
+								log.info("numberOfIterationsB1");
+								algorithmClusterPanel.setVisible(false);
+								distanceClusterPanel.setVisible(false);
+								numberClusterPanel.setVisible(false);
+								numberIterationsPanel.setVisible(true);
+								dataModelClusterPanel.setVisible(false);
+
+							}
+							else if (category.equals("Data Model")) {
+								log.info("numberOfIterationsB1");
+								algorithmClusterPanel.setVisible(false);
+								distanceClusterPanel.setVisible(false);
+								numberClusterPanel.setVisible(false);
+								numberIterationsPanel.setVisible(false);
+								dataModelClusterPanel.setVisible(true);
+
+							}
+	
 						}
 					}
 				} catch (Exception e1) {

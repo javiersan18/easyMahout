@@ -47,6 +47,7 @@ public class DistanceMeasurePanel extends JPanel {
 		
 		JPanel panel = new IconHelpPanel(25,25);
 		panel.setBounds(190, 33, 25, 25);
+		panel.setToolTipText("Define how you want to measure the distance"); 
 		add(panel);
 
 		comboBoxDistance.addActionListener(new ActionListener() {
