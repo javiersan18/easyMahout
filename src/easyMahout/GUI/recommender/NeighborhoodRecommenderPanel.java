@@ -1,12 +1,15 @@
 package easyMahout.GUI.recommender;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,6 +18,8 @@ import javax.swing.JLabel;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.RecommenderTips;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -27,6 +32,7 @@ import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+
 import javax.swing.border.TitledBorder;
 
 public class NeighborhoodRecommenderPanel extends JPanel {
@@ -49,12 +55,15 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 	private JLabel labelSamplingRate;
 
 	private JTextField tfSamplingRate;
+	
+	private HelpTooltip helpTooltip;
 
 	private final static Logger log = Logger.getLogger(NeighborhoodRecommenderPanel.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NeighborhoodRecommenderPanel() {
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Neighborhood function", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Neighborhood function", TitledBorder.CENTER,
+				TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
@@ -174,6 +183,19 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 			}
 		});
 
+		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_NEIGHBORHOOD);
+		add(helpTooltip);
+
 		comboBoxNeighborhood.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String neighborhood = (String) ((JComboBox) e.getSource()).getSelectedItem();
@@ -220,6 +242,9 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 			return new ThresholdUserNeighborhood(threshold, similarity, model, sampling);
 		}
 	}
-
+	
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
 
 }

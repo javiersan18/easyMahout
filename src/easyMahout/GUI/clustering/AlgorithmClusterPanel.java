@@ -16,7 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 	import easyMahout.utils.Constants;
+<<<<<<< HEAD
 import easyMahout.utils.IconHelpPanel;
+=======
+	//import easyMahout.utils.IconHelpPanel;
+>>>>>>> 0d00b11e14c3fb4f9d70f488ac54fa2cad1f7ece
 
 import javax.swing.border.TitledBorder;
 
@@ -40,10 +44,16 @@ import javax.swing.border.TitledBorder;
 			comboBoxAlg.setBounds(38, 36, 141, 20);
 			add(comboBoxAlg);
 			
+<<<<<<< HEAD
 			JPanel panel = new IconHelpPanel(25,25);
 			panel.setBounds(190, 33, 25, 25);
 			panel.setToolTipText("You have to select wether you want to use an algortihm or define your own"); 
 			add(panel);
+=======
+//			//JPanel panel = new IconHelpPanel(25,25);
+//			panel.setBounds(190, 33, 25, 25);
+//			add(panel);
+>>>>>>> 0d00b11e14c3fb4f9d70f488ac54fa2cad1f7ece
 
 			comboBoxAlg.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
