@@ -32,11 +32,9 @@ public class AboutUsPopupDialogBox extends JFrame {
 		super("About easyMahout");
 		setResizable(false);
 		frmAboutEasymahout = this;
-		this.setMaximumSize(new Dimension(520, 350));
-		this.setMinimumSize(new Dimension(520, 350));
 		this.setAlwaysOnTop(true);
 		this.setType(Type.POPUP);
-		this.setSize(520, 350);
+		this.setSize(510, 340);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));

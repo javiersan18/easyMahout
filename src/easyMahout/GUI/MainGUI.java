@@ -1,7 +1,6 @@
 package easyMahout.GUI;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -31,7 +30,6 @@ import javax.swing.JSeparator;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Rectangle;
 
 public class MainGUI extends JFrame {
 
@@ -49,6 +47,7 @@ public class MainGUI extends JFrame {
 
 	private static StringBuilder textBuilder;
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(MainGUI.class);
 
 	/**
@@ -90,13 +89,8 @@ public class MainGUI extends JFrame {
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
-
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
-
-		this.setMinimumSize(new Dimension(750, 700));
-		this.setMaximumSize(new Dimension(750, 700));
-		this.setBounds(100, 100, 750, 700);
-
+		this.setBounds(100, 100, 740, 690);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(null);
