@@ -5,67 +5,69 @@ import java.awt.Dimension;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 import net.java.balloontip.BalloonTip;
-import net.java.balloontip.examples.complete.CompleteExample;
-import net.java.balloontip.styles.BalloonTipStyle;
-import net.java.balloontip.styles.EdgedBalloonStyle;
 import net.java.balloontip.styles.RoundedBalloonStyle;
-import net.java.balloontip.styles.TexturedBalloonStyle;
 import net.java.balloontip.utils.FadingUtils;
 
 public class HelpTooltip extends BalloonTip {
 
 	private static final long serialVersionUID = 1L;
 
-	private boolean isShown = false;
+	private boolean shown = false;
 
-	HelpTooltip bt;
+	private HelpTooltip balloon;
 
-	public HelpTooltip(JComponent attachedComponent, JComponent contents) {
-		super(attachedComponent, contents, new RoundedBalloonStyle(5,5,SystemColor.info, Color.BLACK), BalloonTip.Orientation.LEFT_ABOVE,
-				BalloonTip.AttachLocation.ALIGNED, 38, 10, true);
+	public HelpTooltip(JComponent attachedComponent, String text) {
+		super();
 
-//		BalloonTipStyle balloontipStyle = null;
-//
-//		try {
-//			balloontipStyle = new TexturedBalloonStyle(5, 5, CompleteExample.class.getResource("/easyMahout/GUI/images/bgPattern.png"),
-//					Color.BLACK);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		if (balloontipStyle != null) {
-//			this.setStyle(balloontipStyle);
-//		}
+		JLabel labelHelp = new JLabel(text);
+		labelHelp.setOpaque(true);
+		labelHelp.setBackground(SystemColor.info);
+
+		labelHelp.setVerticalAlignment(SwingConstants.TOP);
+
+		JScrollPane helpScrollPane = new JScrollPane(labelHelp);
+		helpScrollPane.setBackground(SystemColor.info);
+		helpScrollPane.setPreferredSize(new Dimension(420, 310));
+
+		this.setup(attachedComponent,
+				helpScrollPane,
+				new RoundedBalloonStyle(5, 5, SystemColor.info, Color.BLACK),
+				setupPositioner(BalloonTip.Orientation.LEFT_ABOVE, BalloonTip.AttachLocation.ALIGNED, 38, 10),
+				getDefaultCloseButton());
 
 		this.setPadding(10);
-
 		this.setOpacity(0.0f);
-		
-		//this.setMaximumSize(new Dimension(100,100));
+		this.setVisible(false);
 
-		bt = this;
+		balloon = this;
 
-		((JButton) bt.getAttachedComponent()).addActionListener(new ActionListener() {
+		((JButton) this.getAttachedComponent()).addActionListener(new ActionListener() {
 
 			private ActionListener onStop = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					bt.setShown(!bt.isShown());
+					shown = !shown;
+					// balloon.getAttachedComponent().setEnabled(true);
 				}
 			};
 
 			public void actionPerformed(ActionEvent e) {
-				bt.getAttachedComponent().setEnabled(false);
-				if (bt.isShown()) {
-					FadingUtils.fadeOutBalloon(bt, null, 500, 24);
+				// balloon.getAttachedComponent().setEnabled(false);
+				if (shown) {
+					FadingUtils.fadeOutBalloon(balloon, null, 500, 24);
+					shown = false;
+					balloon.setVisible(false);
+					// balloon.setVisible(false);
 				} else {
-					FadingUtils.fadeInBalloon(bt, onStop, 500, 24);
+					FadingUtils.fadeInBalloon(balloon, onStop, 500, 24);
+					// balloon.setVisible(true);
 				}
 			}
 
@@ -74,21 +76,18 @@ public class HelpTooltip extends BalloonTip {
 		this.setCloseButton(BalloonTip.getDefaultCloseButton(), false);
 		this.getCloseButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (bt.isShown()) {
-					bt.getAttachedComponent().setEnabled(true);
-					bt.setShown(false);
+				if (shown) {
+					// balloon.getAttachedComponent().setEnabled(true);
+					shown = false;
 				}
 			}
 		});
 
 	}
-
-	public boolean isShown() {
-		return isShown;
-	}
-
-	public void setShown(boolean isShown) {
-		this.isShown = isShown;
+	
+	public void disable(){
+		this.setVisible(false);
+		this.shown = false;		
 	}
 
 }

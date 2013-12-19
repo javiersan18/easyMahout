@@ -1,15 +1,21 @@
 package easyMahout.GUI.recommender;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.border.LineBorder;
+
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.RecommenderTips;
 
 import javax.swing.JCheckBox;
 
@@ -26,6 +32,7 @@ import org.apache.mahout.cf.taste.impl.similarity.UncenteredCosineSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+
 import javax.swing.border.TitledBorder;
 
 public class SimilarityRecommenderPanel extends JPanel {
@@ -37,11 +44,14 @@ public class SimilarityRecommenderPanel extends JPanel {
 	private JComboBox comboBoxSimilarity;
 
 	private JCheckBox chckbxWeighted;
+	
+	private HelpTooltip helpTooltip;
 
 	private final static Logger log = Logger.getLogger(SimilarityRecommenderPanel.class);
 
-	public SimilarityRecommenderPanel() {		
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Similarity metric", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+	public SimilarityRecommenderPanel() {
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Similarity metric", TitledBorder.CENTER, TitledBorder.TOP,
+				null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
@@ -71,6 +81,19 @@ public class SimilarityRecommenderPanel extends JPanel {
 		chckbxWeighted.setBounds(256, 35, 97, 23);
 		add(chckbxWeighted);
 
+		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_SIMILARITY);
+		add(helpTooltip);
+
 		comboBoxSimilarity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String similarity = (String) ((JComboBox) e.getSource()).getSelectedItem();
@@ -91,6 +114,10 @@ public class SimilarityRecommenderPanel extends JPanel {
 
 	public boolean isWeighted() {
 		return chckbxWeighted.isSelected();
+	}
+	
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
 	}
 
 	public void setModelSimilarity(String type) {
@@ -142,7 +169,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 			return null;
 		}
 	}
-	
+
 	public ItemSimilarity getItemSimilarity(DataModel dataModel) {
 		try {
 			if (chckbxWeighted.isSelected()) {
@@ -167,7 +194,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 					case Constants.Similarity.CITYBLOCK:
 						return new CityBlockSimilarity(dataModel);
 					case Constants.Similarity.LOGARITHMIC:
-						return new LogLikelihoodSimilarity(dataModel);					
+						return new LogLikelihoodSimilarity(dataModel);
 					case Constants.Similarity.TANIMOTO:
 						return new TanimotoCoefficientSimilarity(dataModel);
 					case Constants.Similarity.COSINE:

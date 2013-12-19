@@ -5,9 +5,9 @@ public class Constants {
 	public class EasyMahout {
 
 		public static final String VERSION = "0.2a";
-		
+
 		public static final String VERSION_DATE = "December 2013";
-		
+
 		public static final String WEBSITE = "www.easymahout.coomingsoon.xxx";
 
 	}

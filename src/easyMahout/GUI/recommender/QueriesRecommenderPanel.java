@@ -1,12 +1,14 @@
 package easyMahout.GUI.recommender;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Component;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
@@ -21,6 +23,8 @@ import org.apache.mahout.cf.taste.recommender.Recommender;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.RecommenderTips;
 
 public class QueriesRecommenderPanel extends JPanel {
 
@@ -37,7 +41,10 @@ public class QueriesRecommenderPanel extends JPanel {
 	private JButton btnRun;
 
 	private DefaultTableModel tableModel;
-	
+
+	private HelpTooltip helpTooltip;
+
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(QueriesRecommenderPanel.class);
 
 	public QueriesRecommenderPanel() {
@@ -87,36 +94,43 @@ public class QueriesRecommenderPanel extends JPanel {
 		btnAdd.setBounds(173, 364, 89, 23);
 		add(btnAdd);
 
+		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_QUERY);
+		add(helpTooltip);
+
 		btnRun = new JButton("Run");
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// cuando se ejecuta el recomm con la celda recien modificada, no actualiza el valor
-				ArrayList<ArrayList<RecommendedItem>> recommendations = new ArrayList<>();
+				// cuando se ejecuta el recomm con la celda recien modificada,
+				// no actualiza el valor				
 				try {
 					Recommender recomm = RecommenderJPanel.buildRecommender();
 					if (recomm != null) {
-
-						int i = 0;						
+						int i = 0;
 						while (i < tableModel.getRowCount()) {
-							if ((boolean) tableModel.getValueAt(i, 0)) {								
-								recommendations.add((ArrayList) recomm.recommend((Long) tableModel.getValueAt(i, 1),
-										(Integer) tableModel.getValueAt(i, 2)));								
-							} 
-							i++;
-						}
-						
-						if (recommendations != null && !recommendations.isEmpty()) {
-
-							Iterator<ArrayList<RecommendedItem>> it = recommendations.iterator();
-
-							while (it.hasNext()) {
-								Iterator<RecommendedItem> it2 = it.next().iterator();
-								while(it2.hasNext()){
-									RecommendedItem item = it2.next();
-									System.out.println(item);
-									MainGUI.writeResult(item.toString(), Constants.Log.RESULT);
-								}								
+							if ((boolean) tableModel.getValueAt(i, 0)) {
+								Long user = (Long) tableModel.getValueAt(i, 1);
+								List<RecommendedItem> list = recomm.recommend(user, (Integer) tableModel.getValueAt(i, 2));
+								if (!list.isEmpty()) {
+									Iterator<RecommendedItem> it = list.iterator();
+									while (it.hasNext()) {
+										RecommendedItem item = it.next();										
+										MainGUI.writeResult("User " + user + ": " + item.toString(), Constants.Log.RESULT);
+									}
+								} else {
+									MainGUI.writeResult("User " + user + ": No recommendatios", Constants.Log.RESULT);
+								}
 							}
+							i++;
 						}
 
 					} else {
@@ -124,6 +138,7 @@ public class QueriesRecommenderPanel extends JPanel {
 						// tiene dataModel?
 						MainGUI.writeResult("error building the recommender", Constants.Log.ERROR);
 					}
+
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
@@ -131,6 +146,7 @@ public class QueriesRecommenderPanel extends JPanel {
 				}
 			}
 		});
+
 		btnRun.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnRun.setBounds(371, 364, 89, 23);
 		add(btnRun);
@@ -138,10 +154,10 @@ public class QueriesRecommenderPanel extends JPanel {
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int i = 0;				
+				int i = 0;
 				while (i < tableModel.getRowCount()) {
 					if ((boolean) tableModel.getValueAt(i, 0)) {
-						tableModel.removeRow(i);						
+						tableModel.removeRow(i);
 					} else {
 						i++;
 					}
@@ -152,4 +168,9 @@ public class QueriesRecommenderPanel extends JPanel {
 		add(btnDelete);
 
 	}
+
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
+
 }

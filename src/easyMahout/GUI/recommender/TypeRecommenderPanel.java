@@ -2,37 +2,28 @@ package easyMahout.GUI.recommender;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
-import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
-
-import javax.swing.border.TitledBorder;
-import javax.swing.JButton;
-
-import org.apache.commons.io.IOUtils;
-import java.awt.SystemColor;
+import easyMahout.utils.help.RecommenderTips;
 
 public class TypeRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private JComboBox comboBoxType;
+
+	private HelpTooltip helpTooltip;
 
 	public TypeRecommenderPanel() {
 		super();
@@ -48,56 +39,16 @@ public class TypeRecommenderPanel extends JPanel {
 		add(comboBoxType);
 
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnHelp.setPreferredSize(new Dimension(65, 40));
 		btnHelp.setBounds(10, 358, 40, 40);
 		add(btnHelp);
 
-		// Help balloon tip
-
-		FileInputStream fis;
-		URL url = this.getClass().getResource("/easyMahout/GUI/images/item.html");
-		System.out.println(url);
-
-		// fis = new
-		// FileInputStream(this.getClass().getResourceAsStream("item.html"));
-		String tolltipText = "";
-		try {
-			InputStream is = this.getClass().getResourceAsStream("/easyMahout/GUI/images/item.html");
-			tolltipText = IOUtils.toString(is, "UTF-8");
-			System.out.println(tolltipText);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		JLabel labelHelp = new JLabel(tolltipText);
-		labelHelp.setOpaque(true);
-		labelHelp.setBackground(SystemColor.info);
-		
-		// labelHelp.setLineWrap(true);
-		// labelHelp.setBackground(new Color(153, 204, 255));
-		labelHelp.setVerticalAlignment(SwingConstants.TOP);
-		//labelHelp.setPreferredSize(new Dimension(300, 300));
-		// labelHelp.setLineWrap(true);
-		// labelHelp.setSize(new Dimension(100, 100));
-		// labelHelp.setMaximumSize(new Dimension(300, 300));
-
-		JScrollPane logScrollPane = new JScrollPane(labelHelp);
-		logScrollPane.setBackground(SystemColor.info);
-		
-		// logScrollPane.setBounds(2, 463, 100, 100);
-		logScrollPane.setPreferredSize(new Dimension(420, 310));
-		// JTextPane logTextPane = new JTextPane();
-		//logScrollPane.setViewportView(labelHelp);
-		// //logTextPane.setBackground(Color.WHITE);
-		// //logTextPane.setBounds(42, 501, 90, 90);
-		// //logTextPane.setPreferredSize(new Dimension(400, 310));
-		// logTextPane.setEditable(false);
-		// //logTextPane.
-		// logTextPane.setContentType("text/html");
-		// logTextPane.setText(tolltipText);
-
-		final HelpTooltip helpTooltip = new HelpTooltip(btnHelp, logScrollPane);
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_TYPE);
 		add(helpTooltip);
 
 		comboBoxType.addActionListener(new ActionListener() {
@@ -112,6 +63,10 @@ public class TypeRecommenderPanel extends JPanel {
 			}
 		});
 
+	}
+
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
 	}
 
 	public String getSelectedType() {

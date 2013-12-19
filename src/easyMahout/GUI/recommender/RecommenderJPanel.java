@@ -80,7 +80,7 @@ public class RecommenderJPanel extends JPanel {
 	private boolean configurationNew;
 
 	private String activeConfigutation;
-	
+
 	private Document actualDoc;
 
 	public RecommenderJPanel() {
@@ -92,8 +92,8 @@ public class RecommenderJPanel extends JPanel {
 		itembased = true;
 		configurationModified = false;
 		configurationNew = false;
-		actualDoc = RecommenderXMLPreferences.createDefaultXMLDoc();		
-		
+		actualDoc = RecommenderXMLPreferences.createDefaultXMLDoc();
+
 		treeMenu = new JTree(populateTree()[0]);
 
 		DisabledRenderer renderer = new DisabledRenderer();
@@ -110,7 +110,8 @@ public class RecommenderJPanel extends JPanel {
 		treePanel.setBounds(20, 11, 202, 410);
 
 		treeMenu.setBounds(0, 0, 202, 410);
-		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
+				null, null));
 		treeMenu.setRootVisible(false);
 		treeMenu.setShowsRootHandles(true);
 		treeMenu.expandRow(0);
@@ -299,7 +300,7 @@ public class RecommenderJPanel extends JPanel {
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
-							queriesPanel.setVisible(false);
+							disableHelpTips();
 
 						} else if (category.equals("Data Model")) {
 							log.info("dataB1");
@@ -309,6 +310,7 @@ public class RecommenderJPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
+							disableHelpTips();
 
 						} else if (category.equals("Similarity")) {
 							log.info("similarityB1");
@@ -318,6 +320,7 @@ public class RecommenderJPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
+							disableHelpTips();
 
 						} else if (category.equals("Neighborhood")) {
 							if (itembased) {
@@ -328,6 +331,7 @@ public class RecommenderJPanel extends JPanel {
 								neighborhoodPanel.setVisible(true);
 								evaluatorPanel.setVisible(false);
 								queriesPanel.setVisible(false);
+								disableHelpTips();
 							}
 
 						} else if (category.equals("Evaluator")) {
@@ -338,6 +342,7 @@ public class RecommenderJPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(true);
 							queriesPanel.setVisible(false);
+							disableHelpTips();
 
 						} else if (category.equals("Queries")) {
 							log.info("queriesB1");
@@ -347,6 +352,7 @@ public class RecommenderJPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(true);
+							disableHelpTips();
 						}
 					}
 				}
@@ -368,8 +374,10 @@ public class RecommenderJPanel extends JPanel {
 						addItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								if (configurationModified) {
-									int dialogResult = JOptionPane.showConfirmDialog(null, "The actual configuration is not saved, would yo like to save it?",
-											"Save preferences", JOptionPane.YES_NO_CANCEL_OPTION);
+									int dialogResult = JOptionPane.showConfirmDialog(null,
+											"The actual configuration is not saved, would yo like to save it?",
+											"Save preferences",
+											JOptionPane.YES_NO_CANCEL_OPTION);
 									if (dialogResult == JOptionPane.YES_OPTION) {
 										if (activeConfigutation == null) {
 											// jfilechooser save as...
@@ -406,29 +414,7 @@ public class RecommenderJPanel extends JPanel {
 						JMenuItem loadItem = new JMenuItem("Load");
 						loadItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								String name = (String) nodeSelected.getUserObject();
-								String filePath = ((DisabledNode) nodeSelected).getPathFile();
-								int dialogButton = JOptionPane.YES_NO_OPTION;
-								int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to delete \"" + name + "\"?", "Delete File",
-										dialogButton);
-								if (dialogResult == JOptionPane.YES_OPTION) {
-									File fichero = new File(filePath);
-									if (fichero.delete()) {
-										System.out.println("El fichero ha sido borrado satisfactoriamente");
-										treeNodes.remove(nodeSelected);
 
-										// nodeSaves.add(treeNodes.get(treeNodes.size()
-										// - 1));
-										// DefaultTreeModel model = new
-										// DefaultTreeModel(nodeRoot);
-										//
-										// treeMenu.setModel(model);
-										// treeMenu.expandRow(0);
-										// treeMenu.expandRow(7);
-										MainGUI.writeResult("Preferences file \"" + name + "\" successfully deleted.", Constants.Log.INFO);
-									} else
-										System.out.println("El fichero no puede ser borrado");
-								}
 							}
 						});
 
@@ -438,7 +424,9 @@ public class RecommenderJPanel extends JPanel {
 								String name = (String) nodeSelected.getUserObject();
 								String filePath = ((DisabledNode) nodeSelected).getPathFile();
 								int dialogButton = JOptionPane.YES_NO_OPTION;
-								int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to delete \"" + name + "\"?", "Delete File",
+								int dialogResult = JOptionPane.showConfirmDialog(null,
+										"Would you like to delete \"" + name + "\"?",
+										"Delete File",
 										dialogButton);
 								if (dialogResult == JOptionPane.YES_OPTION) {
 									File fichero = new File(filePath);
@@ -473,9 +461,16 @@ public class RecommenderJPanel extends JPanel {
 			} catch (Exception e1) {
 				// The place where we clicked is not a tree node, do nothing.
 			}
-
 		}
+	}
 
+	private void disableHelpTips() {
+		typePanel.getHelpTooltip().disable();
+		dataModelPanel.getHelpTooltip().disable();
+		similarityPanel.getHelpTooltip().disable();
+		neighborhoodPanel.getHelpTooltip().disable();
+		evaluatorPanel.getHelpTooltip().disable();
+		queriesPanel.getHelpTooltip().disable();
 	}
 
 	private ArrayList<DisabledNode> getSavesFiles() {
