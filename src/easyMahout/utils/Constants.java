@@ -5,9 +5,9 @@ public class Constants {
 	public class EasyMahout {
 
 		public static final String VERSION = "0.2a";
-
+		
 		public static final String VERSION_DATE = "December 2013";
-
+		
 		public static final String WEBSITE = "www.easymahout.coomingsoon.xxx";
 
 	}
@@ -176,10 +176,6 @@ public class Constants {
 
 		public static final String FUZZYKMEANS = "Fuzzy K-MEANS";
 
-		
-		public static final String DIRICHLET = "DIRICHLET";
-		
-		public static final String USER_DEFINED = "USER_DEFINED";
 	}
 
 	public class ClusterDist {
@@ -196,4 +192,19 @@ public class Constants {
 
 		public static final String WEIGHTED = "WEIGHTED";
 	}
+	
+	public class ClassificatorAlg {
+
+		public static final String SGD = "SGD";
+
+		public static final String SVM = "SVM";
+
+		public static final String NAIVEBAYES = "NAIVE BAYES";
+
+		public static final String COMPNAIVEBAYES = "COMPLEMENTARY NAIVE BAYES";
+
+		public static final String RAMDOMFOREST = "RAMDOM FOREST";
+	}
+	
+	
 }

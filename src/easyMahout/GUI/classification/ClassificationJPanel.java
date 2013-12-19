@@ -27,7 +27,7 @@ public class ClassificationJPanel extends JPanel {
 
 	private JPanel treePanel;
 
-	private JPanel p1, p2, p3, p4, p5;
+	private JPanel p1, p2, p3, p4;
 
 	private DynamicTree treeMenu;
 
@@ -58,35 +58,29 @@ public class ClassificationJPanel extends JPanel {
 
 		// Create different panes
 		// 1 panel por cada posible configuracion
-		p1 = new TypeRecommenderPanel();
+		p1 = new DataModelClassificationPanel();
 		p1.setBounds(238, 11, 481, 382);
 		panelClassification.add(p1);
 		p1.setLayout(null);
 		p1.setVisible(false);
 
-		/*p2 = new dataModelRecommenderPanel();
+		p2 = new TrainingDataClassificationPanel();
 		p2.setBounds(238, 11, 481, 382);
-		panelRecommender.add(p2);
+		panelClassification.add(p2);
 		p2.setLayout(null);
 		p2.setVisible(false);
 
-		p3 = new similarityRecommenderPanel();
+		p3 = new AlgorithmClassificationPanel();
 		p3.setBounds(238, 11, 481, 382);
-		panelRecommender.add(p3);
+		panelClassification.add(p3);
 		p3.setLayout(null);
 		p3.setVisible(false);
 
-		p4 = new neighborhoodRecommenderPanel();
+		p4 = new EvaluatorClassificationPanel();
 		p4.setBounds(238, 11, 481, 382);
-		panelRecommender.add(p4);
+		panelClassification.add(p4);
 		p4.setLayout(null);
 		p4.setVisible(false);
-
-		p5 = new evaluatorRecommenderPanel();
-		p5.setBounds(238, 11, 481, 382);
-		panelRecommender.add(p5);
-		p5.setLayout(null);
-		p5.setVisible(false);*/
 	}
 
 	public JPanel getTreePanel() {
@@ -99,17 +93,15 @@ public class ClassificationJPanel extends JPanel {
 
 	public void populateTree(DynamicTree treeMenu) {
 
-		String cat1 = new String("Type");
-		String cat2 = new String("Data Model");
-		String cat3 = new String("Similarity");
-		String cat4 = new String("Neighborhood");
-		String cat5 = new String("Evaluator");
+		String cat1 = new String("Data Model");
+		String cat2 = new String("Training Data");
+		String cat3 = new String("Algorithm");
+		String cat4 = new String("Evaluator");
 
 		treeMenu.addObject(null, cat1);
 		treeMenu.addObject(null, cat2);
 		treeMenu.addObject(null, cat3);
 		treeMenu.addObject(null, cat4);
-		treeMenu.addObject(null, cat5);
 
 		treeMenu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -133,47 +125,34 @@ public class ClassificationJPanel extends JPanel {
 						log.info("catsB1");
 
 						String category = (String) node.getUserObject();
-						if (category.equals("Type")) {
-							log.info("typeB1");
+						if (category.equals("Data Model")) {
+							log.info("dataB1");
 							p1.setVisible(true);
 							p2.setVisible(false);
 							p3.setVisible(false);
 							p4.setVisible(false);
-							p5.setVisible(false);
 
-						} else if (category.equals("Data Model")) {
-							log.info("dataB1");
+						} else if (category.equals("Training Data")) {
+							log.info("trainingDataB1");
 							p1.setVisible(false);
 							p2.setVisible(true);
 							p3.setVisible(false);
 							p4.setVisible(false);
-							p5.setVisible(false);
 
-						} else if (category.equals("Similarity")) {
-							log.info("similarityB1");
+						} else if (category.equals("Algorithm")) {
+							log.info("algorithmB1");
 							p1.setVisible(false);
 							p2.setVisible(false);
 							p3.setVisible(true);
 							p4.setVisible(false);
-							p5.setVisible(false);
-
-						} else if (category.equals("Neighborhood")) {
-							log.info("neighB1");
-							p1.setVisible(false);
-							p2.setVisible(false);
-							p3.setVisible(false);
-							p4.setVisible(true);
-							p5.setVisible(false);
 
 						} else if (category.equals("Evaluator")) {
 							log.info("evalB1");
 							p1.setVisible(false);
 							p2.setVisible(false);
 							p3.setVisible(false);
-							p4.setVisible(false);
-							p5.setVisible(true);
+							p4.setVisible(true);
 						}
-
 					}
 				}
 			} catch (Exception e1) {

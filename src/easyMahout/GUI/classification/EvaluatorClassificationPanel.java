@@ -7,13 +7,13 @@ import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 
-public class EvaluatorRecommenderPanel extends JPanel {
+public class EvaluatorClassificationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
 	private JComboBox comboBoxEvaluator;
 
-	public EvaluatorRecommenderPanel() {
+	public EvaluatorClassificationPanel() {
 		//super();
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setForeground(Color.BLACK);

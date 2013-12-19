@@ -24,7 +24,7 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 
-public class DataModelRecommenderPanel extends JPanel {
+public class DataModelClassificationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,13 +32,13 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private JComboBox comboBoxDatamodel;
 
-	private final static Logger log = Logger.getLogger(DataModelRecommenderPanel.class);
+	private final static Logger log = Logger.getLogger(DataModelClassificationPanel.class);
 
 	private JTextField textPath;
 
 	private DataModel dataModel;
 
-	public DataModelRecommenderPanel() {
+	public DataModelClassificationPanel() {
 		//super();
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setForeground(Color.BLACK);
@@ -91,7 +91,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser selectedFile = new JFileChooser();
-				int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
+				int i = selectedFile.showOpenDialog(DataModelClassificationPanel.this);
 				if (i == JFileChooser.APPROVE_OPTION) {
 					File data = selectedFile.getSelectedFile();
 					String absPath = data.getAbsolutePath();
