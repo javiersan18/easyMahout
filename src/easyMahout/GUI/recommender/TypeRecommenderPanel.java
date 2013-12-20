@@ -54,11 +54,11 @@ public class TypeRecommenderPanel extends JPanel {
 		comboBoxType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String type = (String) ((JComboBox) e.getSource()).getSelectedItem();
-				RecommenderJPanel.getSimilarityPanel().setModelSimilarity(type);
+				MainRecommenderPanel.getSimilarityPanel().setModelSimilarity(type);
 				if (type.equals(Constants.RecommType.ITEMBASED)) {
-					RecommenderJPanel.setEnableNeighborhood(false);
+					MainRecommenderPanel.setEnableNeighborhood(false);
 				} else if (type.equals(Constants.RecommType.USERBASED)) {
-					RecommenderJPanel.setEnableNeighborhood(true);
+					MainRecommenderPanel.setEnableNeighborhood(true);
 				}
 			}
 		});

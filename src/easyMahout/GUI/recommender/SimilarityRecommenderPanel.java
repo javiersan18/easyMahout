@@ -67,7 +67,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		comboBoxSimilarity = new JComboBox();
 		comboBoxSimilarity.setMaximumRowCount(16);
 
-		String type = RecommenderJPanel.getTypePanel().getSelectedType();
+		String type = MainRecommenderPanel.getTypePanel().getSelectedType();
 		if (type.equals(Constants.RecommType.ITEMBASED)) {
 			comboBoxSimilarity.setModel(itemSimilarity);
 		} else if (type.equals(Constants.RecommType.USERBASED)) {
