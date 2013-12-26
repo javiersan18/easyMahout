@@ -23,6 +23,8 @@ import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
 
+import com.jidesoft.swing.FolderChooser;
+
 import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
@@ -40,11 +42,25 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private JComboBox comboBoxDatamodel;
 
-	private JTextField textPath, tfDelimiter;
+	private JTextField textInputPath;
 
-	private JLabel lblDelimiter, lblDataSource;
+	private JTextField tfDelimiter;
 
-	private JButton btnSelect;
+	private JTextField textOutputPath;
+
+	private JLabel lblDelimiter;
+
+	private JLabel lblInputDataSource;
+
+	private JLabel lblOutputDataSource;
+
+	private JButton btnSelectInput;
+
+	private JButton btnSelectOutput;
+
+	private JButton btnCreate;
+
+	private final JButton btnHelp;
 
 	private JCheckBox chckbxBooleanPreferences;
 
@@ -74,18 +90,18 @@ public class DataModelRecommenderPanel extends JPanel {
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
 
-		lblDataSource = new JLabel("Data source:");
-		lblDataSource.setBounds(38, 105, 89, 14);
-		add(lblDataSource);
+		lblInputDataSource = new JLabel("Input data source:");
+		lblInputDataSource.setBounds(38, 105, 107, 14);
+		add(lblInputDataSource);
 
-		textPath = new JTextField();
-		textPath.setBounds(38, 131, 401, 20);
-		add(textPath);
-		textPath.setColumns(10);
+		textInputPath = new JTextField();
+		textInputPath.setBounds(38, 130, 401, 20);
+		add(textInputPath);
+		textInputPath.setColumns(10);
 
-		btnSelect = new JButton("Select File...");
-		btnSelect.setBounds(130, 165, 107, 23);
-		add(btnSelect);
+		btnSelectInput = new JButton("Select File...");
+		btnSelectInput.setBounds(130, 165, 107, 23);
+		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
 		lblDelimiter.setBounds(274, 71, 68, 14);
@@ -100,11 +116,11 @@ public class DataModelRecommenderPanel extends JPanel {
 		tfDelimiter.setText(",");
 		tfDelimiter.setEnabled(false);
 
-		JButton btnCreate = new JButton("Create Model");
+		btnCreate = new JButton("Create Model");
 		btnCreate.setBounds(241, 165, 107, 23);
 		add(btnCreate);
 
-		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -117,17 +133,71 @@ public class DataModelRecommenderPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
 		add(helpTooltip);
 
-		btnSelect.addActionListener(new ActionListener() {
+		lblOutputDataSource = new JLabel("Output data source (Optional):");
+		lblOutputDataSource.setBounds(38, 206, 157, 14);
+		add(lblOutputDataSource);
+
+		textOutputPath = new JTextField();
+		textOutputPath.setColumns(10);
+		textOutputPath.setBounds(38, 230, 401, 20);
+		add(textOutputPath);
+
+		btnSelectOutput = new JButton("Select File...");
+		btnSelectOutput.setBounds(182, 265, 107, 23);
+		add(btnSelectOutput);
+
+		btnSelectInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser selectedFile = new JFileChooser();
-				int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
-				if (i == JFileChooser.APPROVE_OPTION) {
-					File data = selectedFile.getSelectedFile();
-					String absPath = data.getAbsolutePath();
-					textPath.setText(absPath);
-				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
-					log.error("Error opening data file");
+				if (MainGUI.isDistributed()) {
+					FolderChooser chooser = new FolderChooser();
+					int returnVal = chooser.showOpenDialog(DataModelRecommenderPanel.this);
+					if (returnVal == FolderChooser.APPROVE_OPTION) {
+						File data = chooser.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textInputPath.setText(absPath);
+					} else if (returnVal == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error searching the input directory", Constants.Log.ERROR);
+						log.error("Error searching input directory");
+					}
+				} else {
+					JFileChooser selectedFile = new JFileChooser();
+					int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
+					if (i == JFileChooser.APPROVE_OPTION) {
+						File data = selectedFile.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textInputPath.setText(absPath);
+					} else if (i == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
+						log.error("Error opening data file");
+					}
+				}
+			}
+		});
+
+		btnSelectOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (MainGUI.isDistributed()) {
+					FolderChooser chooser = new FolderChooser();
+					int returnVal = chooser.showOpenDialog(DataModelRecommenderPanel.this);
+					if (returnVal == FolderChooser.APPROVE_OPTION) {
+						File data = chooser.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textOutputPath.setText(absPath);
+					} else if (returnVal == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error searching the input directory", Constants.Log.ERROR);
+						log.error("Error searching input directory");
+					}
+				} else {
+					JFileChooser selectedFile = new JFileChooser();
+					int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
+					if (i == JFileChooser.APPROVE_OPTION) {
+						File data = selectedFile.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textOutputPath.setText(absPath);
+					} else if (i == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error searching the file", Constants.Log.ERROR);
+						log.error("Error searching output data file");
+					}
 				}
 			}
 		});
@@ -135,7 +205,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selected = comboBoxDatamodel.getSelectedIndex();
-				String filePath = textPath.getText();
+				String filePath = textInputPath.getText();
 				try {
 					// TODO: distintos tipos de modelos...
 					switch (selected) {
@@ -188,7 +258,6 @@ public class DataModelRecommenderPanel extends JPanel {
 					MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
 					log.error("Error reading data file", e1);
 				}
-
 			}
 		});
 
@@ -223,7 +292,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		});
 
 	}
-	
+
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
 	}
@@ -234,5 +303,25 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	public void setDataModel(DataModel dataModel) {
 		this.dataModel = dataModel;
+	}
+
+	public void setDistributed(boolean distributed) {
+
+		if (distributed) {
+			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
+			lblOutputDataSource.setText("Output directory:");
+			lblInputDataSource.setText("Input directory:");
+			btnSelectOutput.setText("Select Folder...");
+			btnSelectInput.setText("Select Folder...");
+		} else {
+			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);
+			lblOutputDataSource.setText("Output data file (Optional):");
+			lblInputDataSource.setText("Input data source:");
+			btnSelectOutput.setText("Select File...");
+			btnSelectInput.setText("Select File...");
+		}
+
+		comboBoxDatamodel.setEnabled(!distributed);
+		btnCreate.setEnabled(!distributed);
 	}
 }

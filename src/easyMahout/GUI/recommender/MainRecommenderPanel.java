@@ -496,6 +496,25 @@ public class MainRecommenderPanel extends JPanel {
 		evaluatorPanel.getHelpTooltip().disable();
 		queriesPanel.getHelpTooltip().disable();
 	}
+	
+	public void setDistributed(boolean distributed){
+//		if(typePanel.isVisible()){			
+//			panelRecommender.remove(typePanel);			
+//			typePanel = new TypeRecommenderPanel();
+//			panelRecommender.add(typePanel);			
+//			typePanel.setVisible(true);
+//		}
+//		else{
+//			panelRecommender.remove(typePanel);	
+//			typePanel = new TypeRecommenderPanel();
+//			panelRecommender.add(typePanel);
+//			typePanel.setVisible(false);
+//		}
+		
+		typePanel.setDistributed(distributed);
+		dataModelPanel.setDistributed(distributed);
+		
+	}
 
 	private ArrayList<DisabledNode> getSavesFiles() {
 

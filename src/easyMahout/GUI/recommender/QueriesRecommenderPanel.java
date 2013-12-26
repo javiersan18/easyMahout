@@ -17,7 +17,9 @@ import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
 
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
@@ -111,7 +113,16 @@ public class QueriesRecommenderPanel extends JPanel {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// cuando se ejecuta el recomm con la celda recien modificada,
-				// no actualiza el valor				
+				// no actualiza el valor	
+				
+//				String[] args = {"a","b"};
+//				try {
+//					ToolRunner.run(new ItemSimilarityJob(), args);
+//				} catch (Exception e2) {
+//					// TODO Auto-generated catch block
+//					e2.printStackTrace();
+//				}				
+				
 				try {
 					Recommender recomm = MainRecommenderPanel.buildRecommender();
 					if (recomm != null) {

@@ -29,6 +29,10 @@ public class Constants {
 
 		public static final String ITEMBASED = "Item based";
 
+		public static final String ITEMSIMILARITY = "Item Similarities";
+
+		public static final String ITEMBASED_DISTRIBUTED = "Item Based Collaborative Filtering";
+
 	}
 
 	public class DataModel {
@@ -88,12 +92,29 @@ public class Constants {
 
 	}
 
+	public class SimilarityDistributed {
+
+		public static final String EUCLIDEAN = "SIMILARITY_EUCLIDEAN_DISTANCE";
+
+		public static final String COOCURRENCE = "SIMILARITY_COOCCURRENCE";
+
+		public static final String LOGARITHMIC = "SIMILARITY_LOGLIKELIHOOD";
+
+		public static final String PEARSON = "SIMILARITY_PEARSON_CORRELATION";
+
+		public static final String TANIMOTO = "SIMILARITY_TANIMOTO_COEFFICIENT";
+
+		public static final String COSINE = "SIMILARITY_UNCENTERED_COSINE";
+
+		public static final String ZERO_COSINE = "SIMILARITY_UNCENTERED_ZERO_ASSUMING_COSINE";
+
+	}
+
 	public class Neighborhood {
 
 		// public static final String ABSTRACT = "Abstract";
 
 		// public static final String CACHING = "Caching";
-		
 
 		public static final String NEAREST = "Nearest N";
 
@@ -210,5 +231,5 @@ public class Constants {
 
 		public static final String RAMDOMFOREST = "RAMDOM FOREST";
 	}
-	//Angel 
+	// Angel
 }

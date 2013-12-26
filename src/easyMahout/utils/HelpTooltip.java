@@ -23,19 +23,24 @@ public class HelpTooltip extends BalloonTip {
 	private boolean shown = false;
 
 	private HelpTooltip balloon;
+	
+	private JLabel labelHelp;
+	
+	private JScrollPane helpScrollPane;
 
 	public HelpTooltip(JComponent attachedComponent, String text) {
 		super();
 
-		JLabel labelHelp = new JLabel(text);
+		labelHelp = new JLabel(text);
 		labelHelp.setOpaque(true);
 		labelHelp.setBackground(SystemColor.info);
 
 		labelHelp.setVerticalAlignment(SwingConstants.TOP);
 
-		JScrollPane helpScrollPane = new JScrollPane(labelHelp);
+		helpScrollPane = new JScrollPane(labelHelp);
 		helpScrollPane.setBackground(SystemColor.info);
 		helpScrollPane.setPreferredSize(new Dimension(420, 310));
+		//helpScrollPane.getComponents();
 
 		this.setup(attachedComponent,
 				helpScrollPane,
@@ -88,6 +93,20 @@ public class HelpTooltip extends BalloonTip {
 	public void disable(){
 		this.setVisible(false);
 		this.shown = false;		
+	}
+	
+	public void setText(String text){
+		labelHelp = new JLabel(text);
+		labelHelp.setOpaque(true);
+		labelHelp.setBackground(SystemColor.info);
+
+		labelHelp.setVerticalAlignment(SwingConstants.TOP);
+
+		helpScrollPane = new JScrollPane(labelHelp);
+		helpScrollPane.setBackground(SystemColor.info);
+		helpScrollPane.setPreferredSize(new Dimension(420, 310));
+		
+		this.setContents(helpScrollPane);
 	}
 
 }
