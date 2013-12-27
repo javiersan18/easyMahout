@@ -324,4 +324,16 @@ public class DataModelRecommenderPanel extends JPanel {
 		comboBoxDatamodel.setEnabled(!distributed);
 		btnCreate.setEnabled(!distributed);
 	}
+
+	public String getInputPath() {
+		return textInputPath.toString();
+	}
+
+	public String getOutputPath() {
+		return textOutputPath.toString();
+	}
+
+	public String getBooleanPrefs() {
+		return String.valueOf(chckbxBooleanPreferences.isSelected());
+	}
 }

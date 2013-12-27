@@ -3,9 +3,10 @@ package easyMahout.GUI;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -17,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.JSeparator;
+import javax.swing.JRadioButtonMenuItem;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -27,14 +30,6 @@ import easyMahout.GUI.clustering.ClusterJPanel;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
 import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
-
-import javax.swing.JSeparator;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JRadioButtonMenuItem;
 
 public class MainGUI extends JFrame {
 
@@ -290,7 +285,7 @@ public class MainGUI extends JFrame {
 		return distributed;
 	}
 
-	public static void setDistributed(boolean hadoop) {
-		MainGUI.distributed = hadoop;
+	public static void setDistributed(boolean distributed) {
+		MainGUI.distributed = distributed;
 	}
 }

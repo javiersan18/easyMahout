@@ -45,7 +45,7 @@ public class TypeRecommenderPanel extends JPanel {
 		setBounds(228, 11, 480, 408);
 
 		distributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.ITEMSIMILARITY,
-				Constants.RecommType.ITEMBASED_DISTRIBUTED });
+				Constants.RecommType.ITEMBASED_DISTRIBUTED, Constants.RecommType.FACTORIZED_RECOMMENDER });
 		nonDistributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED });
 
 		comboBoxType = new JComboBox();

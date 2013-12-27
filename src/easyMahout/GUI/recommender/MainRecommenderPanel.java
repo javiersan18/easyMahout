@@ -4,12 +4,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Color;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
@@ -19,7 +23,6 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-import org.w3c.dom.Document;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.RecommenderXMLPreferences;
@@ -27,16 +30,10 @@ import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
 
-import javax.swing.border.LineBorder;
-import javax.swing.tree.DefaultTreeModel;
-
-import java.awt.Color;
+import org.w3c.dom.Document;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.swing.border.TitledBorder;
-import javax.swing.JLabel;
 
 public class MainRecommenderPanel extends JPanel {
 
@@ -45,7 +42,7 @@ public class MainRecommenderPanel extends JPanel {
 	private JPanel panelRecommender;
 
 	private JPanel treePanel;
-	
+
 	private static ConfigureRecommenderPanel configPanel;
 
 	private static TypeRecommenderPanel typePanel;
@@ -60,6 +57,8 @@ public class MainRecommenderPanel extends JPanel {
 
 	private EvaluatorRecommenderPanel evaluatorPanel;
 
+	private JobRecommenderPanel jobPanel;
+
 	private static JTree treeMenu;
 
 	private final static Logger log = Logger.getLogger(MainRecommenderPanel.class);
@@ -69,6 +68,10 @@ public class MainRecommenderPanel extends JPanel {
 	private ArrayList<DisabledNode> treeNodes;
 
 	private static DisabledNode nodeNeighborhood;
+
+	private static DisabledNode nodeEvaluator;
+
+	private static DisabledNode nodeQueries;
 
 	private static DisabledNode nodeSaves;
 
@@ -86,13 +89,15 @@ public class MainRecommenderPanel extends JPanel {
 
 	private Document actualDoc;
 
+	private DisabledNode nodeJob;
+
 	public MainRecommenderPanel() {
 
 		this.setLayout(null);
 
 		panelRecommender = this;
 
-		itembased = true;
+		itembased = false;
 		configurationModified = false;
 		configurationNew = false;
 		actualDoc = RecommenderXMLPreferences.createDefaultXMLDoc();
@@ -127,13 +132,13 @@ public class MainRecommenderPanel extends JPanel {
 		this.add(treePanel);
 
 		// Create different panes
-		
+
 		configPanel = new ConfigureRecommenderPanel();
 		configPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(configPanel);
 		configPanel.setLayout(null);
 		configPanel.setVisible(true);
-		
+
 		typePanel = new TypeRecommenderPanel();
 		typePanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(typePanel);
@@ -169,6 +174,12 @@ public class MainRecommenderPanel extends JPanel {
 		panelRecommender.add(queriesPanel);
 		queriesPanel.setLayout(null);
 		queriesPanel.setVisible(false);
+
+		jobPanel = new JobRecommenderPanel();
+		jobPanel.setBounds(228, 11, 481, 410);
+		panelRecommender.add(jobPanel);
+		jobPanel.setLayout(null);
+		jobPanel.setVisible(false);
 
 	}
 
@@ -207,6 +218,28 @@ public class MainRecommenderPanel extends JPanel {
 		} else
 			// mas posibles tipos de recomm
 			return null;
+	}
+
+	public static String[] buildRecommenderJob() {
+		if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
+			return new String[] { 
+					"--input", dataModelPanel.getInputPath().toString(), 
+					"--output",	dataModelPanel.getOutputPath().toString(),
+					"--similarityClassname", similarityPanel.getDistributedSimilarity(),
+					"--maxSimilaritiesPerItem", similarityPanel.getMaxSimilarities(),
+					"--maxPrefsPerUser", similarityPanel.getMaxPreferences(),
+					"--minPrefsPerUser", similarityPanel.getMinPreferences(),
+					"--booleanData", dataModelPanel.getBooleanPrefs(),
+					"--threshold", similarityPanel.getThreshold() };
+		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY)) {
+			// TODO
+			return null;
+		} else {
+			// if(Constants.RecommType.FACTORIZED_RECOMMENDER)
+			// TODO
+			return null;
+		}
+
 	}
 
 	// private RecommenderBuilder buildRecommender() {
@@ -256,7 +289,8 @@ public class MainRecommenderPanel extends JPanel {
 				"Neighborhood", // 5
 				"Evaluator", // 6
 				"Queries", // 7
-				"Saves", // 8
+				"Hadoop Job", // 8
+				"Saves", // 9
 		};
 
 		treeNodes = new ArrayList<DisabledNode>();
@@ -271,10 +305,15 @@ public class MainRecommenderPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(5));
 		treeNodes.get(1).add(treeNodes.get(6));
 		treeNodes.get(1).add(treeNodes.get(7));
-		treeNodes.get(0).add(treeNodes.get(8));
+		treeNodes.get(1).add(treeNodes.get(8));
+		treeNodes.get(0).add(treeNodes.get(9));
 
 		nodeNeighborhood = treeNodes.get(5);
-		nodeSaves = treeNodes.get(8);
+		nodeQueries = treeNodes.get(7);
+		nodeEvaluator = treeNodes.get(6);
+		nodeJob = treeNodes.get(8);
+		nodeJob.setEnabled(false);
+		nodeSaves = treeNodes.get(9);
 		nodeConfigure = treeNodes.get(1);
 
 		ArrayList<DisabledNode> savesNodes = getSavesFiles();
@@ -319,6 +358,8 @@ public class MainRecommenderPanel extends JPanel {
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
+							queriesPanel.setVisible(false);
+							jobPanel.setVisible(false);
 							disableHelpTips();
 
 						} else if (category.equals("Data Model")) {
@@ -330,6 +371,7 @@ public class MainRecommenderPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
+							jobPanel.setVisible(false);
 							disableHelpTips();
 
 						} else if (category.equals("Similarity")) {
@@ -341,10 +383,12 @@ public class MainRecommenderPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
+							jobPanel.setVisible(false);
 							disableHelpTips();
 
 						} else if (category.equals("Neighborhood")) {
-							if (itembased) {
+							log.info(MainGUI.isDistributed());
+							if (!MainGUI.isDistributed() && !itembased) {
 								log.info("neighB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
@@ -353,19 +397,23 @@ public class MainRecommenderPanel extends JPanel {
 								neighborhoodPanel.setVisible(true);
 								evaluatorPanel.setVisible(false);
 								queriesPanel.setVisible(false);
+								jobPanel.setVisible(false);
 								disableHelpTips();
 							}
 
 						} else if (category.equals("Evaluator")) {
-							log.info("evalB1");
-							configPanel.setVisible(false);
-							typePanel.setVisible(false);
-							dataModelPanel.setVisible(false);
-							similarityPanel.setVisible(false);
-							neighborhoodPanel.setVisible(false);
-							evaluatorPanel.setVisible(true);
-							queriesPanel.setVisible(false);
-							disableHelpTips();
+							if (!MainGUI.isDistributed()) {
+								log.info("evalB1");
+								configPanel.setVisible(false);
+								typePanel.setVisible(false);
+								dataModelPanel.setVisible(false);
+								similarityPanel.setVisible(false);
+								neighborhoodPanel.setVisible(false);
+								evaluatorPanel.setVisible(true);
+								queriesPanel.setVisible(false);
+								jobPanel.setVisible(false);
+								disableHelpTips();
+							}
 
 						} else if (category.equals("Queries")) {
 							log.info("queriesB1");
@@ -376,7 +424,23 @@ public class MainRecommenderPanel extends JPanel {
 							neighborhoodPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(true);
+							jobPanel.setVisible(false);
 							disableHelpTips();
+						}
+
+						else if (category.equals("Hadoop Job")) {
+							if (MainGUI.isDistributed()) {
+								log.info("jobB1");
+								configPanel.setVisible(false);
+								typePanel.setVisible(false);
+								dataModelPanel.setVisible(false);
+								similarityPanel.setVisible(false);
+								neighborhoodPanel.setVisible(false);
+								evaluatorPanel.setVisible(false);
+								queriesPanel.setVisible(false);
+								jobPanel.setVisible(true);
+								disableHelpTips();
+							}
 						}
 					}
 				}
@@ -495,25 +559,32 @@ public class MainRecommenderPanel extends JPanel {
 		neighborhoodPanel.getHelpTooltip().disable();
 		evaluatorPanel.getHelpTooltip().disable();
 		queriesPanel.getHelpTooltip().disable();
+		jobPanel.getHelpTooltip().disable();
 	}
-	
-	public void setDistributed(boolean distributed){
-//		if(typePanel.isVisible()){			
-//			panelRecommender.remove(typePanel);			
-//			typePanel = new TypeRecommenderPanel();
-//			panelRecommender.add(typePanel);			
-//			typePanel.setVisible(true);
-//		}
-//		else{
-//			panelRecommender.remove(typePanel);	
-//			typePanel = new TypeRecommenderPanel();
-//			panelRecommender.add(typePanel);
-//			typePanel.setVisible(false);
-//		}
-		
+
+	public void setDistributed(boolean distributed) {
+		nodeNeighborhood.setEnabled(!distributed);
+		nodeEvaluator.setEnabled(!distributed);
+		nodeQueries.setEnabled(!distributed);
+		nodeJob.setEnabled(distributed);
+		treeMenu.repaint();
 		typePanel.setDistributed(distributed);
 		dataModelPanel.setDistributed(distributed);
-		
+		similarityPanel.setDistributed(distributed);
+		configPanel.setDistributed(distributed);
+		this.setConfigPanelEnabled();
+	}
+
+	private void setConfigPanelEnabled() {
+		configPanel.setVisible(true);
+		typePanel.setVisible(false);
+		dataModelPanel.setVisible(false);
+		similarityPanel.setVisible(false);
+		neighborhoodPanel.setVisible(false);
+		evaluatorPanel.setVisible(false);
+		queriesPanel.setVisible(false);
+		jobPanel.setVisible(false);
+		disableHelpTips();
 	}
 
 	private ArrayList<DisabledNode> getSavesFiles() {
@@ -576,7 +647,7 @@ public class MainRecommenderPanel extends JPanel {
 
 	public static void setEnableNeighborhood(boolean enabled) {
 		nodeNeighborhood.setEnabled(enabled);
-		itembased = enabled;
+		itembased = !enabled;
 		treeMenu.repaint();
 	}
 

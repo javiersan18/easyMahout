@@ -31,6 +31,8 @@ public class Constants {
 
 		public static final String ITEMSIMILARITY = "Item Similarities";
 
+		public static final String FACTORIZED_RECOMMENDER = "Rating Matrix Factorization";
+		
 		public static final String ITEMBASED_DISTRIBUTED = "Item Based Collaborative Filtering";
 
 	}
@@ -93,6 +95,24 @@ public class Constants {
 	}
 
 	public class SimilarityDistributed {
+
+		public static final String EUCLIDEAN = "Euclidean Distance";
+
+		public static final String COOCURRENCE = "Coocurrence";
+
+		public static final String LOGARITHMIC = "Loglikelihood";
+
+		public static final String PEARSON = "Pearson Correlation";
+
+		public static final String TANIMOTO = "Tanimoto Coefficient";
+
+		public static final String COSINE = "Uncentered Cosine";
+
+		public static final String ZERO_COSINE = "Uncentered Zero Assuming Cosine";
+
+	}
+	
+	public class SimilarityDistributedParameter {
 
 		public static final String EUCLIDEAN = "SIMILARITY_EUCLIDEAN_DISTANCE";
 
