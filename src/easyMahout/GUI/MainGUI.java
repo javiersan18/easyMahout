@@ -7,9 +7,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -21,6 +23,7 @@ import javax.swing.JTextPane;
 import javax.swing.JSeparator;
 import javax.swing.JRadioButtonMenuItem;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -50,9 +53,13 @@ public class MainGUI extends JFrame {
 	private static StringBuilder textBuilder;
 
 	private static boolean distributed;
-
-	@SuppressWarnings("unused")
+	
+	private static MainGUI main;
+	
+	private static JMenuItem mntmSave;
+	
 	private final static Logger log = Logger.getLogger(MainGUI.class);
+	
 
 	/**
 	 * Launch the application.
@@ -93,6 +100,8 @@ public class MainGUI extends JFrame {
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
 		distributed = false;
+		
+		main = this;
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
@@ -168,13 +177,26 @@ public class MainGUI extends JFrame {
 					JOptionPane.YES_NO_CANCEL_OPTION);
 			if (dialogResult == JOptionPane.YES_OPTION) {
 				// modified configuration
-				if (recommenderTab.getActiveConfigutation() == null) {
+				if (StringUtils.isBlank(recommenderTab.getActiveConfigutation())) {
+					JFileChooser selectedFile = new JFileChooser();
+					int i = selectedFile.showOpenDialog(MainGUI.this);
+					if (i == JFileChooser.APPROVE_OPTION) {
+						File prefs = selectedFile.getSelectedFile();
+						String absPath = prefs.getAbsolutePath();
+						RecommenderXMLPreferences.saveXMLFile(absPath);
+						MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
+					} else if (i == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+						log.error("Error saving preferences file");
+					}
+					MainRecommenderPanel.setConfigurationModified(false);
 					// crear fichero (jfilechooser)
 					// salvar config en fichero
 					// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
 				} else {
 					// salvar config en fichero
 					RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+					MainRecommenderPanel.setConfigurationModified(false);
 				}
 			} else if (dialogResult == JOptionPane.NO_OPTION) {
 				System.exit(0);
@@ -200,6 +222,61 @@ public class MainGUI extends JFrame {
 				onClose();
 			}
 		});
+
+		JMenuItem mntmLoad = new JMenuItem("Load...");
+		mnFile.add(mntmLoad);
+		mntmLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser selectedFile = new JFileChooser();
+				//TODO hacer directorio default saves
+				int i = selectedFile.showOpenDialog(MainGUI.this);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File prefs = selectedFile.getSelectedFile();
+					String absPath = prefs.getAbsolutePath();
+					RecommenderXMLPreferences.loadXMLFile(absPath);
+					//MainGUI.setMainTitle(absPath);
+					mntmSave.setEnabled(true);
+					MainGUI.writeResult("Preferences file loaded: " + prefs.getName(), Constants.Log.INFO);					
+				} else if (i == JFileChooser.ERROR_OPTION) {
+					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);
+					log.error("Error loading preferences file");
+				}				
+			}
+		});
+
+		mntmSave = new JMenuItem("Save");
+		mnFile.add(mntmSave);		
+		mntmSave.setEnabled(false);		
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+				MainGUI.writeResult("Preferences file saved", Constants.Log.INFO);
+			}
+		});
+
+		JMenuItem mntmSaveAs = new JMenuItem("Save As...");
+		mnFile.add(mntmSaveAs);
+		mntmSaveAs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser selectedFile = new JFileChooser();
+				int i = selectedFile.showOpenDialog(MainGUI.this);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File prefs = selectedFile.getSelectedFile();
+					String absPath = prefs.getAbsolutePath();
+					RecommenderXMLPreferences.saveXMLFile(absPath);
+					//MainGUI.setMainTitle(absPath);
+					mntmSave.setEnabled(true);
+					MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);					
+				} else if (i == JFileChooser.ERROR_OPTION) {
+					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+					log.error("Error saving preferences file");
+				}				
+			}
+		});
+		
+
+		JSeparator separator_2 = new JSeparator();
+		mnFile.add(separator_2);
 		mnFile.add(mnItemExit);
 
 		JMenu mnPreferences = new JMenu("Preferences");
@@ -219,21 +296,36 @@ public class MainGUI extends JFrame {
 							JOptionPane.YES_NO_CANCEL_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						// modified configuration
-						if (recommenderTab.getActiveConfigutation() == null) {
+						if (StringUtils.isBlank(recommenderTab.getActiveConfigutation())) {
+							JFileChooser selectedFile = new JFileChooser();
+							int i = selectedFile.showOpenDialog(MainGUI.this);
+							if (i == JFileChooser.APPROVE_OPTION) {
+								File prefs = selectedFile.getSelectedFile();
+								String absPath = prefs.getAbsolutePath();
+								RecommenderXMLPreferences.saveXMLFile(absPath);
+								MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
+							} else if (i == JFileChooser.ERROR_OPTION) {
+								MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+								log.error("Error saving preferences file");
+							}
 							// crear fichero (jfilechooser)
 							// salvar config en fichero
 							// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
 							setDistributed();
+							MainRecommenderPanel.setConfigurationModified(false);
 						} else {
 							// salvar config en fichero
 							// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
 							setDistributed();
+							MainRecommenderPanel.setConfigurationModified(false);
 						}
 					} else if (dialogResult == JOptionPane.NO_OPTION) {
 						setDistributed();
+						MainRecommenderPanel.setConfigurationModified(false);
 					}
 				} else {
 					setDistributed();
+					MainRecommenderPanel.setConfigurationModified(false);
 				}
 			}
 
@@ -288,4 +380,14 @@ public class MainGUI extends JFrame {
 	public static void setDistributed(boolean distributed) {
 		MainGUI.distributed = distributed;
 	}
+	
+	public static void setMainTitle(String path){
+		main.setTitle("easyMahout " + Constants.EasyMahout.VERSION + " - " + path);
+	}
+	
+	public static void setSaveItemEnabled(boolean enabled){
+		mntmSave.setEnabled(enabled);
+	}
+	
+	
 }

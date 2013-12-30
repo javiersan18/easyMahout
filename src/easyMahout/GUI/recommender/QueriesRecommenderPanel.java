@@ -27,6 +27,7 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.TableChangeListener;
 
 public class QueriesRecommenderPanel extends JPanel {
 
@@ -82,7 +83,8 @@ public class QueriesRecommenderPanel extends JPanel {
 		table.getColumnModel().getColumn(2).setResizable(false);
 		table.getColumnModel().getColumn(2).setMaxWidth(1000);
 
-		tableModel = (DefaultTableModel) table.getModel();
+		tableModel = (DefaultTableModel) table.getModel();		
+		tableModel.addTableModelListener(new TableChangeListener());
 
 		scrollPane.setViewportView(table);
 		add(scrollPane);

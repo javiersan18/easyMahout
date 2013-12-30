@@ -1,31 +1,31 @@
 package easyMahout.GUI.recommender;
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractButton;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import easyMahout.GUI.MainGUI;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
 
 public class TypeRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JComboBox comboBoxType;
+	private static JComboBox comboBoxType;
 
 	private DefaultComboBoxModel distributedModel;
 
@@ -34,6 +34,9 @@ public class TypeRecommenderPanel extends JPanel {
 	private final JButton btnHelp;
 
 	private HelpTooltip helpTooltip;
+
+	@SuppressWarnings("unused")
+	private final static Logger log = Logger.getLogger(TypeRecommenderPanel.class);
 
 	public TypeRecommenderPanel() {
 		super();
@@ -76,6 +79,7 @@ public class TypeRecommenderPanel extends JPanel {
 				}
 			}
 		});
+		comboBoxType.addItemListener(new ItemChangeListener());
 
 	}
 
@@ -85,6 +89,10 @@ public class TypeRecommenderPanel extends JPanel {
 
 	public String getSelectedType() {
 		return (String) comboBoxType.getSelectedItem();
+	}
+
+	public static void setSelectedType(String type) {
+		comboBoxType.setSelectedItem(type);
 	}
 
 	public void setDistributed(boolean distributed) {

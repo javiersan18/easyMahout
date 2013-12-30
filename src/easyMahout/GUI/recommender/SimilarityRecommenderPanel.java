@@ -17,6 +17,8 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
+import easyMahout.utils.listeners.TextFieldChangeListener;
 
 import javax.swing.JCheckBox;
 
@@ -100,10 +102,12 @@ public class SimilarityRecommenderPanel extends JPanel {
 
 		comboBoxSimilarity.setBounds(38, 36, 197, 20);
 		add(comboBoxSimilarity);
+		comboBoxSimilarity.addItemListener(new ItemChangeListener());
 
 		chckbxWeighted = new JCheckBox("Weighted");
 		chckbxWeighted.setBounds(256, 35, 97, 23);
 		add(chckbxWeighted);
+		chckbxWeighted.addItemListener(new ItemChangeListener());
 
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -128,6 +132,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		add(tfMaxSimilarities);
 		tfMaxSimilarities.setColumns(10);
 		tfMaxSimilarities.setVisible(false);
+		tfMaxSimilarities.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblMaxPreferencesPer = new JLabel("Max preferences per user");
 		lblMaxPreferencesPer.setBounds(38, 115, 135, 14);
@@ -139,6 +144,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		add(tfMaxPreferences);
 		tfMaxPreferences.setColumns(10);
 		tfMaxPreferences.setVisible(false);
+		tfMaxPreferences.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblMinPreferencesPer = new JLabel("Min preferences per user");
 		lblMinPreferencesPer.setBounds(38, 150, 135, 14);
@@ -150,6 +156,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		add(tfMinPreferences);
 		tfMinPreferences.setColumns(10);
 		tfMinPreferences.setVisible(false);
+		tfMinPreferences.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblThreshold = new JLabel("Threshold");
 		lblThreshold.setBounds(38, 185, 128, 14);
@@ -161,6 +168,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		add(tfThreshold);
 		tfThreshold.setColumns(10);
 		tfThreshold.setVisible(false);
+		tfThreshold.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		comboBoxSimilarity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

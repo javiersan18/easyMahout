@@ -30,6 +30,8 @@ import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
+import easyMahout.utils.listeners.TextFieldChangeListener;
 
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -40,13 +42,13 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private DefaultComboBoxModel booleanModels, restModels;
 
-	private JComboBox comboBoxDatamodel;
+	private static JComboBox comboBoxDatamodel;
 
-	private JTextField textInputPath;
+	private static JTextField textInputPath;
 
-	private JTextField tfDelimiter;
+	private static JTextField tfDelimiter;
 
-	private JTextField textOutputPath;
+	private static JTextField textOutputPath;
 
 	private JLabel lblDelimiter;
 
@@ -62,7 +64,7 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private final JButton btnHelp;
 
-	private JCheckBox chckbxBooleanPreferences;
+	private static JCheckBox chckbxBooleanPreferences;
 
 	private DataModel dataModel;
 
@@ -78,6 +80,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		setBounds(228, 11, 480, 408);
 
 		comboBoxDatamodel = new JComboBox();
+		comboBoxDatamodel.addItemListener(new ItemChangeListener());
 		booleanModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC_BOOLEAN });
 		restModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.FILE, Constants.DataModel.GENERIC,
 				Constants.DataModel.EXTENDED, Constants.DataModel.CASSANDRA, Constants.DataModel.HBASE, Constants.DataModel.KDDCUP,
@@ -89,6 +92,8 @@ public class DataModelRecommenderPanel extends JPanel {
 		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
+		// chckbxBooleanPreferences.setSelected(true);
+		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
 
 		lblInputDataSource = new JLabel("Input data source:");
 		lblInputDataSource.setBounds(38, 105, 107, 14);
@@ -98,6 +103,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
+		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnSelectInput = new JButton("Select File...");
 		btnSelectInput.setBounds(130, 165, 107, 23);
@@ -115,6 +121,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		tfDelimiter.setColumns(10);
 		tfDelimiter.setText(",");
 		tfDelimiter.setEnabled(false);
+		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnCreate = new JButton("Create Model");
 		btnCreate.setBounds(241, 165, 107, 23);
@@ -141,6 +148,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
+		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnSelectOutput = new JButton("Select File...");
 		btnSelectOutput.setBounds(182, 265, 107, 23);
@@ -335,5 +343,25 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	public String getBooleanPrefs() {
 		return String.valueOf(chckbxBooleanPreferences.isSelected());
+	}
+
+	public static void setBooleanPrefs(boolean selected) {
+		chckbxBooleanPreferences.setSelected(selected);
+	}
+
+	public static void setSelectedModel(String model) {
+		comboBoxDatamodel.setSelectedItem(model);
+	}
+
+	public static void setDelimiter(String delimiter) {
+		tfDelimiter.setText(delimiter);
+	}
+
+	public static void setInputPath(String inputPath) {
+		textInputPath.setText(inputPath);
+	}
+
+	public static void setOutputPath(String outputPath) {
+		textOutputPath.setText(outputPath);
 	}
 }

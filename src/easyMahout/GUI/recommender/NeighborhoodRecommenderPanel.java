@@ -20,6 +20,8 @@ import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
+import easyMahout.utils.listeners.TextFieldChangeListener;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -74,6 +76,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 				Constants.Neighborhood.THRESHOLD }));
 		comboBoxNeighborhood.setBounds(38, 36, 199, 20);
 		add(comboBoxNeighborhood);
+		comboBoxNeighborhood.addItemListener(new ItemChangeListener());
 
 		tfSize = new JTextField();
 		tfSize.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -103,6 +106,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 				}
 			}
 		});
+		tfSize.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		tfThreshold = new JTextField();
 		tfThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -133,6 +137,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 				}
 			}
 		});
+		tfThreshold.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		labelSize = new JLabel("Neighborhood size");
 		labelSize.setBounds(38, 70, 137, 14);
@@ -143,6 +148,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 		tfMinimun.setBounds(177, 98, 62, 20);
 		add(tfMinimun);
 		tfMinimun.setColumns(5);
+		tfMinimun.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		labelMinimun = new JLabel("Minimun similarity");
 		labelMinimun.setBounds(38, 101, 115, 14);
@@ -158,6 +164,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 		add(tfSamplingRate);
 		tfSamplingRate.setColumns(5);
 		tfSamplingRate.setText("1.0");
+		tfSamplingRate.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		tfSamplingRate.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {

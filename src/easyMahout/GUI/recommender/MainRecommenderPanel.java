@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultTreeModel;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
@@ -30,7 +32,6 @@ import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
 
-import org.w3c.dom.Document;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,13 +82,11 @@ public class MainRecommenderPanel extends JPanel {
 
 	private static DisabledNode nodeSelected;
 
-	private boolean configurationModified;
+	private static boolean configurationModified;
 
-	private boolean configurationNew;
+	// private boolean configurationNew;
 
 	private String activeConfigutation;
-
-	private Document actualDoc;
 
 	private DisabledNode nodeJob;
 
@@ -99,8 +98,8 @@ public class MainRecommenderPanel extends JPanel {
 
 		itembased = false;
 		configurationModified = false;
-		configurationNew = false;
-		actualDoc = RecommenderXMLPreferences.createDefaultXMLDoc();
+		// configurationNew = false;
+		activeConfigutation = "";
 
 		treeMenu = new JTree(populateTree()[0]);
 
@@ -222,15 +221,11 @@ public class MainRecommenderPanel extends JPanel {
 
 	public static String[] buildRecommenderJob() {
 		if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
-			return new String[] { 
-					"--input", dataModelPanel.getInputPath().toString(), 
-					"--output",	dataModelPanel.getOutputPath().toString(),
-					"--similarityClassname", similarityPanel.getDistributedSimilarity(),
-					"--maxSimilaritiesPerItem", similarityPanel.getMaxSimilarities(),
-					"--maxPrefsPerUser", similarityPanel.getMaxPreferences(),
-					"--minPrefsPerUser", similarityPanel.getMinPreferences(),
-					"--booleanData", dataModelPanel.getBooleanPrefs(),
-					"--threshold", similarityPanel.getThreshold() };
+			return new String[] { "--input", dataModelPanel.getInputPath().toString(), "--output",
+					dataModelPanel.getOutputPath().toString(), "--similarityClassname", similarityPanel.getDistributedSimilarity(),
+					"--maxSimilaritiesPerItem", similarityPanel.getMaxSimilarities(), "--maxPrefsPerUser",
+					similarityPanel.getMaxPreferences(), "--minPrefsPerUser", similarityPanel.getMinPreferences(), "--booleanData",
+					dataModelPanel.getBooleanPrefs(), "--threshold", similarityPanel.getThreshold() };
 		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY)) {
 			// TODO
 			return null;
@@ -463,12 +458,25 @@ public class MainRecommenderPanel extends JPanel {
 							public void actionPerformed(ActionEvent e) {
 								if (configurationModified) {
 									int dialogResult = JOptionPane.showConfirmDialog(null,
-											"The actual configuration is not saved, would yo like to save it?",
+											"The actual Recommender configuration is not saved, would yo like to save it?",
 											"Save preferences",
 											JOptionPane.YES_NO_CANCEL_OPTION);
 									if (dialogResult == JOptionPane.YES_OPTION) {
-										if (activeConfigutation == null) {
-											// jfilechooser save as...
+										if (StringUtils.isBlank(activeConfigutation)) {
+											//TODO poner carpeta saves por defecto en el chooser
+											JFileChooser selectedFile = new JFileChooser();
+											int i = selectedFile.showOpenDialog(MainRecommenderPanel.this);
+											if (i == JFileChooser.APPROVE_OPTION) {
+												File prefs = selectedFile.getSelectedFile();
+												String absPath = prefs.getAbsolutePath();
+												RecommenderXMLPreferences.saveXMLFile(absPath);	
+												MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
+											} else if (i == JFileChooser.ERROR_OPTION) {
+												MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+												log.error("Error saving preferences file");
+											}
+											// y nuevo
+											addPreferencesFile();
 											log.debug("modified, default config");
 										} else {
 											// salvar y nuevo
@@ -479,7 +487,7 @@ public class MainRecommenderPanel extends JPanel {
 										}
 									} else if (dialogResult == JOptionPane.NO_OPTION) {
 										// nuevo directamente
-										// configurationNew = true;
+										// configurationNew = true;										
 										addPreferencesFile();
 										log.debug("modified, no save");
 									}
@@ -502,7 +510,11 @@ public class MainRecommenderPanel extends JPanel {
 						JMenuItem loadItem = new JMenuItem("Load");
 						loadItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-
+								String filePath = ((DisabledNode) nodeSelected).getPathFile();
+								RecommenderXMLPreferences.loadXMLFile(filePath);
+								activeConfigutation = filePath;
+								configurationModified = false;
+								MainGUI.setSaveItemEnabled(true);								
 							}
 						});
 
@@ -529,6 +541,12 @@ public class MainRecommenderPanel extends JPanel {
 										treeMenu.expandRow(0);
 										treeMenu.expandRow(7);
 
+										if (filePath.equals(activeConfigutation)) {
+											activeConfigutation = "";
+											MainGUI.setMainTitle(activeConfigutation);
+											MainGUI.setSaveItemEnabled(false);
+											configurationModified = false;
+										}
 										MainGUI.writeResult("Preferences file \"" + name + "\" successfully deleted.", Constants.Log.INFO);
 
 									} else {
@@ -616,6 +634,7 @@ public class MainRecommenderPanel extends JPanel {
 			String filePath = Constants.SavesPaths.RECOMMENDER + name + Constants.SavesPaths.EXTENSION;
 
 			activeConfigutation = filePath;
+			configurationModified = false;
 
 			treeNodes.add(new DisabledNode(name, filePath));
 			nodeSaves.add(treeNodes.get(treeNodes.size() - 1));
@@ -634,6 +653,11 @@ public class MainRecommenderPanel extends JPanel {
 			treeMenu.setModel(model);
 			treeMenu.expandRow(0);
 			treeMenu.expandRow(7);
+			
+			MainGUI.setMainTitle(activeConfigutation);		
+			MainGUI.setSaveItemEnabled(true);
+			MainGUI.writeResult("Preferences file added: " + name, Constants.Log.INFO);
+			
 		}
 	}
 
@@ -655,17 +679,17 @@ public class MainRecommenderPanel extends JPanel {
 		return configurationModified;
 	}
 
-	public void setConfigurationModified(boolean configurationModified) {
-		this.configurationModified = configurationModified;
+	public static void setConfigurationModified(boolean configurationModified) {
+		MainRecommenderPanel.configurationModified = configurationModified;
 	}
 
-	public boolean isConfigurationNew() {
-		return configurationNew;
-	}
-
-	public void setConfigurationNew(boolean configurationNew) {
-		this.configurationNew = configurationNew;
-	}
+	// public boolean isConfigurationNew() {
+	// return configurationNew;
+	// }
+	//
+	// public void setConfigurationNew(boolean configurationNew) {
+	// this.configurationNew = configurationNew;
+	// }
 
 	public String getActiveConfigutation() {
 		return activeConfigutation;
@@ -674,4 +698,5 @@ public class MainRecommenderPanel extends JPanel {
 	public void setActiveConfigutation(String activeConfigutation) {
 		this.activeConfigutation = activeConfigutation;
 	}
+
 }
