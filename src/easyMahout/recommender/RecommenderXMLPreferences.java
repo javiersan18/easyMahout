@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,6 +21,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.recommender.DataModelRecommenderPanel;
+import easyMahout.GUI.recommender.MainRecommenderPanel;
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 
 public class RecommenderXMLPreferences {
@@ -69,9 +73,13 @@ public class RecommenderXMLPreferences {
 			delimiter.appendChild(doc.createTextNode(" "));
 			datamodel.appendChild(delimiter);
 
-			Element path = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_PATH);
-			path.appendChild(doc.createTextNode("C:\\file2.xml"));
-			datamodel.appendChild(path);
+			Element inputPath = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_INPUTPATH);
+			inputPath.appendChild(doc.createTextNode("C:\\file2.xml"));
+			datamodel.appendChild(inputPath);
+
+			Element outputPath = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_OUTPUTPATH);
+			outputPath.appendChild(doc.createTextNode("C:\\file1.xml"));
+			datamodel.appendChild(outputPath);
 
 			// similarity element
 			Element similarity = doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY);
@@ -148,6 +156,9 @@ public class RecommenderXMLPreferences {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
+			if (!StringUtils.contains(filePath, ".xml")) {
+				filePath += ".xml";
+			}
 			File f = new File(filePath);
 			StreamResult result = new StreamResult(f);
 
@@ -155,6 +166,11 @@ public class RecommenderXMLPreferences {
 			// StreamResult result = new StreamResult(System.out);
 
 			transformer.transform(source, result);
+
+			// TODO si el path viene del jfilechooser la ruta es entera C://...,
+			// dejar la ruta solo saves/recommeder/file.xml...
+			MainGUI.setMainTitle(filePath);
+			MainRecommenderPanel.setConfigurationModified(false);
 
 			System.out.println("File saved!");
 
@@ -166,7 +182,7 @@ public class RecommenderXMLPreferences {
 		return true;
 	}
 
-	public static boolean loadXMLFile() {
+	public static boolean loadXMLFile(String filePath) {
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = null;
 		try {
@@ -176,7 +192,7 @@ public class RecommenderXMLPreferences {
 			e1.printStackTrace();
 		}
 		try {
-			Document doc = docBuilder.parse(new File("D:\\file.xml"));
+			Document doc = docBuilder.parse(new File(filePath));
 			doc.getDocumentElement().normalize();
 
 			if (doc.getDocumentElement().getNodeName().equals(Constants.RecommenderXML.RECOMMENDER)) {
@@ -188,7 +204,8 @@ public class RecommenderXMLPreferences {
 
 				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
 					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("value", element));
+					log.debug("Nombre : " + getTagValue(Constants.RecommenderXML.RECOMM_NAME_VALUE, element));
+					// TODO crear nodo con nombre
 				}
 
 				xmlNodes = doc.getElementsByTagName(Constants.RecommenderXML.RECOMM_TYPE);
@@ -196,7 +213,8 @@ public class RecommenderXMLPreferences {
 
 				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
 					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("value", element));
+					TypeRecommenderPanel.setSelectedType(getTagValue(Constants.RecommenderXML.RECOMM_TYPE_VALUE, element));
+					log.debug("Type : " + getTagValue("value", element));
 				}
 
 				xmlNodes = doc.getElementsByTagName(Constants.RecommenderXML.RECOMM_DATAMODEL);
@@ -204,10 +222,21 @@ public class RecommenderXMLPreferences {
 
 				if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
 					element = (Element) xmlNode;
-					System.out.println("Nombre : " + getTagValue("boolean", element));
-					System.out.println("Nombre : " + getTagValue("model", element));
-					System.out.println("Nombre : " + getTagValue("delimiter", element));
-					System.out.println("Nombre : " + getTagValue("path", element));
+					DataModelRecommenderPanel.setBooleanPrefs(Boolean.valueOf(getTagValue(Constants.RecommenderXML.RECOMM_DATAMODEL_BOOLEAN,
+							element)));
+					log.debug("Boolean : " + getTagValue("boolean", element));
+					
+					DataModelRecommenderPanel.setSelectedModel(getTagValue(Constants.RecommenderXML.RECOMM_DATAMODEL_MODEL, element));					
+					log.debug("Datamodel : " + getTagValue("model", element));
+					
+					DataModelRecommenderPanel.setDelimiter(getTagValue(Constants.RecommenderXML.RECOMM_DATAMODEL_DELIMITER, element));
+					log.debug("Delimiter : " + getTagValue("delimiter", element));
+					
+					DataModelRecommenderPanel.setInputPath(getTagValue(Constants.RecommenderXML.RECOMM_DATAMODEL_INPUTPATH, element));
+					log.debug("inputpath : " + getTagValue("inputPath", element));
+					
+					DataModelRecommenderPanel.setOutputPath(getTagValue(Constants.RecommenderXML.RECOMM_DATAMODEL_OUTPUTPATH, element));
+					log.debug("outputpath : " + getTagValue("outputPath", element));
 				}
 
 				xmlNodes = doc.getElementsByTagName(Constants.RecommenderXML.RECOMM_SIMILARITY);
@@ -251,6 +280,10 @@ public class RecommenderXMLPreferences {
 						System.out.println("Nombre : " + getTagValue("howMany", element));
 					}
 				}
+
+				MainGUI.setMainTitle(filePath);
+				MainRecommenderPanel.setConfigurationModified(false);
+
 			} else {
 				log.debug("The file is not a RECOMMENDER preferences file.");
 				MainGUI.writeResult("The file is not a RECOMMENDER preferences file.", Constants.Log.ERROR);
@@ -271,7 +304,7 @@ public class RecommenderXMLPreferences {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
 		Node nValue = (Node) nlList.item(0);
 
-		return nValue.getNodeValue();
+		return nValue.getNodeValue().toString();
 	}
 
 	public static String getTagName(String file) {
@@ -302,7 +335,8 @@ public class RecommenderXMLPreferences {
 		} catch (SAXException e1) {
 			// TODO puede que mas errores acerca del parsing
 			e1.printStackTrace();
-			MainGUI.writeResult("The system cannot read the specified file. Possibly it is not a XML preferences file or it has some error.", Constants.Log.ERROR);
+			MainGUI.writeResult("The system cannot read the specified file. Possibly it is not a XML preferences file or it has some error.",
+					Constants.Log.ERROR);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -310,134 +344,143 @@ public class RecommenderXMLPreferences {
 		}
 		return null;
 	}
-	
-	public static Document createDefaultXMLDoc() {
 
-		try {
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-			// root elements
-			Document doc = docBuilder.newDocument();
-			Element rootElement = doc.createElement(Constants.RecommenderXML.RECOMMENDER);
-			doc.appendChild(rootElement);
-
-			// name element
-			Element name = doc.createElement(Constants.RecommenderXML.RECOMM_NAME);
-			rootElement.appendChild(name);
-
-			Element value = doc.createElement(Constants.RecommenderXML.RECOMM_NAME_VALUE);
-			value.appendChild(doc.createTextNode("Default"));
-			name.appendChild(value);
-
-			// type element
-			Element type = doc.createElement(Constants.RecommenderXML.RECOMM_TYPE);
-			rootElement.appendChild(type);
-
-			value = doc.createElement(Constants.RecommenderXML.RECOMM_TYPE_VALUE);
-			value.appendChild(doc.createTextNode("User Based"));
-			type.appendChild(value);
-
-			// datamodel element
-			Element datamodel = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL);
-			rootElement.appendChild(datamodel);
-
-			Element _boolean = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_BOOLEAN);
-			_boolean.appendChild(doc.createTextNode("false"));
-			datamodel.appendChild(_boolean);
-
-			Element model = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_MODEL);
-			model.appendChild(doc.createTextNode("Generic"));
-			datamodel.appendChild(model);
-
-			Element delimiter = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_DELIMITER);
-			delimiter.appendChild(doc.createTextNode(" "));
-			datamodel.appendChild(delimiter);
-
-			Element path = doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_PATH);
-			path.appendChild(doc.createTextNode("C:\\file2.xml"));
-			datamodel.appendChild(path);
-
-			// similarity element
-			Element similarity = doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY);
-			rootElement.appendChild(similarity);
-
-			Element metric = doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY_METRIC);
-			metric.appendChild(doc.createTextNode("Pearson Correlation"));
-			similarity.appendChild(metric);
-
-			Element weighted = doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY_WEIGHTED);
-			weighted.appendChild(doc.createTextNode("false"));
-			similarity.appendChild(weighted);
-
-			// neighborhood element
-			Element neighborhood = doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD);
-			rootElement.appendChild(neighborhood);
-
-			Element function = doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_FUNCTION);
-			function.appendChild(doc.createTextNode("Nearest N"));
-			neighborhood.appendChild(function);
-
-			Element size = doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_SIZE);
-			size.appendChild(doc.createTextNode("2"));
-			neighborhood.appendChild(size);
-
-			Element threshold = doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_THRESHOLD);
-			threshold.appendChild(doc.createTextNode(" "));
-			neighborhood.appendChild(threshold);
-
-			Element minimum = doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_MINIMUM);
-			minimum.appendChild(doc.createTextNode(" "));
-			neighborhood.appendChild(minimum);
-
-			Element sampling = doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_SAMPLING);
-			sampling.appendChild(doc.createTextNode("1.0"));
-			neighborhood.appendChild(sampling);
-
-			// evaluator element
-			Element evaluator = doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR);
-			rootElement.appendChild(evaluator);
-
-			// queries element
-			Element query = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY);
-			rootElement.appendChild(query);
-
-			Element selected = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_SELECTED);
-			selected.appendChild(doc.createTextNode("false"));
-			query.appendChild(selected);
-
-			Element user = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_USERID);
-			user.appendChild(doc.createTextNode("1"));
-			query.appendChild(user);
-
-			Element howmany = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_HOWMANY);
-			howmany.appendChild(doc.createTextNode("1"));
-			query.appendChild(howmany);
-
-			query = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY);
-			rootElement.appendChild(query);
-
-			selected = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_SELECTED);
-			selected.appendChild(doc.createTextNode("tue"));
-			query.appendChild(selected);
-
-			user = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_USERID);
-			user.appendChild(doc.createTextNode("2"));
-			query.appendChild(user);
-
-			howmany = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_HOWMANY);
-			howmany.appendChild(doc.createTextNode("2"));
-			query.appendChild(howmany);
-
-			
-			//DOMSource source = new DOMSource(doc);
-			return doc;
-
-		} catch (ParserConfigurationException pce) {
-			pce.printStackTrace();
-		}
-		return null;
-	}
-	
+	/*
+	 * public static Document createDefaultXMLDoc() {
+	 * 
+	 * try { DocumentBuilderFactory docFactory =
+	 * DocumentBuilderFactory.newInstance(); DocumentBuilder docBuilder =
+	 * docFactory.newDocumentBuilder();
+	 * 
+	 * // root elements Document doc = docBuilder.newDocument(); Element
+	 * rootElement = doc.createElement(Constants.RecommenderXML.RECOMMENDER);
+	 * doc.appendChild(rootElement);
+	 * 
+	 * // name element Element name =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NAME);
+	 * rootElement.appendChild(name);
+	 * 
+	 * Element value =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NAME_VALUE);
+	 * value.appendChild(doc.createTextNode("Default"));
+	 * name.appendChild(value);
+	 * 
+	 * // type element Element type =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_TYPE);
+	 * rootElement.appendChild(type);
+	 * 
+	 * value = doc.createElement(Constants.RecommenderXML.RECOMM_TYPE_VALUE);
+	 * value.appendChild(doc.createTextNode("User Based"));
+	 * type.appendChild(value);
+	 * 
+	 * // datamodel element Element datamodel =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL);
+	 * rootElement.appendChild(datamodel);
+	 * 
+	 * Element _boolean =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_BOOLEAN);
+	 * _boolean.appendChild(doc.createTextNode("false"));
+	 * datamodel.appendChild(_boolean);
+	 * 
+	 * Element model =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_MODEL);
+	 * model.appendChild(doc.createTextNode("Generic"));
+	 * datamodel.appendChild(model);
+	 * 
+	 * Element delimiter =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_DELIMITER);
+	 * delimiter.appendChild(doc.createTextNode(" "));
+	 * datamodel.appendChild(delimiter);
+	 * 
+	 * Element path =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_DATAMODEL_PATH);
+	 * path.appendChild(doc.createTextNode("C:\\file2.xml"));
+	 * datamodel.appendChild(path);
+	 * 
+	 * // similarity element Element similarity =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY);
+	 * rootElement.appendChild(similarity);
+	 * 
+	 * Element metric =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY_METRIC);
+	 * metric.appendChild(doc.createTextNode("Pearson Correlation"));
+	 * similarity.appendChild(metric);
+	 * 
+	 * Element weighted =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_SIMILARITY_WEIGHTED);
+	 * weighted.appendChild(doc.createTextNode("false"));
+	 * similarity.appendChild(weighted);
+	 * 
+	 * // neighborhood element Element neighborhood =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD);
+	 * rootElement.appendChild(neighborhood);
+	 * 
+	 * Element function =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_FUNCTION);
+	 * function.appendChild(doc.createTextNode("Nearest N"));
+	 * neighborhood.appendChild(function);
+	 * 
+	 * Element size =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_SIZE);
+	 * size.appendChild(doc.createTextNode("2"));
+	 * neighborhood.appendChild(size);
+	 * 
+	 * Element threshold =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_THRESHOLD
+	 * ); threshold.appendChild(doc.createTextNode(" "));
+	 * neighborhood.appendChild(threshold);
+	 * 
+	 * Element minimum =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_MINIMUM);
+	 * minimum.appendChild(doc.createTextNode(" "));
+	 * neighborhood.appendChild(minimum);
+	 * 
+	 * Element sampling =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_NEIGHBORHOOD_SAMPLING);
+	 * sampling.appendChild(doc.createTextNode("1.0"));
+	 * neighborhood.appendChild(sampling);
+	 * 
+	 * // evaluator element Element evaluator =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR);
+	 * rootElement.appendChild(evaluator);
+	 * 
+	 * // queries element Element query =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_QUERY);
+	 * rootElement.appendChild(query);
+	 * 
+	 * Element selected =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_SELECTED);
+	 * selected.appendChild(doc.createTextNode("false"));
+	 * query.appendChild(selected);
+	 * 
+	 * Element user =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_USERID);
+	 * user.appendChild(doc.createTextNode("1")); query.appendChild(user);
+	 * 
+	 * Element howmany =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_HOWMANY);
+	 * howmany.appendChild(doc.createTextNode("1")); query.appendChild(howmany);
+	 * 
+	 * query = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY);
+	 * rootElement.appendChild(query);
+	 * 
+	 * selected =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_SELECTED);
+	 * selected.appendChild(doc.createTextNode("tue"));
+	 * query.appendChild(selected);
+	 * 
+	 * user = doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_USERID);
+	 * user.appendChild(doc.createTextNode("2")); query.appendChild(user);
+	 * 
+	 * howmany =
+	 * doc.createElement(Constants.RecommenderXML.RECOMM_QUERY_HOWMANY);
+	 * howmany.appendChild(doc.createTextNode("2")); query.appendChild(howmany);
+	 * 
+	 * 
+	 * //DOMSource source = new DOMSource(doc); return doc;
+	 * 
+	 * } catch (ParserConfigurationException pce) { pce.printStackTrace(); }
+	 * return null; }
+	 */
 
 }

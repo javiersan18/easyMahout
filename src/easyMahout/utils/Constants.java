@@ -162,7 +162,9 @@ public class Constants {
 
 		public static final String RECOMM_DATAMODEL_DELIMITER = "delimiter";
 
-		public static final String RECOMM_DATAMODEL_PATH = "path";
+		public static final String RECOMM_DATAMODEL_INPUTPATH = "inputPath";
+		
+		public static final String RECOMM_DATAMODEL_OUTPUTPATH = "outputPath";
 
 		public static final String RECOMM_SIMILARITY = "similarity";
 

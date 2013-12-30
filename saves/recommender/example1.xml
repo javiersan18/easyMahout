@@ -5,14 +5,15 @@
 	</name>
 
 	<type>
-		<value>User Based</value>
+		<value>User based</value>
 	</type>
 	
 	<datamodel>
-		<boolean>false</boolean>
+		<boolean>true</boolean>
 		<model>Extended</model>
 		<delimiter>,</delimiter>
-		<path>C:\Documents and Settings\Javier\Mis documentos\intro.csv</path>
+		<inputPath>C:\Documents and Settings\Javier\Mis documentos\intro.csv</inputPath>
+		<outputPath>C:\Documents and Settings\Javier\Mis documentos\intro2.csv</outputPath>
 	</datamodel>
 	
 	<similarity>
