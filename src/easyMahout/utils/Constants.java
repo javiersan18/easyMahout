@@ -32,7 +32,7 @@ public class Constants {
 		public static final String ITEMSIMILARITY = "Item Similarities";
 
 		public static final String FACTORIZED_RECOMMENDER = "Rating Matrix Factorization";
-		
+
 		public static final String ITEMBASED_DISTRIBUTED = "Item Based Collaborative Filtering";
 
 	}
@@ -111,7 +111,7 @@ public class Constants {
 		public static final String ZERO_COSINE = "Uncentered Zero Assuming Cosine";
 
 	}
-	
+
 	public class SimilarityDistributedParameter {
 
 		public static final String EUCLIDEAN = "SIMILARITY_EUCLIDEAN_DISTANCE";
@@ -139,6 +139,21 @@ public class Constants {
 		public static final String NEAREST = "Nearest N";
 
 		public static final String THRESHOLD = "Threshold";
+	}
+
+	public class Evaluator {
+
+		public static final String ABSTRACT_DIFFERENCE = "Abstract Difference";
+
+		public static final String AVERAGE_ABSOLUTE_DIFFERENCE = "Average Absolute Difference";
+
+		public static final String GENERIC_IRSTATS = "Generic IRStats";
+
+		public static final String GENERIC_RELEVANT_ITEMS_DATA_SPLITTER = "Generic Relevant Items Data Splitter";
+
+		public static final String ORDER_BASED_RECOMMENDER = "Order Based Recommender";
+
+		public static final String RMS_RECOMMENDER = "RMS Recommender";
 
 	}
 
@@ -154,6 +169,10 @@ public class Constants {
 
 		public static final String RECOMM_TYPE_VALUE = "value";
 
+		public static final String RECOMM_DISTRIBUTED = "distributed";
+
+		public static final String RECOMM_DISTRIBUTED_VALUE = "value";
+
 		public static final String RECOMM_DATAMODEL = "datamodel";
 
 		public static final String RECOMM_DATAMODEL_BOOLEAN = "boolean";
@@ -163,7 +182,7 @@ public class Constants {
 		public static final String RECOMM_DATAMODEL_DELIMITER = "delimiter";
 
 		public static final String RECOMM_DATAMODEL_INPUTPATH = "inputPath";
-		
+
 		public static final String RECOMM_DATAMODEL_OUTPUTPATH = "outputPath";
 
 		public static final String RECOMM_SIMILARITY = "similarity";
@@ -171,6 +190,14 @@ public class Constants {
 		public static final String RECOMM_SIMILARITY_METRIC = "metric";
 
 		public static final String RECOMM_SIMILARITY_WEIGHTED = "weighted";
+
+		public static final String RECOMM_SIMILARITY_MAXSIM = "maxsim";
+
+		public static final String RECOMM_SIMILARITY_MAXPREFS = "maxprefs";
+
+		public static final String RECOMM_SIMILARITY_MINPREFS = "minprefs";
+
+		public static final String RECOMM_SIMILARITY_THRESHOLD = "threshold";
 
 		public static final String RECOMM_NEIGHBORHOOD = "neighborhood";
 

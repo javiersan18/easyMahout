@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
 
@@ -22,7 +23,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private JComboBox comboBoxEvaluator;
-	
+
 	private HelpTooltip helpTooltip;
 
 	public EvaluatorRecommenderPanel() {
@@ -34,8 +35,10 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 		comboBoxEvaluator = new JComboBox();
 		comboBoxEvaluator.setMaximumRowCount(16);
-		comboBoxEvaluator.setModel(new DefaultComboBoxModel(new String[] { "Abstract Difference", "Average Absolute Difference",
-				"Generic IRStats", "Generic Televant Items Data Splitter", "Order Based Recomender", "RMS Recomender" }));
+		comboBoxEvaluator.setModel(new DefaultComboBoxModel(new String[] { Constants.Evaluator.ABSTRACT_DIFFERENCE,
+				Constants.Evaluator.AVERAGE_ABSOLUTE_DIFFERENCE, Constants.Evaluator.GENERIC_IRSTATS,
+				Constants.Evaluator.GENERIC_RELEVANT_ITEMS_DATA_SPLITTER, Constants.Evaluator.ORDER_BASED_RECOMMENDER,
+				Constants.Evaluator.RMS_RECOMMENDER }));
 		comboBoxEvaluator.setBounds(38, 36, 197, 20);
 		add(comboBoxEvaluator);
 
@@ -53,7 +56,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		add(helpTooltip);
 
 	}
-	
+
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
 	}
