@@ -2,6 +2,7 @@ package easyMahout.GUI.recommender;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -43,7 +44,7 @@ public class QueriesRecommenderPanel extends JPanel {
 
 	private JButton btnRun;
 
-	private DefaultTableModel tableModel;
+	private static DefaultTableModel tableModel;
 
 	private HelpTooltip helpTooltip;
 
@@ -184,6 +185,18 @@ public class QueriesRecommenderPanel extends JPanel {
 
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
+	}
+	
+	public static void addRow(boolean selected, Long userID, Integer howMany){
+		tableModel.addRow(new Object[] { selected, userID, howMany });
+	}
+	
+	public static void emptyTable(){
+		tableModel.removeRow(0);
+	}
+	
+	public static Vector getQueries(){
+		return tableModel.getDataVector();
 	}
 
 }

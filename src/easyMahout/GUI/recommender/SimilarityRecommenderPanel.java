@@ -22,6 +22,7 @@ import easyMahout.utils.listeners.TextFieldChangeListener;
 
 import javax.swing.JCheckBox;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.common.Weighting;
@@ -50,21 +51,21 @@ public class SimilarityRecommenderPanel extends JPanel {
 
 	private DefaultComboBoxModel distributedModel;
 
-	private JComboBox comboBoxSimilarity;
+	private static JComboBox comboBoxSimilarity;
 
-	private JCheckBox chckbxWeighted;
+	private static JCheckBox chckbxWeighted;
 
 	private HelpTooltip helpTooltip;
 
 	private final static Logger log = Logger.getLogger(SimilarityRecommenderPanel.class);
 
-	private JTextField tfMaxSimilarities;
+	private static JTextField tfMaxSimilarities;
 
-	private JTextField tfMaxPreferences;
+	private static JTextField tfMaxPreferences;
 
-	private JTextField tfMinPreferences;
+	private static JTextField tfMinPreferences;
 
-	private JTextField tfThreshold;
+	private static JTextField tfThreshold;
 
 	private JLabel lblMaxsimilaritiesperitem;
 
@@ -342,20 +343,69 @@ public class SimilarityRecommenderPanel extends JPanel {
 		}
 	}
 
-	public String getMaxSimilarities() {
-		return tfMaxSimilarities.toString();
+	public static String getMaxSimilarities() {		
+		if (StringUtils.isNotBlank(tfMaxSimilarities.getText())) {
+			return tfMaxSimilarities.getText();
+		} else {
+			return " ";
+		}
 	}
 
-	public String getMaxPreferences() {
-		return tfMaxPreferences.toString();
+	public static String getMaxPreferences() {		
+		if (StringUtils.isNotBlank(tfMaxPreferences.getText())) {
+			return tfMaxPreferences.getText();
+		} else {
+			return " ";
+		}
 	}
 
-	public String getMinPreferences() {
-		return tfMinPreferences.toString();
+	public static String getMinPreferences() {		
+		if (StringUtils.isNotBlank(tfMinPreferences.getText())) {
+			return tfMinPreferences.getText();
+		} else {
+			return " ";
+		}
 	}
 
-	public String getThreshold() {
-		return tfThreshold.toString();
+	public static String getThreshold() {		
+		if (StringUtils.isNotBlank(tfThreshold.getText())) {
+			return tfThreshold.getText();
+		} else {
+			return " ";
+		}
 	}
+	
+	public static String getSelectedMetric(){
+		return (String) comboBoxSimilarity.getSelectedItem();
+	}
+	
+	public static String getWeighted(){
+		return Boolean.toString(chckbxWeighted.isSelected());
+	}
+
+	public static void setSelectedMetric(String metric) {
+		comboBoxSimilarity.setSelectedItem(metric);		
+	}
+	
+	public static void setWeighted(boolean selected) {
+		chckbxWeighted.setSelected(selected);
+	}
+	
+	public static void setMaxSimilarities(String maxsim) {
+		tfMaxSimilarities.setText(maxsim);
+	}
+	
+	public static void setMaxPreferences(String maxprefs) {
+		tfMaxPreferences.setText(maxprefs);
+	}
+
+	public static void setMinPreferences(String minprefs) {
+		tfMinPreferences.setText(minprefs);
+	}
+
+	public static void setThreshold(String threshold) {
+		tfThreshold.setText(threshold);
+	}
+	
 
 }

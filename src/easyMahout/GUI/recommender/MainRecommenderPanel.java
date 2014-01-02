@@ -97,8 +97,7 @@ public class MainRecommenderPanel extends JPanel {
 		panelRecommender = this;
 
 		itembased = false;
-		configurationModified = false;
-		// configurationNew = false;
+		configurationModified = false;		
 		activeConfigutation = "";
 
 		treeMenu = new JTree(populateTree()[0]);
@@ -484,7 +483,7 @@ public class MainRecommenderPanel extends JPanel {
 											// configurationNew = true;
 											addPreferencesFile();
 											log.debug("modified, saving added configuration");
-										}
+										}										
 									} else if (dialogResult == JOptionPane.NO_OPTION) {
 										// nuevo directamente
 										// configurationNew = true;										
@@ -497,6 +496,7 @@ public class MainRecommenderPanel extends JPanel {
 									addPreferencesFile();
 									log.debug("no modified");
 								}
+								treeMenu.expandRow(8);
 							}
 						});
 
@@ -539,7 +539,7 @@ public class MainRecommenderPanel extends JPanel {
 
 										treeMenu.setModel(model);
 										treeMenu.expandRow(0);
-										treeMenu.expandRow(7);
+										treeMenu.expandRow(8);
 
 										if (filePath.equals(activeConfigutation)) {
 											activeConfigutation = "";
@@ -652,7 +652,7 @@ public class MainRecommenderPanel extends JPanel {
 
 			treeMenu.setModel(model);
 			treeMenu.expandRow(0);
-			treeMenu.expandRow(7);
+			treeMenu.expandRow(8);
 			
 			MainGUI.setMainTitle(activeConfigutation);		
 			MainGUI.setSaveItemEnabled(true);
@@ -682,14 +682,6 @@ public class MainRecommenderPanel extends JPanel {
 	public static void setConfigurationModified(boolean configurationModified) {
 		MainRecommenderPanel.configurationModified = configurationModified;
 	}
-
-	// public boolean isConfigurationNew() {
-	// return configurationNew;
-	// }
-	//
-	// public void setConfigurationNew(boolean configurationNew) {
-	// this.configurationNew = configurationNew;
-	// }
 
 	public String getActiveConfigutation() {
 		return activeConfigutation;

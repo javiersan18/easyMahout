@@ -87,7 +87,7 @@ public class TypeRecommenderPanel extends JPanel {
 		return helpTooltip;
 	}
 
-	public String getSelectedType() {
+	public static String getSelectedType() {
 		return (String) comboBoxType.getSelectedItem();
 	}
 

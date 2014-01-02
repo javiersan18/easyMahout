@@ -42,13 +42,15 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("rawtypes")
-	private JComboBox comboBoxNeighborhood;
+	private static JComboBox comboBoxNeighborhood;
 
-	private JTextField tfSize;
+	private static JTextField tfSize;
 
-	private JTextField tfThreshold;
+	private static JTextField tfThreshold;
 
-	private JTextField tfMinimun;
+	private static JTextField tfMinimun;
+
+	private static JTextField tfSamplingRate;
 
 	private JLabel labelMinimun;
 
@@ -56,8 +58,6 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 	private JLabel labelSamplingRate;
 
-	private JTextField tfSamplingRate;
-	
 	private HelpTooltip helpTooltip;
 
 	private final static Logger log = Logger.getLogger(NeighborhoodRecommenderPanel.class);
@@ -249,9 +249,65 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 			return new ThresholdUserNeighborhood(threshold, similarity, model, sampling);
 		}
 	}
-	
+
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
+	}
+
+	public static String getSelectedFuction() {
+		return (String) comboBoxNeighborhood.getSelectedItem();
+	}
+
+	public static String getNeighborhoodSize() {
+		if (StringUtils.isNotBlank(tfSize.getText())) {
+			return tfSize.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getMinSimilarities() {
+		if (StringUtils.isNotBlank(tfMinimun.getText())) {
+			return tfMinimun.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getThreshold() {
+		if (StringUtils.isNotBlank(tfThreshold.getText())) {
+			return tfThreshold.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getSampling() {
+		if (StringUtils.isNotBlank(tfSamplingRate.getText())) {
+			return tfSamplingRate.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static void setSelectedFuction(String function) {
+		comboBoxNeighborhood.setSelectedItem(function);
+	}
+
+	public static void setSize(String size) {
+		tfSize.setText(size);
+	}
+
+	public static void setMinSimilarities(String minsim) {
+		tfMinimun.setText(minsim);
+	}
+
+	public static void setThreshold(String threshold) {
+		tfSize.setText(threshold);
+	}
+
+	public static void setSampling(String sampling) {
+		tfSamplingRate.setText(sampling);
 	}
 
 }

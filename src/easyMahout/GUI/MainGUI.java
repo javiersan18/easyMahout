@@ -38,7 +38,7 @@ public class MainGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private MainRecommenderPanel recommenderTab;
+	private static MainRecommenderPanel recommenderTab;
 
 	private JTabbedPane tabbedPane;
 
@@ -53,13 +53,16 @@ public class MainGUI extends JFrame {
 	private static StringBuilder textBuilder;
 
 	private static boolean distributed;
-	
+
 	private static MainGUI main;
-	
+
 	private static JMenuItem mntmSave;
-	
+
 	private final static Logger log = Logger.getLogger(MainGUI.class);
-	
+
+	private static JRadioButtonMenuItem nonDistributedMenuItem;
+
+	private static JRadioButtonMenuItem distributedMenuItem;
 
 	/**
 	 * Launch the application.
@@ -100,7 +103,7 @@ public class MainGUI extends JFrame {
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
 		distributed = false;
-		
+
 		main = this;
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
@@ -228,25 +231,25 @@ public class MainGUI extends JFrame {
 		mntmLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser selectedFile = new JFileChooser();
-				//TODO hacer directorio default saves
+				// TODO hacer directorio default saves
 				int i = selectedFile.showOpenDialog(MainGUI.this);
 				if (i == JFileChooser.APPROVE_OPTION) {
 					File prefs = selectedFile.getSelectedFile();
 					String absPath = prefs.getAbsolutePath();
 					RecommenderXMLPreferences.loadXMLFile(absPath);
-					//MainGUI.setMainTitle(absPath);
+					// MainGUI.setMainTitle(absPath);
 					mntmSave.setEnabled(true);
-					MainGUI.writeResult("Preferences file loaded: " + prefs.getName(), Constants.Log.INFO);					
+					MainGUI.writeResult("Preferences file loaded: " + prefs.getName(), Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
 					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);
 					log.error("Error loading preferences file");
-				}				
+				}
 			}
 		});
 
 		mntmSave = new JMenuItem("Save");
-		mnFile.add(mntmSave);		
-		mntmSave.setEnabled(false);		
+		mnFile.add(mntmSave);
+		mntmSave.setEnabled(false);
 		mntmSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
@@ -264,16 +267,15 @@ public class MainGUI extends JFrame {
 					File prefs = selectedFile.getSelectedFile();
 					String absPath = prefs.getAbsolutePath();
 					RecommenderXMLPreferences.saveXMLFile(absPath);
-					//MainGUI.setMainTitle(absPath);
+					// MainGUI.setMainTitle(absPath);
 					mntmSave.setEnabled(true);
-					MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);					
+					MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
 					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
 					log.error("Error saving preferences file");
-				}				
+				}
 			}
 		});
-		
 
 		JSeparator separator_2 = new JSeparator();
 		mnFile.add(separator_2);
@@ -284,7 +286,7 @@ public class MainGUI extends JFrame {
 
 		ButtonGroup distributedGroup = new ButtonGroup();
 
-		JRadioButtonMenuItem nonDistributedMenuItem = new JRadioButtonMenuItem("Non Distributed", true);
+		nonDistributedMenuItem = new JRadioButtonMenuItem("Non Distributed", true);
 		mnPreferences.add(nonDistributedMenuItem);
 		distributedGroup.add(nonDistributedMenuItem);
 		nonDistributedMenuItem.addActionListener(new ActionListener() {
@@ -339,7 +341,7 @@ public class MainGUI extends JFrame {
 
 		});
 
-		JRadioButtonMenuItem distributedMenuItem = new JRadioButtonMenuItem("Distributed (Apache Hadoop)");
+		distributedMenuItem = new JRadioButtonMenuItem("Distributed (Apache Hadoop)");
 		mnPreferences.add(distributedMenuItem);
 		distributedGroup.add(distributedMenuItem);
 		distributedMenuItem.addActionListener(new ActionListener() {
@@ -380,14 +382,19 @@ public class MainGUI extends JFrame {
 	public static void setDistributed(boolean distributed) {
 		MainGUI.distributed = distributed;
 	}
-	
-	public static void setMainTitle(String path){
+
+	public static void setMainTitle(String path) {
 		main.setTitle("easyMahout " + Constants.EasyMahout.VERSION + " - " + path);
 	}
-	
-	public static void setSaveItemEnabled(boolean enabled){
+
+	public static void setSaveItemEnabled(boolean enabled) {
 		mntmSave.setEnabled(enabled);
 	}
-	
-	
+
+	public static void setDistributedRecommPanel(boolean distributed) {
+		recommenderTab.setDistributed(distributed);
+		distributedMenuItem.setSelected(distributed);
+		nonDistributedMenuItem.setSelected(!distributed);
+	}
+
 }

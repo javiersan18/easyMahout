@@ -92,7 +92,6 @@ public class DataModelRecommenderPanel extends JPanel {
 		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
-		// chckbxBooleanPreferences.setSelected(true);
 		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
 
 		lblInputDataSource = new JLabel("Input data source:");
@@ -164,7 +163,7 @@ public class DataModelRecommenderPanel extends JPanel {
 						String absPath = data.getAbsolutePath();
 						textInputPath.setText(absPath);
 					} else if (returnVal == JFileChooser.ERROR_OPTION) {
-						MainGUI.writeResult("Error searching the input directory", Constants.Log.ERROR);
+						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
 						log.error("Error searching input directory");
 					}
 				} else {
@@ -175,7 +174,7 @@ public class DataModelRecommenderPanel extends JPanel {
 						String absPath = data.getAbsolutePath();
 						textInputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
-						MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
+						MainGUI.writeResult("Error openig the file.", Constants.Log.ERROR);
 						log.error("Error opening data file");
 					}
 				}
@@ -192,7 +191,7 @@ public class DataModelRecommenderPanel extends JPanel {
 						String absPath = data.getAbsolutePath();
 						textOutputPath.setText(absPath);
 					} else if (returnVal == JFileChooser.ERROR_OPTION) {
-						MainGUI.writeResult("Error searching the input directory", Constants.Log.ERROR);
+						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
 						log.error("Error searching input directory");
 					}
 				} else {
@@ -203,7 +202,7 @@ public class DataModelRecommenderPanel extends JPanel {
 						String absPath = data.getAbsolutePath();
 						textOutputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
-						MainGUI.writeResult("Error searching the file", Constants.Log.ERROR);
+						MainGUI.writeResult("Error searching the file.", Constants.Log.ERROR);
 						log.error("Error searching output data file");
 					}
 				}
@@ -219,11 +218,11 @@ public class DataModelRecommenderPanel extends JPanel {
 					switch (selected) {
 						case 0:
 							setDataModel(new FileDataModel(new File(filePath)));
-							MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+							MainGUI.writeResult("Data Model successfully created from file.", Constants.Log.INFO);
 							break;
 						case 1:
 							setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(filePath)))));
-							MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+							MainGUI.writeResult("Data Model successfully created from file.", Constants.Log.INFO);
 							break;
 						case 2:
 							String delimiter = tfDelimiter.getText();
@@ -234,7 +233,7 @@ public class DataModelRecommenderPanel extends JPanel {
 							} else {
 								tfDelimiter.setBackground(Color.WHITE);
 								setDataModel(new ExtendedDataModel(new File(filePath), tfDelimiter.getText()));
-								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
+								MainGUI.writeResult("Data Model successfully created from file.", Constants.Log.INFO);
 							}
 							break;
 						case 3:
@@ -260,11 +259,11 @@ public class DataModelRecommenderPanel extends JPanel {
 					// TODO: revisar errores de excepciones mostrados en
 					// consola
 				} catch (IllegalArgumentException e1) {
-					MainGUI.writeResult("Error reading data file: " + e1.getMessage(), Constants.Log.ERROR);
+					MainGUI.writeResult("Error reading data file: " + e1.getMessage() + ".", Constants.Log.ERROR);
 					log.error("Error reading data file", e1);
 				} catch (Exception e1) {
-					MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
-					log.error("Error reading data file", e1);
+					MainGUI.writeResult("File " + e1.getMessage() + " not found.", Constants.Log.ERROR);
+					log.error("File not found", e1);
 				}
 			}
 		});
@@ -333,16 +332,36 @@ public class DataModelRecommenderPanel extends JPanel {
 		btnCreate.setEnabled(!distributed);
 	}
 
-	public String getInputPath() {
-		return textInputPath.toString();
+	public static String getInputPath() {
+		if (StringUtils.isNotBlank(textInputPath.getText())) {
+			return textInputPath.getText();
+		} else {
+			return "  ";
+		}
 	}
 
-	public String getOutputPath() {
-		return textOutputPath.toString();
+	public static String getOutputPath() {
+		if (StringUtils.isNotBlank(textOutputPath.getText())) {
+			return textOutputPath.getText();
+		} else {
+			return "  ";
+		}
 	}
 
-	public String getBooleanPrefs() {
+	public static String getBooleanPrefs() {
 		return String.valueOf(chckbxBooleanPreferences.isSelected());
+	}
+
+	public static String getSelectedDataModel() {
+		return (String) comboBoxDatamodel.getSelectedItem();
+	}
+
+	public static String getDelimiter() {
+		if (StringUtils.isNotBlank(tfDelimiter.getText())) {
+			return tfDelimiter.getText();
+		} else {
+			return "  ";
+		}
 	}
 
 	public static void setBooleanPrefs(boolean selected) {
