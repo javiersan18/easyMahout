@@ -3,6 +3,10 @@
 	<name>
 		<value>Example 1</value>
 	</name>
+	
+	<distributed>
+		<value>false</value>
+	</distributed>
 
 	<type>
 		<value>User based</value>
@@ -13,12 +17,16 @@
 		<model>Extended</model>
 		<delimiter>,</delimiter>
 		<inputPath>C:\Documents and Settings\Javier\Mis documentos\intro.csv</inputPath>
-		<outputPath>C:\Documents and Settings\Javier\Mis documentos\intro2.csv</outputPath>
+		<outputPath> </outputPath>
 	</datamodel>
 	
 	<similarity>
 		<metric>Pearson Correlation</metric>
 		<weighted>false</weighted>
+		<maxsim> </maxsim>
+		<maxprefs> </maxprefs>
+		<minprefs> </minprefs>
+		<threshold> </threshold>
 	</similarity>
 	
 	<neighborhood>
