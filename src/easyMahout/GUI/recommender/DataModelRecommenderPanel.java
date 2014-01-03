@@ -66,7 +66,7 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private static JCheckBox chckbxBooleanPreferences;
 
-	private DataModel dataModel;
+	private static DataModel dataModel;
 
 	private HelpTooltip helpTooltip;
 
@@ -275,8 +275,10 @@ public class DataModelRecommenderPanel extends JPanel {
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
 					log.info("boolean");
+					EvaluatorRecommenderPanel.setBooleanPreferences(true);
 				} else {
 					comboBoxDatamodel.setModel(restModels);
+					EvaluatorRecommenderPanel.setBooleanPreferences(false);
 					log.info("rest");
 				}
 
@@ -304,7 +306,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		return helpTooltip;
 	}
 
-	public DataModel getDataModel() {
+	public static DataModel getDataModel() {
 		return dataModel;
 	}
 

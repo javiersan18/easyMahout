@@ -205,7 +205,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		}
 	}
 
-	public UserSimilarity getUserSimilarity(DataModel dataModel) {
+	public static UserSimilarity getUserSimilarity(DataModel dataModel) {
 		try {
 			if (chckbxWeighted.isSelected()) {
 				String similarity = (String) comboBoxSimilarity.getSelectedItem();
