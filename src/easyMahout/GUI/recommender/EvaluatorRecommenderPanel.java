@@ -18,15 +18,14 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.eval.IRStatistics;
 import org.apache.mahout.cf.taste.eval.RecommenderBuilder;
 import org.apache.mahout.cf.taste.eval.RecommenderEvaluator;
-import org.apache.mahout.cf.taste.impl.eval.AbstractDifferenceRecommenderEvaluator;
 import org.apache.mahout.cf.taste.impl.eval.AverageAbsoluteDifferenceRecommenderEvaluator;
 import org.apache.mahout.cf.taste.impl.eval.GenericRecommenderIRStatsEvaluator;
 import org.apache.mahout.cf.taste.impl.eval.RMSRecommenderEvaluator;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
 import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.model.Preference;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
@@ -69,6 +68,10 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 	private static boolean booleanPreferences;
 
+	private JLabel lblTopN;
+
+	private JTextField tfTopN;
+
 	public EvaluatorRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Evaluator", TitledBorder.CENTER, TitledBorder.TOP, null,
 				null));
@@ -102,6 +105,23 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_EVALUATOR);
 		add(helpTooltip);
 
+		comboBoxEvaluator.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String eval = (String) ((JComboBox) e.getSource()).getSelectedItem();
+				if (eval.equals(Constants.Evaluator.GENERIC_IRSTATS)) {
+					lblTopN.setEnabled(true);
+					tfTopN.setEnabled(true);
+					lblTrainingPercentage.setEnabled(false);
+					tfTraining.setEnabled(false);
+				} else {
+					lblTopN.setEnabled(false);
+					tfTopN.setEnabled(false);
+					lblTrainingPercentage.setEnabled(true);
+					tfTraining.setEnabled(true);
+				}
+			}
+		});
+
 		lblTrainingPercentage = new JLabel("Training percentage");
 		lblTrainingPercentage.setBounds(38, 70, 137, 14);
 		add(lblTrainingPercentage);
@@ -109,7 +129,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		tfEvaluation = new JTextField();
 		tfEvaluation.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfEvaluation.setColumns(5);
-		tfEvaluation.setBounds(177, 98, 62, 20);
+		tfEvaluation.setBounds(185, 98, 62, 20);
 		tfEvaluation.setText("1.0");
 		add(tfEvaluation);
 		tfEvaluation.setInputVerifier(new InputVerifier() {
@@ -139,7 +159,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 		tfTraining = new JTextField();
 		tfTraining.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfTraining.setBounds(177, 67, 62, 20);
+		tfTraining.setBounds(185, 67, 62, 20);
 		tfTraining.setText("0.7");
 		add(tfTraining);
 		tfTraining.setInputVerifier(new InputVerifier() {
@@ -175,65 +195,100 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		btnEvaluate.setAlignmentX(0.5f);
 		btnEvaluate.setBounds(371, 364, 89, 23);
 		add(btnEvaluate);
+
+		lblTopN = new JLabel("Top-N Relevant documents");
+		lblTopN.setBounds(38, 132, 137, 14);
+		add(lblTopN);
+
+		tfTopN = new JTextField();
+		tfTopN.setText("2");
+		tfTopN.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfTopN.setColumns(5);
+		tfTopN.setBounds(185, 129, 62, 20);
+		add(tfTopN);
+
+		lblTopN.setEnabled(false);
+		tfTopN.setEnabled(false);
+
 		btnEvaluate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				Double evaluationPercentage = Double.parseDouble(tfEvaluation.getText());
+				Double trainingPercentage = Double.parseDouble(tfTraining.getText());
+				Integer topN = Integer.parseInt(tfTopN.getText());
+
 				// construir builder
-				DataModel model = dataModelPanel.getDataModel();
+				DataModel model = DataModelRecommenderPanel.getDataModel();
+				RecommenderBuilder recommenderBuilder = null;
+
 				if (model != null) {
-					RecommenderBuilder recommenderBuilder = new RecommenderBuilder() {
+					recommenderBuilder = new RecommenderBuilder() {
 						@Override
-						public Recommender buildRecommender(DataModel model)
-						throws TasteException {
+						public Recommender buildRecommender(DataModel model) throws TasteException {
 							UserSimilarity similarity = SimilarityRecommenderPanel.getUserSimilarity(model);
 							UserNeighborhood neighborhood = NeighborhoodRecommenderPanel.getNeighborhood(similarity, model);
 							return new GenericUserBasedRecommender(model, neighborhood, similarity);
 						}
 					};
 				} else {
-					log.error("Trying to run a recommender without datamodel loaded");
-					MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
-					return null;
+					log.error("Trying to run a evaluator without data model loaded");
+					MainGUI.writeResult("Trying to run a evaluator without data model loaded", Constants.Log.ERROR);
 				}
 
-				GenericRecommenderIRStatsEvaluator evaluatorIRStats = null;
-				RecommenderEvaluator evaluator = null;
+				if (recommenderBuilder != null) {
 
-				if (booleanPreferences) {
-					evaluatorIRStats = new GenericRecommenderIRStatsEvaluator();
-					irsStats = true;
-				} else {
+					GenericRecommenderIRStatsEvaluator evaluatorIRStats = null;
+					RecommenderEvaluator evaluator = null;
 
-					String evaluatorType = (String) comboBoxEvaluator.getSelectedItem();
-					switch (evaluatorType) {
+					if (booleanPreferences) {
+						evaluatorIRStats = new GenericRecommenderIRStatsEvaluator();
+						irsStats = true;
+					} else {
 
-						case Constants.Evaluator.AVERAGE_ABSOLUTE_DIFFERENCE:
-							evaluator = new AverageAbsoluteDifferenceRecommenderEvaluator();
-							irsStats = false;
-							break;
-						case Constants.Evaluator.RMS_RECOMMENDER:
-							evaluator = new RMSRecommenderEvaluator();
-							irsStats = false;
-							break;
-						case Constants.Evaluator.GENERIC_IRSTATS:
-							evaluatorIRStats = new GenericRecommenderIRStatsEvaluator();
-							irsStats = true;
-							break;
-						default:
-							evaluator = null;
+						String evaluatorType = (String) comboBoxEvaluator.getSelectedItem();
+						switch (evaluatorType) {
+
+							case Constants.Evaluator.AVERAGE_ABSOLUTE_DIFFERENCE:
+								evaluator = new AverageAbsoluteDifferenceRecommenderEvaluator();
+								irsStats = false;
+								break;
+							case Constants.Evaluator.RMS_RECOMMENDER:
+								evaluator = new RMSRecommenderEvaluator();
+								irsStats = false;
+								break;
+							case Constants.Evaluator.GENERIC_IRSTATS:
+								evaluatorIRStats = new GenericRecommenderIRStatsEvaluator();
+								irsStats = true;
+								break;
+							default:
+								evaluator = null;
+						}
 					}
-				}
 
-				if (irsStats) {
-					evaluatorIRStats.evaluate(recommenderBuilder,
-							null,
-							DataModelRecommenderPanel.getDataModel(),
-							null,
-							at,
-							GenericRecommenderIRStatsEvaluator.CHOOSE_THRESHOLD,
-							evaluationPercentage);
-				} else {
-
+					if (irsStats) {
+						try {
+							IRStatistics stats = evaluatorIRStats.evaluate(recommenderBuilder,
+									null,
+									model,
+									null,
+									topN,
+									GenericRecommenderIRStatsEvaluator.CHOOSE_THRESHOLD,
+									evaluationPercentage);
+							MainGUI.writeResult("Precision: " + stats.getPrecision(), Constants.Log.RESULT);
+							MainGUI.writeResult("Recall: " + stats.getRecall(), Constants.Log.RESULT);
+						} catch (TasteException e1) {
+							log.error("Error accessing datamodel");
+							MainGUI.writeResult("Error accessing datamodel", Constants.Log.ERROR);
+						}
+					} else {
+						try {
+							Double score = evaluator.evaluate(recommenderBuilder, null, model, trainingPercentage, evaluationPercentage);
+							MainGUI.writeResult("Evaluator score: " + score, Constants.Log.RESULT);
+						} catch (TasteException e1) {
+							log.error("Error accessing datamodel");
+							MainGUI.writeResult("Error accessing datamodel", Constants.Log.ERROR);
+						}
+					}
 				}
 
 			}

@@ -84,7 +84,7 @@ public class QueriesRecommenderPanel extends JPanel {
 		table.getColumnModel().getColumn(2).setResizable(false);
 		table.getColumnModel().getColumn(2).setMaxWidth(1000);
 
-		tableModel = (DefaultTableModel) table.getModel();		
+		tableModel = (DefaultTableModel) table.getModel();
 		tableModel.addTableModelListener(new TableChangeListener());
 
 		scrollPane.setViewportView(table);
@@ -116,16 +116,16 @@ public class QueriesRecommenderPanel extends JPanel {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// cuando se ejecuta el recomm con la celda recien modificada,
-				// no actualiza el valor	
-				
-//				String[] args = {"a","b"};
-//				try {
-//					ToolRunner.run(new ItemSimilarityJob(), args);
-//				} catch (Exception e2) {
-//					// TODO Auto-generated catch block
-//					e2.printStackTrace();
-//				}				
-				
+				// no actualiza el valor
+
+				// String[] args = {"a","b"};
+				// try {
+				// ToolRunner.run(new ItemSimilarityJob(), args);
+				// } catch (Exception e2) {
+				// // TODO Auto-generated catch block
+				// e2.printStackTrace();
+				// }
+
 				try {
 					Recommender recomm = MainRecommenderPanel.buildRecommender();
 					if (recomm != null) {
@@ -137,7 +137,7 @@ public class QueriesRecommenderPanel extends JPanel {
 								if (!list.isEmpty()) {
 									Iterator<RecommendedItem> it = list.iterator();
 									while (it.hasNext()) {
-										RecommendedItem item = it.next();										
+										RecommendedItem item = it.next();
 										MainGUI.writeResult("User " + user + ": " + item.toString(), Constants.Log.RESULT);
 									}
 								} else {
@@ -186,16 +186,20 @@ public class QueriesRecommenderPanel extends JPanel {
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
 	}
-	
-	public static void addRow(boolean selected, Long userID, Integer howMany){
+
+	public static void addRow(boolean selected, Long userID, Integer howMany) {
 		tableModel.addRow(new Object[] { selected, userID, howMany });
 	}
-	
-	public static void emptyTable(){
-		tableModel.removeRow(0);
+
+	public static void emptyTable() {
+//		if (tableModel.getRowCount() > 0) {
+//			tableModel.removeRow(0);
+//			tableModel.getDataVector().clear();
+//		}
+		tableModel.getDataVector().clear();
 	}
-	
-	public static Vector getQueries(){
+
+	public static Vector getQueries() {
 		return tableModel.getDataVector();
 	}
 

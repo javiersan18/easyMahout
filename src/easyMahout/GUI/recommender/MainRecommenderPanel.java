@@ -84,7 +84,7 @@ public class MainRecommenderPanel extends JPanel {
 
 	private static boolean configurationModified;
 
-	// private boolean configurationNew;
+	private boolean controlModified;
 
 	private String activeConfigutation;
 
@@ -99,6 +99,7 @@ public class MainRecommenderPanel extends JPanel {
 		itembased = false;
 		configurationModified = false;		
 		activeConfigutation = "";
+		controlModified = false;
 
 		treeMenu = new JTree(populateTree()[0]);
 
@@ -514,6 +515,7 @@ public class MainRecommenderPanel extends JPanel {
 								RecommenderXMLPreferences.loadXMLFile(filePath);
 								activeConfigutation = filePath;
 								configurationModified = false;
+								controlModified = true;
 								MainGUI.setSaveItemEnabled(true);								
 							}
 						});
@@ -546,6 +548,7 @@ public class MainRecommenderPanel extends JPanel {
 											MainGUI.setMainTitle(activeConfigutation);
 											MainGUI.setSaveItemEnabled(false);
 											configurationModified = false;
+											controlModified = false;
 										}
 										MainGUI.writeResult("Preferences file \"" + name + "\" successfully deleted.", Constants.Log.INFO);
 
@@ -635,6 +638,7 @@ public class MainRecommenderPanel extends JPanel {
 
 			activeConfigutation = filePath;
 			configurationModified = false;
+			controlModified = true;
 
 			treeNodes.add(new DisabledNode(name, filePath));
 			nodeSaves.add(treeNodes.get(treeNodes.size() - 1));
@@ -677,6 +681,10 @@ public class MainRecommenderPanel extends JPanel {
 
 	public boolean isConfigurationModified() {
 		return configurationModified;
+	}
+	
+	public boolean isControlModified() {
+		return controlModified;
 	}
 
 	public static void setConfigurationModified(boolean configurationModified) {

@@ -147,13 +147,13 @@ public class Constants {
 
 		public static final String AVERAGE_ABSOLUTE_DIFFERENCE = "Average Absolute Difference";
 
-		public static final String GENERIC_IRSTATS = "Generic IRStats";
+		public static final String GENERIC_IRSTATS = "IR Statistics";
 
 		//public static final String GENERIC_RELEVANT_ITEMS_DATA_SPLITTER = "Generic Relevant Items Data Splitter";
 
 		//public static final String ORDER_BASED_RECOMMENDER = "Order Based Recommender";
 
-		public static final String RMS_RECOMMENDER = "RMS Recommender";
+		public static final String RMS_RECOMMENDER = "Root Mean Square";
 
 	}
 

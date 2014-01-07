@@ -173,7 +173,7 @@ public class MainGUI extends JFrame {
 	private void onClose() {
 		// Hacer clase padre comun de las clases main, para llamar genericamente
 		// al panel actual
-		if (recommenderTab.isConfigurationModified()) {
+		if (recommenderTab.isControlModified() && recommenderTab.isConfigurationModified()) {
 			int dialogResult = JOptionPane.showConfirmDialog(null,
 					"The actual configuration is not saved, would yo like to save it?",
 					"Recommender preferences",
@@ -291,7 +291,7 @@ public class MainGUI extends JFrame {
 		distributedGroup.add(nonDistributedMenuItem);
 		nonDistributedMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (recommenderTab.isConfigurationModified()) {
+				if (recommenderTab.isControlModified() && recommenderTab.isConfigurationModified()) {
 					int dialogResult = JOptionPane.showConfirmDialog(null,
 							"The actual configuration is not saved, would yo like to save it?",
 							"Non distributed recommender preferences",

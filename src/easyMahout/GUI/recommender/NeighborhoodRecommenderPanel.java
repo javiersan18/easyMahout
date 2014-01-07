@@ -224,7 +224,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 	}
 
-	public UserNeighborhood getNeighborhood(UserSimilarity similarity, DataModel model) {
+	public static UserNeighborhood getNeighborhood(UserSimilarity similarity, DataModel model) {
 		String selected = (String) comboBoxNeighborhood.getSelectedItem();
 		if (selected.equals(Constants.Neighborhood.NEAREST)) {
 			int size = Integer.parseInt(tfSize.getText());
