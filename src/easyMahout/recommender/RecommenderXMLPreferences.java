@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.DataModelRecommenderPanel;
+import easyMahout.GUI.recommender.EvaluatorRecommenderPanel;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
 import easyMahout.GUI.recommender.NeighborhoodRecommenderPanel;
 import easyMahout.GUI.recommender.QueriesRecommenderPanel;
@@ -51,7 +52,7 @@ public class RecommenderXMLPreferences {
 			rootElement.appendChild(name);
 
 			Element value = doc.createElement(Constants.RecommenderXML.RECOMM_NAME_VALUE);
-			value.appendChild(doc.createTextNode("Ejemplo2"));
+			value.appendChild(doc.createTextNode(MainRecommenderPanel.getFileName()));
 			name.appendChild(value);
 
 			// distributed element
@@ -149,6 +150,22 @@ public class RecommenderXMLPreferences {
 			// evaluator element
 			Element evaluator = doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR);
 			rootElement.appendChild(evaluator);
+			
+			type = doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR_TYPE);
+			type.appendChild(doc.createTextNode(EvaluatorRecommenderPanel.getSelectedType()));
+			evaluator.appendChild(type);
+			
+			Element training = doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR_TRAINING);
+			training.appendChild(doc.createTextNode(EvaluatorRecommenderPanel.getTraining()));
+			evaluator.appendChild(training);
+			
+			Element evaluation = doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR_EVALUATION);
+			evaluation.appendChild(doc.createTextNode(EvaluatorRecommenderPanel.getEvaluation()));
+			evaluator.appendChild(evaluation);
+			
+			Element top = doc.createElement(Constants.RecommenderXML.RECOMM_EVALUATOR_AT);
+			top.appendChild(doc.createTextNode(EvaluatorRecommenderPanel.getTopN()));
+			evaluator.appendChild(top);	
 
 			// queries element
 			Vector queries = QueriesRecommenderPanel.getQueries();
@@ -346,6 +363,22 @@ public class RecommenderXMLPreferences {
 
 					if (xmlNode.getNodeType() == Node.ELEMENT_NODE) {
 						element = (Element) xmlNode;
+						
+						String type = getTagValue(Constants.RecommenderXML.RECOMM_EVALUATOR_TYPE, element);
+						EvaluatorRecommenderPanel.setSelectedType(type);
+						log.debug("Evaluator type : " + getTagValue("type", element));
+						
+						String evaluation = getTagValue(Constants.RecommenderXML.RECOMM_EVALUATOR_EVALUATION, element);
+						EvaluatorRecommenderPanel.setEvaluation(evaluation);
+						log.debug("Evaluator percentage : " + getTagValue("evaluation", element));
+						
+						String training = getTagValue(Constants.RecommenderXML.RECOMM_EVALUATOR_TRAINING, element);
+						EvaluatorRecommenderPanel.setTraining(training);
+						log.debug("Training percentage : " + getTagValue("training", element));
+						
+						String topN = getTagValue(Constants.RecommenderXML.RECOMM_EVALUATOR_AT, element);
+						EvaluatorRecommenderPanel.setTopN(topN);
+						log.debug("TopN : " + getTagValue("topN", element));						
 					}
 
 					xmlNodes = doc.getElementsByTagName(Constants.RecommenderXML.RECOMM_QUERY);

@@ -87,6 +87,8 @@ public class MainRecommenderPanel extends JPanel {
 	private boolean controlModified;
 
 	private String activeConfigutation;
+	
+	private static String fileName;
 
 	private DisabledNode nodeJob;
 
@@ -99,6 +101,7 @@ public class MainRecommenderPanel extends JPanel {
 		itembased = false;
 		configurationModified = false;		
 		activeConfigutation = "";
+		fileName = "";
 		controlModified = false;
 
 		treeMenu = new JTree(populateTree()[0]);
@@ -630,17 +633,17 @@ public class MainRecommenderPanel extends JPanel {
 	}
 
 	private void addPreferencesFile() {
-		String name = JOptionPane.showInputDialog(null, "Write a new preferences file name?", "Enter a name", JOptionPane.QUESTION_MESSAGE);
+		fileName = JOptionPane.showInputDialog(null, "Write a new preferences file name?", "Enter a name", JOptionPane.QUESTION_MESSAGE);
 
-		if (name != null && !name.isEmpty()) {
+		if (fileName != null && !fileName.isEmpty()) {
 
-			String filePath = Constants.SavesPaths.RECOMMENDER + name + Constants.SavesPaths.EXTENSION;
+			String filePath = Constants.SavesPaths.RECOMMENDER + fileName + Constants.SavesPaths.EXTENSION;
 
 			activeConfigutation = filePath;
 			configurationModified = false;
 			controlModified = true;
 
-			treeNodes.add(new DisabledNode(name, filePath));
+			treeNodes.add(new DisabledNode(fileName, filePath));
 			nodeSaves.add(treeNodes.get(treeNodes.size() - 1));
 			DefaultTreeModel model = new DefaultTreeModel(nodeRoot);
 
@@ -660,7 +663,7 @@ public class MainRecommenderPanel extends JPanel {
 			
 			MainGUI.setMainTitle(activeConfigutation);		
 			MainGUI.setSaveItemEnabled(true);
-			MainGUI.writeResult("Preferences file added: " + name, Constants.Log.INFO);
+			MainGUI.writeResult("Preferences file added: " + fileName, Constants.Log.INFO);
 			
 		}
 	}
@@ -697,6 +700,10 @@ public class MainRecommenderPanel extends JPanel {
 
 	public void setActiveConfigutation(String activeConfigutation) {
 		this.activeConfigutation = activeConfigutation;
+	}
+	
+	public static String getFileName() {
+		return fileName;
 	}
 
 }

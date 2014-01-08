@@ -212,6 +212,14 @@ public class Constants {
 		public static final String RECOMM_NEIGHBORHOOD_THRESHOLD = "threshold";
 
 		public static final String RECOMM_EVALUATOR = "evaluator";
+		
+		public static final String RECOMM_EVALUATOR_TYPE = "type";
+		
+		public static final String RECOMM_EVALUATOR_TRAINING = "training";
+		
+		public static final String RECOMM_EVALUATOR_EVALUATION = "evaluation";
+		
+		public static final String RECOMM_EVALUATOR_AT = "topN";
 
 		public static final String RECOMM_QUERY = "query";
 

@@ -38,6 +38,10 @@
 	</neighborhood>
 	
 	<evaluator>
+		<type>IR Statistics</type>
+		<training>0.7</training>
+		<evaluation>1.0</evaluation>
+		<topN>2</topN>
 	</evaluator>
 	
 	<query>
