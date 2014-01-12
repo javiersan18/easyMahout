@@ -336,6 +336,7 @@ public class MainGUI extends JFrame {
 				distributed = false;
 				// recommenderTab = new MainRecommenderPanel();
 				recommenderTab.setDistributed(distributed);
+				clusterTab.setDistributed(distributed);
 				// stop hadoop
 			}
 
@@ -350,6 +351,7 @@ public class MainGUI extends JFrame {
 				// recommenderTab = new MainRecommenderPanel();
 				distributed = true;
 				recommenderTab.setDistributed(distributed);
+				clusterTab.setDistributed(distributed);
 				// Start Apache Hadoop
 			}
 		});

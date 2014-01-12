@@ -94,5 +94,9 @@ public class DistanceMeasurePanel extends JPanel {
 	public String getSelectedType() {
 		return (String) comboBoxDistance.getSelectedItem();
 	}
+	
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
 }
 

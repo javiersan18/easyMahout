@@ -305,4 +305,8 @@ public class DataModelClusterPanel extends JPanel {
 	public void setDataModel(DataModel dataModel) {
 		this.dataModel = dataModel;
 	}
+	
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
 }

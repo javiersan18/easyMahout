@@ -96,6 +96,10 @@ public class NumberClusterPanel extends JPanel {
 	    // if exception isn't thrown, then it is an integer
 	    return true;
 	}
+	
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
 	 
 }
 

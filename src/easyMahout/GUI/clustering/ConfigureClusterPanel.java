@@ -105,5 +105,9 @@ public class ConfigureClusterPanel extends JPanel {
 			lblGuide.setText(ClusterTips.CLUSTER_CONFIG);
 		}
 	}
+	
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
 
 }

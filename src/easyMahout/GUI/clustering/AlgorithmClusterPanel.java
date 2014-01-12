@@ -95,5 +95,8 @@ import javax.swing.border.TitledBorder;
 		public String getSelectedType() {
 			return (String) comboBoxAlg.getSelectedItem();
 		}
+		public HelpTooltip getHelpTooltip() {
+			return helpTooltip;
+		}
 	}
 
