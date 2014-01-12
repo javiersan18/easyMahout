@@ -9,13 +9,18 @@ import java.awt.event.ActionListener;
 
 	import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 	import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClusterTips;
+import easyMahout.utils.help.RecommenderTips;
 
 	//import easyMahout.utils.IconHelpPanel;
 
@@ -27,6 +32,7 @@ import javax.swing.border.TitledBorder;
 		private static final long serialVersionUID = 1L;
 
 		private JComboBox comboBoxAlg;
+		private HelpTooltip helpTooltip;
 
 		public AlgorithmClusterPanel() {
 			// super();
@@ -41,10 +47,19 @@ import javax.swing.border.TitledBorder;
 					Constants.ClusterAlg.FUZZYKMEANS, Constants.ClusterAlg.DIRICHLET , Constants.ClusterAlg.USER_DEFINED}));
 			comboBoxAlg.setBounds(38, 36, 141, 20);
 			add(comboBoxAlg);
+			
+			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+			btnHelp.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
+			btnHelp.setPreferredSize(new Dimension(65, 40));
+			btnHelp.setBounds(10, 358, 40, 40);
+			add(btnHelp);
 
-//			//JPanel panel = new IconHelpPanel(25,25);
-//			panel.setBounds(190, 33, 25, 25);
-//			add(panel);
+			// Help Tip
+			helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_ALGORITHM);
+			add(helpTooltip);
 
 
 			comboBoxAlg.addActionListener(new ActionListener() {

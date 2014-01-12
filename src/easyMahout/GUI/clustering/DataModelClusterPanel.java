@@ -1,11 +1,13 @@
 package easyMahout.GUI.clustering;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -22,8 +24,11 @@ import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClusterTips;
 
 import java.awt.ComponentOrientation;
 
@@ -41,6 +46,8 @@ public class DataModelClusterPanel extends JPanel {
 	private final static Logger log = Logger.getLogger(DataModelClusterPanel.class);
 
 	private JTextField textPath, tfDelimiter;
+	
+	private HelpTooltip helpTooltip;
 
 	private JLabel lblDelimiter, lblDataSource;
 
@@ -64,7 +71,20 @@ public class DataModelClusterPanel extends JPanel {
 		comboBoxDatamodel.setModel(restModels);
 		comboBoxDatamodel.setBounds(38, 68, 216, 20);
 		add(comboBoxDatamodel);
+		
+		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
 
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_DATAMODEL);
+		add(helpTooltip);
+		
 		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);

@@ -2,27 +2,30 @@ package easyMahout.GUI.clustering;
 
 
 	import java.awt.BorderLayout;
-	import java.awt.Color;
-	import java.awt.Dimension;
-	import java.awt.Graphics;
-	import java.awt.event.ActionEvent;
-	import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 	import javax.swing.DefaultComboBoxModel;
-	import javax.swing.ImageIcon;
-	import javax.swing.JButton;
-	import javax.swing.JComboBox;
-	import javax.swing.JLabel;
-	import javax.swing.JOptionPane;
-	import javax.swing.JPanel;
-	import javax.swing.JTextArea;
-	import javax.swing.JTextField;
-	import javax.swing.border.LineBorder;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 	import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClusterTips;
 	
 
-	import javax.swing.border.TitledBorder;
+import javax.swing.border.TitledBorder;
 
 	public class NumberIterationsPanel extends JPanel {
 
@@ -35,6 +38,8 @@ package easyMahout.GUI.clustering;
 		private JButton boton;
 		
 		private long numeroIteraciones;
+		
+		private HelpTooltip helpTooltip;
 
 		public NumberIterationsPanel() {
 			// super();
@@ -57,10 +62,18 @@ package easyMahout.GUI.clustering;
 			boton.setBounds(200, 190, 70, 30);
 			add(boton);
 			
-//			JPanel panel = new IconHelpPanel(25,25);
-//			panel.setBounds(280, 193, 25, 25);
-//			panel.setToolTipText("Number of iterations you wish the algortihm to have"); 
-//			add(panel);
+			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+			btnHelp.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
+			btnHelp.setPreferredSize(new Dimension(65, 40));
+			btnHelp.setBounds(10, 358, 40, 40);
+			add(btnHelp);
+
+			// Help Tip
+			helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_NITERATIONS);
+			add(helpTooltip);
 
 			boton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {

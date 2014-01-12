@@ -18,7 +18,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClusterTips;
 //import easyMahout.utils.IconHelpPanel;
 
 import javax.swing.border.TitledBorder;
@@ -35,6 +38,8 @@ public class NumberClusterPanel extends JPanel {
 	
 	private int numeroClusters;
 
+	private HelpTooltip helpTooltip;
+	
 	public NumberClusterPanel() {
 		// super();
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Number of clusters", TitledBorder.CENTER,
@@ -56,10 +61,18 @@ public class NumberClusterPanel extends JPanel {
 		boton.setBounds(200, 190, 70, 30);
 		add(boton);
 		
-//		JPanel panel = new IconHelpPanel(25,25);
-//		panel.setBounds(280, 193, 25, 25);
-//		panel.setToolTipText("Number of clusters you wish to organize the data into"); 
-//		add(panel);
+		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_NCLUSTERS);
+		add(helpTooltip);
 
 		boton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

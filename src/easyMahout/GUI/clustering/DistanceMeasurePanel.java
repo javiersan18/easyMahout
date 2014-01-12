@@ -10,12 +10,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClusterTips;
 //import easyMahout.utils.IconHelpPanel;
 
 import javax.swing.border.TitledBorder;
@@ -25,6 +29,7 @@ public class DistanceMeasurePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private JComboBox comboBoxDistance;
+	private HelpTooltip helpTooltip;
 
 	public DistanceMeasurePanel() {
 		// super();
@@ -46,10 +51,18 @@ public class DistanceMeasurePanel extends JPanel {
 		add(comboBoxDistance);
 		
 
-//		JPanel panel = new IconHelpPanel(25,25);
-//		panel.setBounds(190, 33, 25, 25);
-//		add(panel);
+		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
 
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_DIST);
+		add(helpTooltip);
 
 		comboBoxDistance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
