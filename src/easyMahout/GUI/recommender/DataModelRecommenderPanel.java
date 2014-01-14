@@ -311,7 +311,7 @@ public class DataModelRecommenderPanel extends JPanel {
 	}
 
 	public void setDataModel(DataModel dataModel) {
-		this.dataModel = dataModel;
+		DataModelRecommenderPanel.dataModel = dataModel;
 	}
 
 	public void setDistributed(boolean distributed) {

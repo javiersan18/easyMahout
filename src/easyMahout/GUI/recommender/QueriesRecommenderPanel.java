@@ -25,6 +25,7 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.recommender.builder.RecommenderBuilder;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
@@ -127,7 +128,7 @@ public class QueriesRecommenderPanel extends JPanel {
 				// }
 
 				try {
-					Recommender recomm = MainRecommenderPanel.buildRecommender();
+					Recommender recomm = RecommenderBuilder.buildRecommender();
 					if (recomm != null) {
 						int i = 0;
 						while (i < tableModel.getRowCount()) {

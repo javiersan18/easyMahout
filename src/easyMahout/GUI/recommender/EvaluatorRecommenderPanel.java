@@ -57,8 +57,6 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 	private JLabel lblEvaluationPercentage;
 
-	private final static Logger log = Logger.getLogger(EvaluatorRecommenderPanel.class);
-
 	private JButton btnEvaluate;
 
 	protected boolean irsStats;
@@ -72,6 +70,8 @@ public class EvaluatorRecommenderPanel extends JPanel {
 	private JLabel lblTopN;
 
 	private static JTextField tfTopN;
+
+	private final static Logger log = Logger.getLogger(EvaluatorRecommenderPanel.class);
 
 	public EvaluatorRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Evaluator", TitledBorder.CENTER, TitledBorder.TOP, null,
@@ -309,11 +309,11 @@ public class EvaluatorRecommenderPanel extends JPanel {
 			comboBoxEvaluator.setModel(preferencesEvaluator);
 		}
 	}
-	
+
 	public static String getSelectedType() {
 		return (String) comboBoxEvaluator.getSelectedItem();
 	}
-	
+
 	public static String getTraining() {
 		if (StringUtils.isNotBlank(tfTraining.getText())) {
 			return tfTraining.getText();
@@ -321,7 +321,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 			return " ";
 		}
 	}
-	
+
 	public static String getEvaluation() {
 		if (StringUtils.isNotBlank(tfEvaluation.getText())) {
 			return tfEvaluation.getText();
@@ -329,7 +329,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 			return " ";
 		}
 	}
-	
+
 	public static String getTopN() {
 		if (StringUtils.isNotBlank(tfTopN.getText())) {
 			return tfTopN.getText();
@@ -337,21 +337,21 @@ public class EvaluatorRecommenderPanel extends JPanel {
 			return " ";
 		}
 	}
-	
+
 	public static void setSelectedType(String type) {
 		comboBoxEvaluator.setSelectedItem(type);
 	}
 
 	public static void setEvaluation(String evaluation) {
-		tfEvaluation.setText(evaluation);		
+		tfEvaluation.setText(evaluation);
 	}
-	
+
 	public static void setTraining(String trainig) {
-		tfTraining.setText(trainig);		
+		tfTraining.setText(trainig);
 	}
-	
+
 	public static void setTopN(String topN) {
-		tfTopN.setText(topN);		
+		tfTopN.setText(topN);
 	}
-	
+
 }

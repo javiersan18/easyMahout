@@ -3,7 +3,6 @@ package easyMahout.GUI;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

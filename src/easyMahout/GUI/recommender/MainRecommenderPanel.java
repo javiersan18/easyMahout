@@ -25,6 +25,7 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.apache.mahout.math.hadoop.similarity.cooccurrence.RowSimilarityJob;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.RecommenderXMLPreferences;
@@ -87,7 +88,7 @@ public class MainRecommenderPanel extends JPanel {
 	private boolean controlModified;
 
 	private String activeConfigutation;
-	
+
 	private static String fileName;
 
 	private DisabledNode nodeJob;
@@ -99,7 +100,7 @@ public class MainRecommenderPanel extends JPanel {
 		panelRecommender = this;
 
 		itembased = false;
-		configurationModified = false;		
+		configurationModified = false;
 		activeConfigutation = "";
 		fileName = "";
 		controlModified = false;
@@ -192,90 +193,6 @@ public class MainRecommenderPanel extends JPanel {
 	public void setTreePanel(JPanel treePanel) {
 		this.treePanel = treePanel;
 	}
-
-	public static Recommender buildRecommender() {
-		if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
-			DataModel model = dataModelPanel.getDataModel();
-			if (model != null) {
-				UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
-				UserNeighborhood neighborhood = neighborhoodPanel.getNeighborhood(similarity, model);
-				return new GenericUserBasedRecommender(model, neighborhood, similarity);
-			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
-				return null;
-			}
-
-		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
-			DataModel model = dataModelPanel.getDataModel();
-			if (model != null) {
-				ItemSimilarity similarity = similarityPanel.getItemSimilarity(model);
-				return new GenericItemBasedRecommender(model, similarity);
-			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
-				return null;
-			}
-
-		} else
-			// mas posibles tipos de recomm
-			return null;
-	}
-
-	public static String[] buildRecommenderJob() {
-		if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
-			return new String[] { "--input", dataModelPanel.getInputPath().toString(), "--output",
-					dataModelPanel.getOutputPath().toString(), "--similarityClassname", similarityPanel.getDistributedSimilarity(),
-					"--maxSimilaritiesPerItem", similarityPanel.getMaxSimilarities(), "--maxPrefsPerUser",
-					similarityPanel.getMaxPreferences(), "--minPrefsPerUser", similarityPanel.getMinPreferences(), "--booleanData",
-					dataModelPanel.getBooleanPrefs(), "--threshold", similarityPanel.getThreshold() };
-		} else if (typePanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY)) {
-			// TODO
-			return null;
-		} else {
-			// if(Constants.RecommType.FACTORIZED_RECOMMENDER)
-			// TODO
-			return null;
-		}
-
-	}
-
-	// private RecommenderBuilder buildRecommender() {
-	// if (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
-	// // DataModel model = dataModelPanel.getDataModel();
-	//
-	// RecommenderBuilder recommenderBuilder = new RecommenderBuilder() {
-	// public Recommender buildRecommender(DataModel model) throws
-	// TasteException {
-	// UserSimilarity similarity = similarityPanel.getUserSimilarity(model);
-	// UserNeighborhood neighborhood =
-	// neighborhoodPanel.getNeighborhood(similarity, model);
-	// return new GenericUserBasedRecommender(model, neighborhood, similarity);
-	// }
-	// };
-	//
-	// return recommenderBuilder;
-	//
-	// } else if
-	// (typePanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
-	// // DataModel model = dataModelPanel.getDataModel();
-	// // final ItemSimilarity similarity = getItemSimilarity(model);
-	// // //final UserNeighborhood neighborhood =
-	// // neighborhoodPanel.getNeighborhood(similarity, model);
-	// //
-	// // RecommenderBuilder recommenderBuilder = new RecommenderBuilder()
-	// // {
-	// // public Recommender buildRecommender(DataModel model) throws
-	// // TasteException {
-	// // return new GenericItemBasedRecommender(model,similarity);
-	// // }
-	// // };
-	// return null;
-	// }// mas posibles tipos de recomm
-	// else
-	// return null;
-	//
-	// }
 
 	private DisabledNode[] populateTree() {
 
@@ -466,13 +383,14 @@ public class MainRecommenderPanel extends JPanel {
 											JOptionPane.YES_NO_CANCEL_OPTION);
 									if (dialogResult == JOptionPane.YES_OPTION) {
 										if (StringUtils.isBlank(activeConfigutation)) {
-											//TODO poner carpeta saves por defecto en el chooser
+											// TODO poner carpeta saves por
+											// defecto en el chooser
 											JFileChooser selectedFile = new JFileChooser();
 											int i = selectedFile.showOpenDialog(MainRecommenderPanel.this);
 											if (i == JFileChooser.APPROVE_OPTION) {
 												File prefs = selectedFile.getSelectedFile();
 												String absPath = prefs.getAbsolutePath();
-												RecommenderXMLPreferences.saveXMLFile(absPath);	
+												RecommenderXMLPreferences.saveXMLFile(absPath);
 												MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
 											} else if (i == JFileChooser.ERROR_OPTION) {
 												MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
@@ -487,10 +405,10 @@ public class MainRecommenderPanel extends JPanel {
 											// configurationNew = true;
 											addPreferencesFile();
 											log.debug("modified, saving added configuration");
-										}										
+										}
 									} else if (dialogResult == JOptionPane.NO_OPTION) {
 										// nuevo directamente
-										// configurationNew = true;										
+										// configurationNew = true;
 										addPreferencesFile();
 										log.debug("modified, no save");
 									}
@@ -519,7 +437,7 @@ public class MainRecommenderPanel extends JPanel {
 								activeConfigutation = filePath;
 								configurationModified = false;
 								controlModified = true;
-								MainGUI.setSaveItemEnabled(true);								
+								MainGUI.setSaveItemEnabled(true);
 							}
 						});
 
@@ -637,6 +555,11 @@ public class MainRecommenderPanel extends JPanel {
 
 		if (fileName != null && !fileName.isEmpty()) {
 
+			File directory = new File(Constants.SavesPaths.RECOMMENDER);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+
 			String filePath = Constants.SavesPaths.RECOMMENDER + fileName + Constants.SavesPaths.EXTENSION;
 
 			activeConfigutation = filePath;
@@ -660,11 +583,11 @@ public class MainRecommenderPanel extends JPanel {
 			treeMenu.setModel(model);
 			treeMenu.expandRow(0);
 			treeMenu.expandRow(8);
-			
-			MainGUI.setMainTitle(activeConfigutation);		
+
+			MainGUI.setMainTitle(activeConfigutation);
 			MainGUI.setSaveItemEnabled(true);
 			MainGUI.writeResult("Preferences file added: " + fileName, Constants.Log.INFO);
-			
+
 		}
 	}
 
@@ -685,7 +608,7 @@ public class MainRecommenderPanel extends JPanel {
 	public boolean isConfigurationModified() {
 		return configurationModified;
 	}
-	
+
 	public boolean isControlModified() {
 		return controlModified;
 	}
@@ -701,7 +624,7 @@ public class MainRecommenderPanel extends JPanel {
 	public void setActiveConfigutation(String activeConfigutation) {
 		this.activeConfigutation = activeConfigutation;
 	}
-	
+
 	public static String getFileName() {
 		return fileName;
 	}

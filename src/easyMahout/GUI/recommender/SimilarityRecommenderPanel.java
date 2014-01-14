@@ -98,7 +98,8 @@ public class SimilarityRecommenderPanel extends JPanel {
 		comboBoxSimilarity = new JComboBox();
 		comboBoxSimilarity.setMaximumRowCount(16);
 
-		String type = MainRecommenderPanel.getTypePanel().getSelectedType();
+		MainRecommenderPanel.getTypePanel();
+		String type = TypeRecommenderPanel.getSelectedType();
 		this.setModelSimilarity(type);
 
 		comboBoxSimilarity.setBounds(38, 36, 197, 20);
@@ -247,7 +248,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		}
 	}
 
-	public ItemSimilarity getItemSimilarity(DataModel dataModel) {
+	public static ItemSimilarity getItemSimilarity(DataModel dataModel) {
 		try {
 			if (chckbxWeighted.isSelected()) {
 				String similarity = (String) comboBoxSimilarity.getSelectedItem();
@@ -310,13 +311,14 @@ public class SimilarityRecommenderPanel extends JPanel {
 			lblMinPreferencesPer.setVisible(false);
 			lblMaxsimilaritiesperitem.setVisible(false);
 			lblThreshold.setVisible(false);
-			String type = MainRecommenderPanel.getTypePanel().getSelectedType();
+			MainRecommenderPanel.getTypePanel();
+			String type = TypeRecommenderPanel.getSelectedType();
 			this.setModelSimilarity(type);
 			helpTooltip.setText(RecommenderTips.RECOMM_SIMILARITY);
 		}
 	}
 
-	public String getDistributedSimilarity() {
+	public static String getDistributedSimilarity() {
 		if (MainGUI.isDistributed()) {
 			String similarity = (String) comboBoxSimilarity.getSelectedItem();
 			switch (similarity) {
