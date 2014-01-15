@@ -9,21 +9,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JLabel;
-
-import easyMahout.utils.HelpTooltip;
-import easyMahout.utils.help.RecommenderTips;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.UIManager;
+
+import org.apache.log4j.Logger;
+
+import easyMahout.GUI.recommender.builder.JobBuilder;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.RecommenderTips;
 
 public class JobRecommenderPanel extends JPanel {
 
@@ -31,6 +26,8 @@ public class JobRecommenderPanel extends JPanel {
 
 	private HelpTooltip helpTooltip;
 	private JTextArea txtrShelljob;
+	
+	private final static Logger log = Logger.getLogger(JobRecommenderPanel.class);
 
 	public JobRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Run Hadoop Job", TitledBorder.CENTER, TitledBorder.TOP,
@@ -62,6 +59,12 @@ public class JobRecommenderPanel extends JPanel {
 		JButton btnRun = new JButton("Run");
 		btnRun.setBounds(367, 358, 89, 23);
 		add(btnRun);
+		btnRun.addActionListener(new ActionListener() {		
+			public void actionPerformed(ActionEvent e) {
+				log.error("run");
+				JobBuilder.buildRecommenderJob();				
+			}
+		});
 		
 		JButton btnExport = new JButton("Export \r\n");
 		btnExport.addActionListener(new ActionListener() {

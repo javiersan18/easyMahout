@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import easyMahout.utils.Constants;
