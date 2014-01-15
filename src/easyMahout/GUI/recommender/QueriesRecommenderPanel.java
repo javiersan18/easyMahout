@@ -119,13 +119,7 @@ public class QueriesRecommenderPanel extends JPanel {
 				// cuando se ejecuta el recomm con la celda recien modificada,
 				// no actualiza el valor
 
-				// String[] args = {"a","b"};
-				// try {
-				// ToolRunner.run(new ItemSimilarityJob(), args);
-				// } catch (Exception e2) {
-				// // TODO Auto-generated catch block
-				// e2.printStackTrace();
-				// }
+			
 
 				try {
 					Recommender recomm = RecommenderBuilder.buildRecommender();

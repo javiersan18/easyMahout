@@ -29,7 +29,7 @@ public class RecommenderBuilder {
 				return new GenericUserBasedRecommender(model, neighborhood, similarity);
 			} else {
 				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
+				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
 				return null;
 			}
 
@@ -40,7 +40,7 @@ public class RecommenderBuilder {
 				return new GenericItemBasedRecommender(model, similarity);
 			} else {
 				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded", Constants.Log.ERROR);
+				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
 				return null;
 			}
 

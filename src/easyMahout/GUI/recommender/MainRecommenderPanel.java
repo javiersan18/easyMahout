@@ -18,14 +18,6 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
-import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
-import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
-import org.apache.mahout.cf.taste.recommender.Recommender;
-import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
-import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-import org.apache.mahout.math.hadoop.similarity.cooccurrence.RowSimilarityJob;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.recommender.RecommenderXMLPreferences;

@@ -49,6 +49,7 @@ public class JobBuilder {
 				args[11] = StringUtils.isBlank(minPrefsPerUser) ? "1" : minPrefsPerUser;
 				args[12] = "--booleanData";
 				args[13] =StringUtils.isBlank(booleanData) ? String.valueOf(Boolean.FALSE) : booleanData;
+				//TODO: threshold can be wrong in this way "4.9E-324"
 				args[14] = "--threshold";
 				args[15] = StringUtils.isBlank(threshold) ? String.valueOf(RowSimilarityJob.NO_THRESHOLD) : threshold;					
 				
