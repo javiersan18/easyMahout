@@ -156,13 +156,13 @@ public class MainGUI extends JFrame {
 	public static void writeResult(String text, String type) {
 		// TODO: poner la hora a los logs, scroll o popup para ver los
 		// resultados comodamente.
-		if (type.toLowerCase().equals(Constants.Log.ERROR)) {
+		if (type.equalsIgnoreCase(Constants.Log.ERROR)) {
 			textBuilder.append("<font color=red>ERROR: ").append(text).append("</font><br>");
-		} else if (type.toLowerCase().equals(Constants.Log.WARNING)) {
+		} else if (type.equalsIgnoreCase(Constants.Log.WARNING)) {
 			textBuilder.append("<font color=yellow>WARNING: ").append(text).append("</font><br>");
-		} else if (type.toLowerCase().equals(Constants.Log.RESULT)) {
+		} else if (type.equalsIgnoreCase(Constants.Log.RESULT)) {
 			textBuilder.append("<font color=black>RESULT: ").append(text).append("</font><br>");
-		} else if (type.toLowerCase().equals(Constants.Log.INFO)) {
+		} else if (type.equalsIgnoreCase(Constants.Log.INFO)) {
 			textBuilder.append("<font color=green>INFO: ").append(text).append("</font><br>");
 		}
 
@@ -276,18 +276,24 @@ public class MainGUI extends JFrame {
 				}
 			}
 		});
+		
+		JSeparator separator_3 = new JSeparator();
+		mnFile.add(separator_3);
+		
+		JMenuItem mntmPreferences = new JMenuItem("Preferences");
+		mnFile.add(mntmPreferences);
 
 		JSeparator separator_2 = new JSeparator();
 		mnFile.add(separator_2);
 		mnFile.add(mnItemExit);
 
-		JMenu mnPreferences = new JMenu("Preferences");
-		menuBar.add(mnPreferences);
+		JMenu mnProperties = new JMenu("Properties");
+		menuBar.add(mnProperties);
 
 		ButtonGroup distributedGroup = new ButtonGroup();
 
 		nonDistributedMenuItem = new JRadioButtonMenuItem("Non Distributed", true);
-		mnPreferences.add(nonDistributedMenuItem);
+		mnProperties.add(nonDistributedMenuItem);
 		distributedGroup.add(nonDistributedMenuItem);
 		nonDistributedMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -343,7 +349,7 @@ public class MainGUI extends JFrame {
 		});
 
 		distributedMenuItem = new JRadioButtonMenuItem("Distributed (Apache Hadoop)");
-		mnPreferences.add(distributedMenuItem);
+		mnProperties.add(distributedMenuItem);
 		distributedGroup.add(distributedMenuItem);
 		distributedMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -398,5 +404,4 @@ public class MainGUI extends JFrame {
 		distributedMenuItem.setSelected(distributed);
 		nonDistributedMenuItem.setSelected(!distributed);
 	}
-
 }
