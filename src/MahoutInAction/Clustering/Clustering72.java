@@ -15,7 +15,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.mahout.clustering.AbstractCluster;
 import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
+import org.apache.mahout.clustering.iterator.DistanceMeasureCluster;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
+import org.apache.mahout.clustering.kmeans.Kluster;
+import org.apache.mahout.common.HadoopUtil;
+import org.apache.mahout.common.distance.DistanceMeasure;
 import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
@@ -34,6 +38,15 @@ public class Clustering72 {
 			writer.append(new LongWritable(recNum++), vec);
 		}
 		writer.close();
+
+		SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, conf);
+		LongWritable key = new LongWritable();
+		VectorWritable value = new VectorWritable();
+		while (reader.next(key, value)) {
+			System.out.println(value.toString());
+		}
+		reader.close();
+
 	}
 
 	public static ArrayList<Vector> getPoints(double[][] raw) {
@@ -54,37 +67,43 @@ public class Clustering72 {
 		if (!testData.exists()) {
 			testData.mkdir();
 		}
+		System.out.println("hjola");
 		testData = new File("testdata/points");
 		if (!testData.exists()) {
 			testData.mkdir();
 			Configuration conf = new Configuration();
 			FileSystem fs = FileSystem.get(conf);
 			writePointsToFile(vectors, "testdata/points/file1", fs, conf);
+			// ClusterHelper.writePointsToFile(vectors, conf, new
+			// Path("testdata/points/file1"));
 			Path path = new Path("testdata/clusters/part-00000");
-			SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, Text.class, AbstractCluster.class);
-			// for (int i = 0; i < k; i++) {
-			// Vector vec = vectors.get(i);
-			// AbstractCluster cluster = new AbstractCluster(vec, i);
-			// writer.append(new Text(cluster.getIdentifier()), cluster);
-			// }
+			DistanceMeasure dm = new EuclideanDistanceMeasure();
+			SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, Text.class, Kluster.class);
+			for (int i = 0; i < k; i++) {
+				Vector vec = vectors.get(i);
+				Kluster cluster = new Kluster(vec, i, dm);
+				writer.append(new Text(cluster.getIdentifier()), cluster);
+			}
 			writer.close();
-			KMeansDriver.run(conf,
-					new Path("testdata/points"),
-					new Path("testdata/clusters"),
-					new Path("output"),
-					new EuclideanDistanceMeasure(),
-					0.001,
-					10,
-					true,
-					1.0,
-					false);
-
-			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-00000"),
-					conf);
-			IntWritable key = new IntWritable();
-			WeightedVectorWritable value = new WeightedVectorWritable();
+			
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, conf);
+			Text key = new Text();
+			Kluster value = new Kluster();
 			while (reader.next(key, value)) {
-				System.out.println(value.toString() + " belongs to cluster " + key.toString());
+				System.out.println(value.toString());
+			}
+			reader.close();
+
+			Path output = new Path("output");
+			HadoopUtil.delete(conf, output);
+
+			KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, dm, 0.001, 10, true, 0.0, true);
+
+			SequenceFile.Reader reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
+			IntWritable key2 = new IntWritable();
+			WeightedVectorWritable value2 = new WeightedVectorWritable();
+			while (reader2.next(key2, value2)) {
+				System.out.println(value2.toString() + " belongs to cluster " + key2.toString());
 			}
 			reader.close();
 		}
