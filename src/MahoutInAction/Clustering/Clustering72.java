@@ -25,6 +25,9 @@ import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
 
+// Before each execution, delete manually testdata and output folder, otherwise it wont work 
+
+
 public class Clustering72 {
 	public static final double[][] points = { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } };
 
@@ -38,7 +41,7 @@ public class Clustering72 {
 			writer.append(new LongWritable(recNum++), vec);
 		}
 		writer.close();
-
+		//log testdata/points/file1
 		SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, conf);
 		LongWritable key = new LongWritable();
 		VectorWritable value = new VectorWritable();
@@ -86,6 +89,7 @@ public class Clustering72 {
 			}
 			writer.close();
 			
+			//log testdata/clusters/part-00000
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, conf);
 			Text key = new Text();
 			Kluster value = new Kluster();
@@ -98,7 +102,8 @@ public class Clustering72 {
 			HadoopUtil.delete(conf, output);
 
 			KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, dm, 0.001, 10, true, 0.0, true);
-
+			
+			// write result
 			SequenceFile.Reader reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
 			IntWritable key2 = new IntWritable();
 			WeightedVectorWritable value2 = new WeightedVectorWritable();
