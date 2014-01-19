@@ -275,6 +275,17 @@ public class Constants {
 
 		public static final String WEIGHTED = "WEIGHTED";
 	}
+	
+	public class ClusterKmeans {
+		
+		public static final String distance= ClusterDist.EUCLIDEAN;
+		
+		public static final String treshold= "0.01";
+		
+		public static final String clusters="3";
+		
+		public static final String iterations="10";
+	}
 
 	public class ClassificatorAlg {
 
@@ -288,5 +299,5 @@ public class Constants {
 
 		public static final String RAMDOMFOREST = "RAMDOM FOREST";
 	}
-	// Angel
+	
 }

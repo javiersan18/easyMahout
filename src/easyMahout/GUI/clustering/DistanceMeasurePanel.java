@@ -50,6 +50,15 @@ public class DistanceMeasurePanel extends JPanel {
 		comboBoxDistance.setBounds(38, 36, 141, 20);
 		add(comboBoxDistance);
 		
+		JButton next = new JButton("Next          >>");
+		next.setVisible(true);
+		next.setBounds(320, 380, 141, 20);
+		add(next);
+		
+		JButton prev = new JButton("<<          Previous");
+		prev.setVisible(true);
+		prev.setBounds(120, 380, 141, 20);
+		add(prev);
 
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -91,6 +100,11 @@ public class DistanceMeasurePanel extends JPanel {
 	}
 
 
+	public void setValue(int dist){
+		this.comboBoxDistance.setSelectedIndex(dist);
+	}
+
+
 	public String getSelectedType() {
 		return (String) comboBoxDistance.getSelectedItem();
 	}
@@ -98,5 +112,20 @@ public class DistanceMeasurePanel extends JPanel {
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
 	}
+	
+	 public void setEditable(boolean enabled) {
+	        comboBoxDistance.setEditable(enabled);
+	 }
+
+
+	public JComboBox getComboBoxDistance() {
+		return comboBoxDistance;
+	}
+
+
+	public void setComboBoxDistance(JComboBox comboBoxDistance) {
+		this.comboBoxDistance = comboBoxDistance;
+	}
+	 
 }
 

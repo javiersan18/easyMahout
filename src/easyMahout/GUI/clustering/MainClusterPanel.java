@@ -37,9 +37,11 @@ public class MainClusterPanel extends JPanel {
 
 	private static DistanceMeasurePanel distanceClusterPanel;
 
+	private static ConvergenceTresholdPanel tresholdClusterPanel;
+	
 	private static NumberClusterPanel numberClusterPanel;
 
-	private static NumberIterationsPanel numberIterationsPanel;
+	private static MaxIterationsPanel maxIterationsPanel;
 
 	private static DataModelClusterPanel dataModelClusterPanel;
 	
@@ -54,6 +56,8 @@ public class MainClusterPanel extends JPanel {
 	private static DisabledNode nodeAlgorithm;
 
 	private static DisabledNode nodeDistanceMeasure;
+	
+	private static DisabledNode nodeConvergence;
 
 	private static DisabledNode nodeNClusters;
 
@@ -124,6 +128,13 @@ public class MainClusterPanel extends JPanel {
 		panelCluster.add(distanceClusterPanel);
 		distanceClusterPanel.setLayout(null);
 		distanceClusterPanel.setVisible(false);
+		
+		
+		tresholdClusterPanel = new ConvergenceTresholdPanel();
+		tresholdClusterPanel.setBounds(228, 11, 481, 410);
+		panelCluster.add(tresholdClusterPanel);
+		tresholdClusterPanel.setLayout(null);
+		tresholdClusterPanel.setVisible(false);
 
 		numberClusterPanel = new NumberClusterPanel();
 		numberClusterPanel.setBounds(228, 11, 481, 410);
@@ -131,11 +142,11 @@ public class MainClusterPanel extends JPanel {
 		numberClusterPanel.setLayout(null);
 		numberClusterPanel.setVisible(false);
 
-		numberIterationsPanel = new NumberIterationsPanel();
-		numberIterationsPanel.setBounds(228, 11, 481, 410);
-		panelCluster.add(numberIterationsPanel);
-		numberIterationsPanel.setLayout(null);
-		numberIterationsPanel.setVisible(false);
+		maxIterationsPanel = new MaxIterationsPanel();
+		maxIterationsPanel.setBounds(228, 11, 481, 410);
+		panelCluster.add(maxIterationsPanel);
+		maxIterationsPanel.setLayout(null);
+		maxIterationsPanel.setVisible(false);
 
 		dataModelClusterPanel = new DataModelClusterPanel();
 		dataModelClusterPanel.setBounds(228, 11, 481, 410);
@@ -150,16 +161,55 @@ public class MainClusterPanel extends JPanel {
 		jobClusterPanel.setVisible(false);
 	}
 
+	public static DistanceMeasurePanel getDistanceClusterPanel() {
+		return distanceClusterPanel;
+	}
+
+	public static void setDistanceClusterPanel(
+			DistanceMeasurePanel distanceClusterPanel) {
+		MainClusterPanel.distanceClusterPanel = distanceClusterPanel;
+	}
+
+	public static ConvergenceTresholdPanel getTresholdClusterPanel() {
+		return tresholdClusterPanel;
+	}
+
+	public static void setTresholdClusterPanel(
+			ConvergenceTresholdPanel tresholdClusterPanel) {
+		MainClusterPanel.tresholdClusterPanel = tresholdClusterPanel;
+	}
+
+	public static NumberClusterPanel getNumberClusterPanel() {
+		return numberClusterPanel;
+	}
+
+	public static void setNumberClusterPanel(NumberClusterPanel numberClusterPanel) {
+		MainClusterPanel.numberClusterPanel = numberClusterPanel;
+	}
+
+	public static MaxIterationsPanel getMaxIterationsPanel() {
+		return maxIterationsPanel;
+	}
+
+	public static void setMaxIterationsPanel(MaxIterationsPanel maxIterationsPanel) {
+		MainClusterPanel.maxIterationsPanel = maxIterationsPanel;
+	}
+
+	public static AlgorithmClusterPanel getAlgorithmClusterPanel() {
+		return algorithmClusterPanel;
+	}
+	
 	public DisabledNode[] populateTree() {
 
 		String[] categories = { "Root", // 0
 				"Configure", // 1
 				"Algorithm", // 2
 				"Distance Measure", // 3
-				"Number of Clusters", // 4
-				"Number of Iterations",// 5
-				"Data Model",// 6
-				"Hadoop Job"//7
+				"Convergence Treshold",//4
+				"Number of Clusters", // 5
+				"Maximum Iterations",// 6
+				"Data Model",// 7
+				"Hadoop Job"//8
 
 		};
 
@@ -176,11 +226,14 @@ public class MainClusterPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(5));
 		treeNodes.get(1).add(treeNodes.get(6));
 		treeNodes.get(1).add(treeNodes.get(7));
+		treeNodes.get(1).add(treeNodes.get(8));
 		
-		nodeJob = treeNodes.get(7);
+		nodeJob = treeNodes.get(8);
 		nodeAlgorithm = treeNodes.get(2);
 		nodeDistanceMeasure = treeNodes.get(3);;
-		nodeDataModel = treeNodes.get(6);;
+		nodeDataModel = treeNodes.get(7);
+		nodeNClusters = treeNodes.get(5);
+		nodeConvergence= treeNodes.get(4);
 		nodeJob.setEnabled(false);
 		//nodeSaves = treeNodes.get(9);
 		nodeConfigure = treeNodes.get(1);
@@ -209,8 +262,9 @@ public class MainClusterPanel extends JPanel {
 						configureClusterPanel.setVisible(true);
 						algorithmClusterPanel.setVisible(false);
 						distanceClusterPanel.setVisible(false);
+						tresholdClusterPanel.setVisible(false);
 						numberClusterPanel.setVisible(false);
-						numberIterationsPanel.setVisible(false);
+						maxIterationsPanel.setVisible(false);
 						dataModelClusterPanel.setVisible(false);
 						jobClusterPanel.setVisible(false);
 						
@@ -223,8 +277,9 @@ public class MainClusterPanel extends JPanel {
 							configureClusterPanel.setVisible(true);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
+							tresholdClusterPanel.setVisible(false);
 							numberClusterPanel.setVisible(false);
-							numberIterationsPanel.setVisible(false);
+							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(false);
 							jobClusterPanel.setVisible(false);
 						} else if (category.equals("Algorithm")) {
@@ -233,59 +288,81 @@ public class MainClusterPanel extends JPanel {
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(true);
 							distanceClusterPanel.setVisible(false);
+							tresholdClusterPanel.setVisible(false);
 							numberClusterPanel.setVisible(false);
-							numberIterationsPanel.setVisible(false);
+							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(false);
 							jobClusterPanel.setVisible(false);
 							}
 						} else if (category.equals("Distance Measure")) {
 							log.info("distanceB1");
-							if (!MainGUI.isDistributed()) {
+							
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(true);
+							tresholdClusterPanel.setVisible(false);
 							numberClusterPanel.setVisible(false);
-							numberIterationsPanel.setVisible(false);
+							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(false);
 							jobClusterPanel.setVisible(false);
-							}
+							
+						}
+							else if (category.equals("Convergence Treshold")) {
+								log.info("convergenceB1");
+							
+								configureClusterPanel.setVisible(false);
+								algorithmClusterPanel.setVisible(false);
+								distanceClusterPanel.setVisible(false);
+								tresholdClusterPanel.setVisible(true);
+								numberClusterPanel.setVisible(false);
+								maxIterationsPanel.setVisible(false);
+								dataModelClusterPanel.setVisible(false);
+								jobClusterPanel.setVisible(false);
+							
 						} else if (category.equals("Number of Clusters")) {
 							log.info("numberOfClustersB1");
+							if ((!MainGUI.isDistributed()) && (!isCanopy())){
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
+							tresholdClusterPanel.setVisible(false);
 							numberClusterPanel.setVisible(true);
-							numberIterationsPanel.setVisible(false);
+							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(false);
-							jobClusterPanel.setVisible(false);
-						} else if (category.equals("Number of Iterations")) {
-							log.info("numberOfIterationsB1");
-							configureClusterPanel.setVisible(false);
-							algorithmClusterPanel.setVisible(false);
-							distanceClusterPanel.setVisible(false);
-							numberClusterPanel.setVisible(false);
-							numberIterationsPanel.setVisible(true);
-							dataModelClusterPanel.setVisible(false);
-							jobClusterPanel.setVisible(false);
-						} else if (category.equals("Data Model")) {
-							log.info("numberOfIterationsB1");
-							if (!MainGUI.isDistributed()) {
-							configureClusterPanel.setVisible(false);
-							algorithmClusterPanel.setVisible(false);
-							distanceClusterPanel.setVisible(false);
-							numberClusterPanel.setVisible(false);
-							numberIterationsPanel.setVisible(false);
-							dataModelClusterPanel.setVisible(true);
 							jobClusterPanel.setVisible(false);
 							}
+						} else if (category.equals("Maximum Iterations")) {
+							log.info("numberOfIterationsB1");
+							configureClusterPanel.setVisible(false);
+							algorithmClusterPanel.setVisible(false);
+							distanceClusterPanel.setVisible(false);
+							tresholdClusterPanel.setVisible(false);
+							numberClusterPanel.setVisible(false);
+							maxIterationsPanel.setVisible(true);
+							dataModelClusterPanel.setVisible(false);
+							jobClusterPanel.setVisible(false);
+							
+						} else if (category.equals("Data Model")) {
+							log.info("data Model B1");
+							
+							configureClusterPanel.setVisible(false);
+							algorithmClusterPanel.setVisible(false);
+							distanceClusterPanel.setVisible(false);
+							tresholdClusterPanel.setVisible(false);
+							numberClusterPanel.setVisible(false);
+							maxIterationsPanel.setVisible(false);
+							dataModelClusterPanel.setVisible(true);
+							jobClusterPanel.setVisible(false);
+							
 						}else if (category.equals("Hadoop Job")) {
-							if (MainGUI.isDistributed()) {
+							if (MainGUI.isDistributed()){
 								log.info("jobB1");
 								configureClusterPanel.setVisible(false);
 								algorithmClusterPanel.setVisible(false);
 								distanceClusterPanel.setVisible(false);
+								tresholdClusterPanel.setVisible(false);
 								numberClusterPanel.setVisible(false);
-								numberIterationsPanel.setVisible(false);
+								maxIterationsPanel.setVisible(false);
 								dataModelClusterPanel.setVisible(false);
 								jobClusterPanel.setVisible(true);
 							}
@@ -321,6 +398,7 @@ public class MainClusterPanel extends JPanel {
 								// TODO: iniciar panel para cada tipo;
 								if (category.equals("Algorithm")) {
 									log.info("Algorithm");
+									
 
 								}
 							}
@@ -339,19 +417,20 @@ public class MainClusterPanel extends JPanel {
 		algorithmClusterPanel.getHelpTooltip().disable();
 		dataModelClusterPanel.getHelpTooltip().disable();
 		distanceClusterPanel.getHelpTooltip().disable();
+		tresholdClusterPanel.getHelpTooltip().disable();
 		numberClusterPanel.getHelpTooltip().disable();
-		numberIterationsPanel.getHelpTooltip().disable();
+		maxIterationsPanel.getHelpTooltip().disable();
 		jobClusterPanel.getHelpTooltip().disable();
 	}
 
 	public void setDistributed(boolean distributed) {
 		nodeAlgorithm.setEnabled(!distributed);
-		nodeDistanceMeasure.setEnabled(!distributed);
-		nodeDataModel.setEnabled(!distributed);
+		nodeDistanceMeasure.setEnabled(distributed);
+		nodeDataModel.setEnabled(distributed);
+		nodeConvergence.setEnabled(distributed);
+		nodeNClusters.setEnabled(!distributed);
 		nodeJob.setEnabled(distributed);
 		treeMenu.repaint();
-		//typePanel.setDistributed(distributed);
-		//dataModelClusterPanel.setDistributed(distributed);
 		this.setConfigPanelEnabled();
 	}
 	private void setConfigPanelEnabled() {
@@ -359,9 +438,35 @@ public class MainClusterPanel extends JPanel {
 		algorithmClusterPanel.setVisible(false);
 		dataModelClusterPanel.setVisible(false);
 		distanceClusterPanel.setVisible(false);
+		tresholdClusterPanel.setVisible(false);
 		numberClusterPanel.setVisible(false);
-		numberIterationsPanel.setVisible(false);
+		maxIterationsPanel.setVisible(false);
 		jobClusterPanel.setVisible(false);
 		disableHelpTips();
+	}
+	
+	public static void setCanopy(boolean can) {
+		canopy=can;
+		nodeAlgorithm.setEnabled(!can);
+		nodeDistanceMeasure.setEnabled(can);
+		nodeDataModel.setEnabled(can);
+		nodeConvergence.setEnabled(can);
+		nodeNClusters.setEnabled(!can);
+		//nodeJob.setEnabled(can);
+		treeMenu.repaint();
+		//this.setConfigPanelEnabled();
+	}
+
+	public static boolean isCanopy() {
+		return canopy;
+	}
+	
+	public static void clean(){
+		algorithmClusterPanel= new AlgorithmClusterPanel();
+		distanceClusterPanel=new DistanceMeasurePanel();
+		tresholdClusterPanel= new ConvergenceTresholdPanel();
+		numberClusterPanel=new NumberClusterPanel();
+		maxIterationsPanel=new MaxIterationsPanel();
+		dataModelClusterPanel=new DataModelClusterPanel();
 	}
 }

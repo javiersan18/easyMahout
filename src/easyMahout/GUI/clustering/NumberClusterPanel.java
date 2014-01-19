@@ -61,6 +61,16 @@ public class NumberClusterPanel extends JPanel {
 		boton.setBounds(200, 190, 70, 30);
 		add(boton);
 		
+		JButton next = new JButton("Next          >>");
+		next.setVisible(true);
+		next.setBounds(320, 380, 141, 20);
+		add(next);
+		
+		JButton prev = new JButton("<<          Previous");
+		prev.setVisible(true);
+		prev.setBounds(120, 380, 141, 20);
+		add(prev);
+		
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -99,6 +109,18 @@ public class NumberClusterPanel extends JPanel {
 	
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
+	}
+
+	public int getNumeroClusters() {
+		return numeroClusters;
+	}
+
+	public void setNumeroClusters(int numeroClusters) {
+		this.numeroClusters = numeroClusters;
+	}
+	
+	public JTextField getCampoNum(){
+		return campoNum;
 	}
 	 
 }

@@ -38,6 +38,16 @@ public class ConfigureClusterPanel extends JPanel {
 		lblGuide.setBounds(38, 36, 405, 334);
 		add(lblGuide);
 		
+		JButton next = new JButton("Next          >>");
+		next.setVisible(true);
+		next.setBounds(320, 380, 141, 20);
+		add(next);
+		
+		JButton prev = new JButton("<<          Previous");
+		prev.setVisible(true);
+		prev.setBounds(120, 380, 141, 20);
+		add(prev);
+		
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

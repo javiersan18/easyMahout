@@ -63,6 +63,8 @@ public class MainGUI extends JFrame {
 	private static JRadioButtonMenuItem nonDistributedMenuItem;
 
 	private static JRadioButtonMenuItem distributedMenuItem;
+	
+	private static boolean canopy;
 
 	/**
 	 * Launch the application.
@@ -403,5 +405,13 @@ public class MainGUI extends JFrame {
 		recommenderTab.setDistributed(distributed);
 		distributedMenuItem.setSelected(distributed);
 		nonDistributedMenuItem.setSelected(!distributed);
+	}
+	
+	public static boolean isCanopy() {
+		return canopy;
+	}
+	
+	public static void setCanopy(boolean c){
+		canopy=c;
 	}
 }

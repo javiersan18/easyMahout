@@ -27,7 +27,7 @@ import easyMahout.utils.help.ClusterTips;
 
 import javax.swing.border.TitledBorder;
 
-	public class NumberIterationsPanel extends JPanel {
+	public class MaxIterationsPanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -41,15 +41,15 @@ import javax.swing.border.TitledBorder;
 		
 		private HelpTooltip helpTooltip;
 
-		public NumberIterationsPanel() {
+		public MaxIterationsPanel() {
 			// super();
-			setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Number of iterations", TitledBorder.CENTER,
+			setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Maximum number of iterations", TitledBorder.CENTER,
 					TitledBorder.TOP, null, null));
 			setForeground(Color.BLACK);
 			setLayout(null);
 			setBounds(228, 11, 480, 408);
 			
-			numero = new JLabel("Number of iterations:");
+			numero = new JLabel("Maximum number of iterations:");
 			numero.setBounds(38, 105, 189, 14);
 			add(numero);
 
@@ -61,6 +61,16 @@ import javax.swing.border.TitledBorder;
 			boton = new JButton("OK");
 			boton.setBounds(200, 190, 70, 30);
 			add(boton);
+			
+			JButton next = new JButton("Next          >>");
+			next.setVisible(true);
+			next.setBounds(320, 380, 141, 20);
+			add(next);
+			
+			JButton prev = new JButton("<<          Previous");
+			prev.setVisible(true);
+			prev.setBounds(120, 380, 141, 20);
+			add(prev);
 			
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
@@ -102,6 +112,23 @@ import javax.swing.border.TitledBorder;
 		public HelpTooltip getHelpTooltip() {
 			return helpTooltip;
 		}
+		
+		
+
+		public long getNumeroIteraciones() {
+			return numeroIteraciones;
+		}
+
+		public void setNumeroIteraciones(long numeroIteraciones) {
+			this.numeroIteraciones = numeroIteraciones;
+		}
+		
+		public JTextField getCampoNum(){
+			return campoNum;
+		}
+		
+		
+		
 		 
 	}
 
