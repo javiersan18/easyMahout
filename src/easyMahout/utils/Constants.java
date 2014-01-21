@@ -36,7 +36,20 @@ public class Constants {
 		public static final String ITEMBASED_DISTRIBUTED = "Item Based Collaborative Filtering";
 
 	}
-
+	
+	public class RecommFactorizer{
+		
+		public static final String ALSWR = "Alternating Least Squares with Weighted-lambda-Regulations";
+		
+		public static final String PARALLEL_SGD = "Parallel Stochastic Gradient Descent";
+		
+		public static final String RATING_SGD = "Rating Stochastic Gradient Descent";
+		
+		public static final String SVD_PLUS_PLUS = "Singular Value Decomposition ++";
+		
+		public static final String SVD = "Singular Value Decomposition";
+	}
+	
 	public class DataModel {
 
 		public static final String FILE = "File";

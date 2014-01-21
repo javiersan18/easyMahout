@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,10 +16,13 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
 
+import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
+
+import javax.swing.JRadioButton;
 
 public class TypeRecommenderPanel extends JPanel {
 
@@ -31,6 +35,10 @@ public class TypeRecommenderPanel extends JPanel {
 	private DefaultComboBoxModel nonDistributedModel;
 
 	private final JButton btnHelp;
+
+	private JRadioButton rdbtnALSWR;
+
+	private JRadioButton rdbtnSVD;
 
 	private HelpTooltip helpTooltip;
 
@@ -48,7 +56,8 @@ public class TypeRecommenderPanel extends JPanel {
 
 		distributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.ITEMSIMILARITY,
 				Constants.RecommType.ITEMBASED_DISTRIBUTED, Constants.RecommType.FACTORIZED_RECOMMENDER });
-		nonDistributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED });
+		nonDistributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED,
+				Constants.RecommType.FACTORIZED_RECOMMENDER });
 
 		comboBoxType = new JComboBox();
 		comboBoxType.setModel(nonDistributedModel);
@@ -67,6 +76,20 @@ public class TypeRecommenderPanel extends JPanel {
 		// Help Tip
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_TYPE);
 
+		ButtonGroup factorizedButtonGroup = new ButtonGroup();
+
+		rdbtnALSWR = new JRadioButton(Constants.RecommFactorizer.ALSWR);
+		rdbtnALSWR.setVisible(false);
+		rdbtnALSWR.setBounds(37, 73, 325, 23);
+		//add(rdbtnALSWR);
+		factorizedButtonGroup.add(rdbtnALSWR);
+
+		rdbtnSVD = new JRadioButton(Constants.RecommFactorizer.SVD);
+		rdbtnSVD.setVisible(false);
+		rdbtnSVD.setBounds(37, 99, 325, 23);
+		//add(rdbtnSVD);
+		factorizedButtonGroup.add(rdbtnSVD);
+
 		comboBoxType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String type = (String) ((JComboBox) e.getSource()).getSelectedItem();
@@ -75,6 +98,13 @@ public class TypeRecommenderPanel extends JPanel {
 					MainRecommenderPanel.setEnableNeighborhood(false);
 				} else if (type.equals(Constants.RecommType.USERBASED)) {
 					MainRecommenderPanel.setEnableNeighborhood(true);
+				} else if (type.equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
+					// TODO desactivar casi todo, activar menu de factorizacion					
+					setFactoricerOptions(true);
+				} else if (type.equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
+					setFactoricerOptions(false);
+				} else if (type.equals(Constants.RecommType.ITEMSIMILARITY)) {
+					setFactoricerOptions(false);
 				}
 			}
 		});
@@ -94,6 +124,16 @@ public class TypeRecommenderPanel extends JPanel {
 		comboBoxType.setSelectedItem(type);
 	}
 
+	private void setFactoricerOptions(boolean flag) {
+		if (MainGUI.isDistributed()) {
+			rdbtnALSWR.setVisible(flag);
+			rdbtnSVD.setVisible(flag);
+		} else {
+			rdbtnALSWR.setVisible(false);
+			rdbtnSVD.setVisible(false);
+		}
+	}
+
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
 			setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Distributed recommender", TitledBorder.CENTER,
@@ -107,5 +147,4 @@ public class TypeRecommenderPanel extends JPanel {
 			helpTooltip.setText(RecommenderTips.RECOMM_TYPE);
 		}
 	}
-
 }
