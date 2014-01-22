@@ -41,13 +41,15 @@ public class Constants {
 		
 		public static final String ALSWR = "Alternating Least Squares with Weighted-lambda-Regulations";
 		
+		public static final String ALSWR_SHORT = "Alternating Least Squares WR (ALSWR)";
+		
 		public static final String PARALLEL_SGD = "Parallel Stochastic Gradient Descent";
 		
 		public static final String RATING_SGD = "Rating Stochastic Gradient Descent";
 		
-		public static final String SVD_PLUS_PLUS = "Singular Value Decomposition ++";
+		public static final String SVD_PLUS_PLUS = "Singular Value Decomposition ++ (SVD++)";
 		
-		public static final String SVD = "Singular Value Decomposition";
+		public static final String SVD = "Singular Value Decomposition (SVD)";
 	}
 	
 	public class DataModel {

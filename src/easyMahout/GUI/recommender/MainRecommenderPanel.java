@@ -53,6 +53,8 @@ public class MainRecommenderPanel extends JPanel {
 
 	private JobRecommenderPanel jobPanel;
 
+	private FactorizerRecommenderPanel factorizerPanel;
+
 	private static JTree treeMenu;
 
 	private final static Logger log = Logger.getLogger(MainRecommenderPanel.class);
@@ -75,15 +77,19 @@ public class MainRecommenderPanel extends JPanel {
 
 	private static DisabledNode nodeSelected;
 
+	private DisabledNode nodeJob;
+
+	private static DisabledNode nodeFactorization;
+
 	private static boolean configurationModified;
 
 	private boolean controlModified;
 
 	private String activeConfigutation;
 
-	private static String fileName;
+	private static boolean matrixBased;
 
-	private DisabledNode nodeJob;
+	private static String fileName;
 
 	public MainRecommenderPanel() {
 
@@ -92,6 +98,7 @@ public class MainRecommenderPanel extends JPanel {
 		panelRecommender = this;
 
 		itembased = false;
+		matrixBased = false;
 		configurationModified = false;
 		activeConfigutation = "";
 		fileName = "";
@@ -158,6 +165,12 @@ public class MainRecommenderPanel extends JPanel {
 		neighborhoodPanel.setLayout(null);
 		neighborhoodPanel.setVisible(false);
 
+		factorizerPanel = new FactorizerRecommenderPanel();
+		factorizerPanel.setBounds(228, 11, 481, 410);
+		panelRecommender.add(factorizerPanel);
+		factorizerPanel.setLayout(null);
+		factorizerPanel.setVisible(false);
+
 		evaluatorPanel = new EvaluatorRecommenderPanel();
 		evaluatorPanel.setBounds(228, 11, 481, 410);
 		panelRecommender.add(evaluatorPanel);
@@ -194,10 +207,11 @@ public class MainRecommenderPanel extends JPanel {
 				"Data Model", // 3
 				"Similarity", // 4
 				"Neighborhood", // 5
-				"Evaluator", // 6
-				"Queries", // 7
-				"Hadoop Job", // 8
-				"Saves", // 9
+				"Factorization", // 6
+				"Evaluator", // 7
+				"Queries", // 8
+				"Hadoop Job", // 9
+				"Saves", // 10
 		};
 
 		treeNodes = new ArrayList<DisabledNode>();
@@ -213,14 +227,17 @@ public class MainRecommenderPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(6));
 		treeNodes.get(1).add(treeNodes.get(7));
 		treeNodes.get(1).add(treeNodes.get(8));
-		treeNodes.get(0).add(treeNodes.get(9));
+		treeNodes.get(1).add(treeNodes.get(9));
+		treeNodes.get(0).add(treeNodes.get(10));
 
 		nodeNeighborhood = treeNodes.get(5);
-		nodeQueries = treeNodes.get(7);
-		nodeEvaluator = treeNodes.get(6);
-		nodeJob = treeNodes.get(8);
+		nodeQueries = treeNodes.get(8);
+		nodeEvaluator = treeNodes.get(7);
+		nodeJob = treeNodes.get(9);
 		nodeJob.setEnabled(false);
-		nodeSaves = treeNodes.get(9);
+		nodeFactorization = treeNodes.get(6);
+		nodeFactorization.setEnabled(false);
+		nodeSaves = treeNodes.get(10);
 		nodeConfigure = treeNodes.get(1);
 
 		ArrayList<DisabledNode> savesNodes = getSavesFiles();
@@ -250,6 +267,7 @@ public class MainRecommenderPanel extends JPanel {
 						dataModelPanel.setVisible(false);
 						similarityPanel.setVisible(false);
 						neighborhoodPanel.setVisible(false);
+						factorizerPanel.setVisible(false);
 						evaluatorPanel.setVisible(false);
 						queriesPanel.setVisible(false);
 						disableHelpTips();
@@ -264,6 +282,7 @@ public class MainRecommenderPanel extends JPanel {
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
+							factorizerPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
 							jobPanel.setVisible(false);
@@ -276,6 +295,7 @@ public class MainRecommenderPanel extends JPanel {
 							dataModelPanel.setVisible(true);
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
+							factorizerPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
 							jobPanel.setVisible(false);
@@ -288,6 +308,7 @@ public class MainRecommenderPanel extends JPanel {
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(true);
 							neighborhoodPanel.setVisible(false);
+							factorizerPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(false);
 							jobPanel.setVisible(false);
@@ -302,6 +323,23 @@ public class MainRecommenderPanel extends JPanel {
 								dataModelPanel.setVisible(false);
 								similarityPanel.setVisible(false);
 								neighborhoodPanel.setVisible(true);
+								factorizerPanel.setVisible(false);
+								evaluatorPanel.setVisible(false);
+								queriesPanel.setVisible(false);
+								jobPanel.setVisible(false);
+								disableHelpTips();
+							}
+							
+						} else if (category.equals("Factorization")) {
+							log.info(MainGUI.isDistributed());
+							if (!MainGUI.isDistributed() && matrixBased) {
+								log.info("neighB1");
+								configPanel.setVisible(false);
+								typePanel.setVisible(false);
+								dataModelPanel.setVisible(false);
+								similarityPanel.setVisible(false);
+								neighborhoodPanel.setVisible(false);
+								factorizerPanel.setVisible(true);
 								evaluatorPanel.setVisible(false);
 								queriesPanel.setVisible(false);
 								jobPanel.setVisible(false);
@@ -316,6 +354,7 @@ public class MainRecommenderPanel extends JPanel {
 								dataModelPanel.setVisible(false);
 								similarityPanel.setVisible(false);
 								neighborhoodPanel.setVisible(false);
+								factorizerPanel.setVisible(false);
 								evaluatorPanel.setVisible(true);
 								queriesPanel.setVisible(false);
 								jobPanel.setVisible(false);
@@ -329,6 +368,7 @@ public class MainRecommenderPanel extends JPanel {
 							dataModelPanel.setVisible(false);
 							similarityPanel.setVisible(false);
 							neighborhoodPanel.setVisible(false);
+							factorizerPanel.setVisible(false);
 							evaluatorPanel.setVisible(false);
 							queriesPanel.setVisible(true);
 							jobPanel.setVisible(false);
@@ -343,6 +383,7 @@ public class MainRecommenderPanel extends JPanel {
 								dataModelPanel.setVisible(false);
 								similarityPanel.setVisible(false);
 								neighborhoodPanel.setVisible(false);
+								factorizerPanel.setVisible(false);
 								evaluatorPanel.setVisible(false);
 								queriesPanel.setVisible(false);
 								jobPanel.setVisible(true);
@@ -491,6 +532,7 @@ public class MainRecommenderPanel extends JPanel {
 		dataModelPanel.getHelpTooltip().disable();
 		similarityPanel.getHelpTooltip().disable();
 		neighborhoodPanel.getHelpTooltip().disable();
+		factorizerPanel.getHelpTooltip().disable();
 		evaluatorPanel.getHelpTooltip().disable();
 		queriesPanel.getHelpTooltip().disable();
 		jobPanel.getHelpTooltip().disable();
@@ -498,6 +540,7 @@ public class MainRecommenderPanel extends JPanel {
 
 	public void setDistributed(boolean distributed) {
 		nodeNeighborhood.setEnabled(!distributed);
+		nodeFactorization.setEnabled(!distributed);
 		nodeEvaluator.setEnabled(!distributed);
 		nodeQueries.setEnabled(!distributed);
 		nodeJob.setEnabled(distributed);
@@ -515,6 +558,7 @@ public class MainRecommenderPanel extends JPanel {
 		dataModelPanel.setVisible(false);
 		similarityPanel.setVisible(false);
 		neighborhoodPanel.setVisible(false);
+		factorizerPanel.setVisible(false);
 		evaluatorPanel.setVisible(false);
 		queriesPanel.setVisible(false);
 		jobPanel.setVisible(false);
@@ -574,7 +618,7 @@ public class MainRecommenderPanel extends JPanel {
 
 			treeMenu.setModel(model);
 			treeMenu.expandRow(0);
-			treeMenu.expandRow(8);
+			treeMenu.expandRow(9);
 
 			MainGUI.setMainTitle(activeConfigutation);
 			MainGUI.setSaveItemEnabled(true);
@@ -594,6 +638,12 @@ public class MainRecommenderPanel extends JPanel {
 	public static void setEnableNeighborhood(boolean enabled) {
 		nodeNeighborhood.setEnabled(enabled);
 		itembased = !enabled;
+		treeMenu.repaint();
+	}
+	
+	public static void setEnableFactorization(boolean enabled) {
+		nodeFactorization.setEnabled(enabled);
+		matrixBased = enabled;
 		treeMenu.repaint();
 	}
 

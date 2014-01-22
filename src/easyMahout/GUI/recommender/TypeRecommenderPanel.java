@@ -28,10 +28,13 @@ public class TypeRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("rawtypes")
 	private static JComboBox comboBoxType;
 
+	@SuppressWarnings("rawtypes")
 	private DefaultComboBoxModel distributedModel;
 
+	@SuppressWarnings("rawtypes")
 	private DefaultComboBoxModel nonDistributedModel;
 
 	private final JButton btnHelp;
@@ -45,6 +48,7 @@ public class TypeRecommenderPanel extends JPanel {
 	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(TypeRecommenderPanel.class);
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public TypeRecommenderPanel() {
 		super();
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Non distributed recommender", TitledBorder.CENTER,
@@ -96,11 +100,15 @@ public class TypeRecommenderPanel extends JPanel {
 				MainRecommenderPanel.getSimilarityPanel().setModelSimilarity(type);
 				if (type.equals(Constants.RecommType.ITEMBASED)) {
 					MainRecommenderPanel.setEnableNeighborhood(false);
+					MainRecommenderPanel.setEnableFactorization(false);
 				} else if (type.equals(Constants.RecommType.USERBASED)) {
 					MainRecommenderPanel.setEnableNeighborhood(true);
+					MainRecommenderPanel.setEnableFactorization(false);
 				} else if (type.equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
 					// TODO desactivar casi todo, activar menu de factorizacion					
 					setFactoricerOptions(true);
+					MainRecommenderPanel.setEnableFactorization(true);
+					MainRecommenderPanel.setEnableNeighborhood(false);
 				} else if (type.equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
 					setFactoricerOptions(false);
 				} else if (type.equals(Constants.RecommType.ITEMSIMILARITY)) {
