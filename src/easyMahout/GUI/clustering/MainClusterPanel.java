@@ -199,6 +199,10 @@ public class MainClusterPanel extends JPanel {
 		return algorithmClusterPanel;
 	}
 	
+	
+	
+	
+	
 	public DisabledNode[] populateTree() {
 
 		String[] categories = { "Root", // 0
@@ -321,7 +325,7 @@ public class MainClusterPanel extends JPanel {
 							
 						} else if (category.equals("Number of Clusters")) {
 							log.info("numberOfClustersB1");
-							if ((!MainGUI.isDistributed()) && (!isCanopy())){
+							if ((!MainGUI.isDistributed()) /*&& (!isCanopy())*/){
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
@@ -447,7 +451,7 @@ public class MainClusterPanel extends JPanel {
 	
 	public static void setCanopy(boolean can) {
 		canopy=can;
-		nodeAlgorithm.setEnabled(!can);
+		//nodeAlgorithm.setEnabled(!can);
 		nodeDistanceMeasure.setEnabled(can);
 		nodeDataModel.setEnabled(can);
 		nodeConvergence.setEnabled(can);

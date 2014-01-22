@@ -95,6 +95,7 @@ public class MainGUI extends JFrame {
 		setResizable(false);
 		initialize();
 	}
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -413,5 +414,9 @@ public class MainGUI extends JFrame {
 	
 	public static void setCanopy(boolean c){
 		canopy=c;
+	}
+	
+	public static void limpiar(){
+		main(null);
 	}
 }

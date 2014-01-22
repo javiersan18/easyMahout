@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
@@ -52,7 +53,7 @@ import javax.swing.border.TitledBorder;
 			comboBoxAlg.setBounds(38, 36, 141, 20);
 			
 			add(comboBoxAlg);
-			JButton next = new JButton("Next          >>");
+			/*JButton next = new JButton("Next          >>");
 			next.setVisible(true);
 			next.setBounds(320, 380, 141, 20);
 			add(next);
@@ -60,7 +61,7 @@ import javax.swing.border.TitledBorder;
 			JButton prev = new JButton("<<          Previous");
 			prev.setVisible(true);
 			prev.setBounds(120, 380, 141, 20);
-			add(prev);
+			add(prev);*/
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -83,9 +84,9 @@ import javax.swing.border.TitledBorder;
 					//If user choose Canopy algorithm...
 					
 					if (alg.equals(Constants.ClusterAlg.CANOPY)) {
+						
 						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-						//Limpiar lo anterior
-						//MainClusterPanel.clean();
+						
 						
 						//add a new treshold section
 						numero2 = new JLabel("Convergence Treshold 2:");
@@ -103,13 +104,14 @@ import javax.swing.border.TitledBorder;
 						MainClusterPanel.getTresholdClusterPanel().add(campoNum2);
 						
 						MainClusterPanel.setCanopy(true);
-						MainClusterPanel.getAlgorithmClusterPanel().getComboBoxAlg().disable();
+						//MainClusterPanel.getAlgorithmClusterPanel().getComboBoxAlg().disable();
+						
 					} 
 					//If user choose KMeans algorithm...
 					else if (alg.equals(Constants.ClusterAlg.KMEANS)) {
+						
 						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-						//Limpiar lo anterior
-						//MainClusterPanel.clean();
+				
 						
 						MainClusterPanel.getDistanceClusterPanel().setValue(0) ;
 						MainClusterPanel.getDistanceClusterPanel().getComboBoxDistance().disable();

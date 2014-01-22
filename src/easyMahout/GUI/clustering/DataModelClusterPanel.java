@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -22,9 +24,23 @@ import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.clustering.canopy.CanopyClusterer;
+import org.apache.mahout.clustering.kmeans.Kluster;
+import org.apache.mahout.common.distance.CosineDistanceMeasure;
+import org.apache.mahout.common.distance.DistanceMeasure;
+import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
+import org.apache.mahout.common.distance.ManhattanDistanceMeasure;
+import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
+import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
+import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
+import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
+import easyMahout.GUI.recommender.builder.RecommenderBuilder;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
@@ -52,6 +68,8 @@ public class DataModelClusterPanel extends JPanel {
 	private JLabel lblDelimiter, lblDataSource;
 
 	private JButton btnSelect;
+	
+	private JButton btnRun;
 
 	private JCheckBox chckbxBooleanPreferences;
 
@@ -71,7 +89,7 @@ public class DataModelClusterPanel extends JPanel {
 		comboBoxDatamodel.setModel(restModels);
 		comboBoxDatamodel.setBounds(38, 68, 216, 20);
 		add(comboBoxDatamodel);
-		
+		/*
 		JButton next = new JButton("Next          >>");
 		next.setVisible(true);
 		next.setBounds(320, 380, 141, 20);
@@ -81,7 +99,7 @@ public class DataModelClusterPanel extends JPanel {
 		prev.setVisible(true);
 		prev.setBounds(120, 380, 141, 20);
 		add(prev);
-		
+		*/
 		
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -129,6 +147,11 @@ public class DataModelClusterPanel extends JPanel {
 		JButton btnCreate = new JButton("Create Model");
 		btnCreate.setBounds(241, 165, 107, 23);
 		add(btnCreate);
+		
+		btnRun = new JButton("Run");
+		btnRun.setVisible(true);
+		btnRun.setBounds(320, 380, 107, 23);
+		add(btnRun);
 
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -235,79 +258,132 @@ public class DataModelClusterPanel extends JPanel {
 			}
 		});
 
-//		btnSelect.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				JFileChooser selectedFile = new JFileChooser();
-//				int i = selectedFile.showOpenDialog(DataModelRecommenderPanel.this);
-//				if (i == JFileChooser.APPROVE_OPTION) {
-//					File data = selectedFile.getSelectedFile();
-//					String absPath = data.getAbsolutePath();
-//					int selected = comboBoxDatamodel.getSelectedIndex();
-//
-//					try {
-//						// TODO: distintos tipos de modelos...
-//						switch (selected) {
-//							case 0:
-//								setDataModel(new FileDataModel(new File(absPath)));
-//								textPath.setText(absPath);
-//								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-//								break;
-//							case 1:
-//								setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(absPath)))));
-//								textPath.setText(absPath);
-//								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-//								break;
-//							case 2:
-//								String delimiter = tfDelimiter.getText();
-//								if (StringUtils.isBlank(delimiter)) {
-//									tfDelimiter.setBackground(new Color(240, 128, 128));
-//									log.error("Delimiter for ExtendedDataModel is empty.");
-//									MainGUI.writeResult("Delimiter for Extended Data Model is empty.", Constants.Log.ERROR);
-//								} else {
-//									tfDelimiter.setBackground(Color.WHITE);
-//									setDataModel(new ExtendedDataModel(new File(absPath), tfDelimiter.getText()));
-//									textPath.setText(absPath);
-//									MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-//								}
-//								break;
-//							case 3:
-//								// dataModel = new CassandraDataModel(new
-//								// File(absPath));
-//								break;
-//							case 4:
-//								setDataModel(new FileDataModel(new File(absPath)));
-//								break;
-//							case 5:
-//								setDataModel(new FileDataModel(new File(absPath)));
-//								break;
-//							case 6:
-//								setDataModel(new FileDataModel(new File(absPath)));
-//								break;
-//							case 7:
-//								setDataModel(new FileDataModel(new File(absPath)));
-//								break;
-//							default:
-//								setDataModel(new FileDataModel(new File(absPath)));
-//								break;
-//						}
-//						// TODO: revisar errores de excepciones mostrados en
-//						// consola
-//					} catch (IllegalArgumentException e1) {
-//						MainGUI.writeResult("Error reading data file: " + e1.getMessage(), Constants.Log.ERROR);
-//						log.error("Error reading data file", e1);
-//					} catch (Exception e1) {
-//						MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
-//						log.error("Error reading data file", e1);
-//					}
-//
-//				} else if (i == JFileChooser.ERROR_OPTION) {
-//					MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
-//					log.error("Error opening data file");
-//				}
-//			}
-//		});
 
-	}
+	
+	
+	btnRun.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+
+			//try {
+			String dist=MainClusterPanel.getDistanceClusterPanel().getSelectedType();
+			//-------------------------------------------------------------------------------------------				
+							//cogemos el tipo de distancia
+							DistanceMeasure d;
+							switch(dist){
+								case	Constants.ClusterDist.EUCLIDEAN:
+								{
+									if (MainClusterPanel.getDistanceClusterPanel().getChckbxWeighted().isSelected())
+									d=new WeightedEuclideanDistanceMeasure();
+									else d=new EuclideanDistanceMeasure();
+
+									break;
+								}
+								case	Constants.ClusterDist.SQUAREDEUCLIDEAN:
+								{
+									d=new SquaredEuclideanDistanceMeasure();
+									break;
+								}
+								case	Constants.ClusterDist.MANHATTAN:
+								{
+									if (MainClusterPanel.getDistanceClusterPanel().getChckbxWeighted().isSelected())
+										d=new WeightedManhattanDistanceMeasure();
+									else d=new ManhattanDistanceMeasure();
+									break;
+								}
+								case	Constants.ClusterDist.TANIMOTO:
+								{
+									d=new TanimotoDistanceMeasure();
+									break;
+								}
+								case	Constants.ClusterDist.COSINE:
+								{
+									d=new CosineDistanceMeasure();
+									break;
+								}
+								
+								default : d=new EuclideanDistanceMeasure();
+							}
+							//fin tipo distancia
+			//algoritmo=CANOPY
+				if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.CANOPY)){
+				
+//-------------------------------------------------------------------------------------------	
+				//cogemos las valores treshold
+				String treshold=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+				Double t1=Double.parseDouble(treshold);
+				String treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+				Double t2=Double.parseDouble(treshold1);
+				//fin treshold
+//-------------------------------------------------------------------------------------------	
+				//nº clusters
+				//fin nº clusters
+//-------------------------------------------------------------------------------------------	
+
+				//nº iterations
+				String it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
+				long iteraciones=Long.parseLong(it);
+				//fin nº iterations
+//-------------------------------------------------------------------------------------------	
+
+				//Data model
+				//fin Data model
+//-------------------------------------------------------------------------------------------	
+				
+				//construimos el cluster CANOPY
+				CanopyClusterer cluster = new CanopyClusterer(d,t1,t2);
+				
+				 
+				if (cluster != null) {
+					MainGUI.writeResult("OK building the clusters CANOPY "+ d.toString(), Constants.Log.INFO);
+				//TODO escribir los datos del cluster en un doc	
+				}	
+
+				 else 					
+					MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+				}
+				//fin CANOPY
+//--------------------------------------------------------------------------------------------
+				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.KMEANS)){
+					Double treshold1=0.1;
+					Double treshold2=0.2;
+					CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
+					 
+					if (cluster != null) {MainGUI.writeResult("OK building the clusters KMEANS", Constants.Log.INFO);}	
+
+					 else 					
+						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+					}
+				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.FUZZYKMEANS)){
+					Double treshold1=0.1;
+					Double treshold2=0.2;
+					CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
+					 
+					if (cluster != null) {MainGUI.writeResult("OK building the clusters Fuzzy K-MEANS", Constants.Log.INFO);}	
+
+					 else 					
+						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+					}
+				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.USER_DEFINED)){
+					Double treshold1=0.1;
+					Double treshold2=0.2;
+					CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
+					 
+					if (cluster != null) {MainGUI.writeResult("OK building the clusters USER_Defined", Constants.Log.INFO);}	
+
+					 else 					
+						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+					}
+				}
+				
+				
+		/*	 catch (Exception e1) {
+				// TODO Auto-generated catch block
+				MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
+				e1.printStackTrace();
+			}*/
+
+	});}
+	
 
 	public DataModel getDataModel() {
 		return dataModel;

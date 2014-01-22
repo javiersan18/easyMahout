@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,6 +21,7 @@ import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClusterTips;
+import easyMahout.utils.listeners.ItemChangeListener;
 //import easyMahout.utils.IconHelpPanel;
 
 import javax.swing.border.TitledBorder;
@@ -30,6 +32,7 @@ public class DistanceMeasurePanel extends JPanel {
 
 	private JComboBox comboBoxDistance;
 	private HelpTooltip helpTooltip;
+	private static JCheckBox chckbxWeighted;
 
 	public DistanceMeasurePanel() {
 		// super();
@@ -45,20 +48,15 @@ public class DistanceMeasurePanel extends JPanel {
 				Constants.ClusterDist.SQUAREDEUCLIDEAN,
 				Constants.ClusterDist.MANHATTAN,
 				Constants.ClusterDist.COSINE,
-				Constants.ClusterDist.TANIMOTO,
-				Constants.ClusterDist.WEIGHTED }));
+				Constants.ClusterDist.TANIMOTO
+				 }));
 		comboBoxDistance.setBounds(38, 36, 141, 20);
 		add(comboBoxDistance);
 		
-		JButton next = new JButton("Next          >>");
-		next.setVisible(true);
-		next.setBounds(320, 380, 141, 20);
-		add(next);
-		
-		JButton prev = new JButton("<<          Previous");
-		prev.setVisible(true);
-		prev.setBounds(120, 380, 141, 20);
-		add(prev);
+		chckbxWeighted = new JCheckBox("Weighted");
+		chckbxWeighted.setBounds(256, 35, 97, 23);
+		add(chckbxWeighted);
+		chckbxWeighted.addItemListener(new ItemChangeListener());
 
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -73,7 +71,7 @@ public class DistanceMeasurePanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_DIST);
 		add(helpTooltip);
 
-		comboBoxDistance.addActionListener(new ActionListener() {
+		/*comboBoxDistance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String dist = (String) ((JComboBox) e.getSource()).getSelectedItem();
 				//ClusterJPanel.getSimilarityPanel().setModelSimilarity(alg);
@@ -95,7 +93,7 @@ public class DistanceMeasurePanel extends JPanel {
 					//ClusterJPanel.setEnableNeighborhood(true);
 				}
 			}
-		});
+		});*/
 
 	}
 
@@ -126,6 +124,18 @@ public class DistanceMeasurePanel extends JPanel {
 	public void setComboBoxDistance(JComboBox comboBoxDistance) {
 		this.comboBoxDistance = comboBoxDistance;
 	}
+
+
+	public static JCheckBox getChckbxWeighted() {
+		return chckbxWeighted;
+	}
+
+
+	public static void setChckbxWeighted(JCheckBox chckbxWeighted) {
+		DistanceMeasurePanel.chckbxWeighted = chckbxWeighted;
+	}
+	
+	
 	 
 }
 
