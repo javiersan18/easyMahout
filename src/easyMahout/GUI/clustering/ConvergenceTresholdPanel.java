@@ -64,6 +64,16 @@ import javax.swing.border.TitledBorder;
 				add(boton);
 				
 				
+				JButton next = new JButton("Next          >>");
+				next.setVisible(true);
+				next.setBounds(320, 380, 141, 20);
+				add(next);
+				
+				JButton prev = new JButton("<<          Previous");
+				prev.setVisible(true);
+				prev.setBounds(120, 380, 141, 20);
+				add(prev);
+				
 				final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 				btnHelp.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -85,7 +95,6 @@ import javax.swing.border.TitledBorder;
 						else {
 							JOptionPane.showMessageDialog(null, "That is a number!");
 							convergenceTreshold= Double.parseDouble(num);
-							
 						}
 					}
 				});

@@ -30,11 +30,11 @@ import easyMahout.GUI.recommender.DataModelRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
-public class SVDFactorizerInputDialog extends JFrame {
+public class ALSWRFactorizerInputDialog extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private JFrame frmFactorizerInputDialog;
+	private JFrame frmALSWRFactorizerInputDialog;
 
 	private static JTextField tfNoFeatures;
 
@@ -42,11 +42,7 @@ public class SVDFactorizerInputDialog extends JFrame {
 
 	private static JTextField tfLambda;
 
-	private static JTextField tfAlpha;
-
 	private static JTextField tfNoTrainingThreads;
-
-	private JLabel lblAlpha;
 
 	private JLabel lblNoTrainingThreads;
 
@@ -54,7 +50,7 @@ public class SVDFactorizerInputDialog extends JFrame {
 
 	private static JRadioButton rdbtnOption2;
 
-	private static JRadioButton rdbtnOption3;
+	// private static JRadioButton rdbtnOption3;
 
 	private JLabel lblLambda;
 
@@ -62,12 +58,12 @@ public class SVDFactorizerInputDialog extends JFrame {
 
 	private JLabel lblNoFeatures;
 
-	private final static Logger log = Logger.getLogger(SVDFactorizerInputDialog.class);
+	private final static Logger log = Logger.getLogger(ALSWRFactorizerInputDialog.class);
 
-	public SVDFactorizerInputDialog() {
-		super("SVD Factorizer Inputs");
+	public ALSWRFactorizerInputDialog() {
+		super("ALSWR Factorizer Inputs");
 		setResizable(false);
-		frmFactorizerInputDialog = this;
+		frmALSWRFactorizerInputDialog = this;
 		this.setAlwaysOnTop(true);
 		this.setType(Type.POPUP);
 		this.setSize(510, 340);
@@ -96,8 +92,8 @@ public class SVDFactorizerInputDialog extends JFrame {
 		rdbtnOption1.setSelected(true);
 		rdbtnOption1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				lblAlpha.setEnabled(false);
-				tfAlpha.setEnabled(false);
+				// lblAlpha.setEnabled(false);
+				// tfAlpha.setEnabled(false);
 				lblNoTrainingThreads.setEnabled(false);
 				tfNoTrainingThreads.setEnabled(false);
 			}
@@ -109,25 +105,25 @@ public class SVDFactorizerInputDialog extends JFrame {
 		optionsButtonGroup.add(rdbtnOption2);
 		rdbtnOption2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				lblAlpha.setEnabled(true);
-				tfAlpha.setEnabled(true);
-				lblNoTrainingThreads.setEnabled(false);
-				tfNoTrainingThreads.setEnabled(false);
-			}
-		});
-
-		rdbtnOption3 = new JRadioButton("Option 3");
-		rdbtnOption3.setBounds(314, 18, 72, 23);
-		getContentPane().add(rdbtnOption3);
-		optionsButtonGroup.add(rdbtnOption3);
-		rdbtnOption3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				lblAlpha.setEnabled(true);
-				tfAlpha.setEnabled(true);
+				// lblAlpha.setEnabled(true);
+				// tfAlpha.setEnabled(true);
 				lblNoTrainingThreads.setEnabled(true);
 				tfNoTrainingThreads.setEnabled(true);
 			}
 		});
+
+		// rdbtnOption3 = new JRadioButton("Option 3");
+		// rdbtnOption3.setBounds(314, 18, 72, 23);
+		// getContentPane().add(rdbtnOption3);
+		// optionsButtonGroup.add(rdbtnOption3);
+		// rdbtnOption3.addActionListener(new ActionListener() {
+		// public void actionPerformed(ActionEvent e) {
+		// lblAlpha.setEnabled(true);
+		// tfAlpha.setEnabled(true);
+		// lblNoTrainingThreads.setEnabled(true);
+		// tfNoTrainingThreads.setEnabled(true);
+		// }
+		// });
 
 		JSeparator separator = new JSeparator();
 		separator.setBounds(37, 50, 435, 2);
@@ -234,52 +230,15 @@ public class SVDFactorizerInputDialog extends JFrame {
 		});
 		tfLambda.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		lblAlpha = new JLabel("Alpha");
-		lblAlpha.setBounds(37, 160, 27, 14);
-		getContentPane().add(lblAlpha);
-		lblAlpha.setEnabled(false);
-
-		tfAlpha = new JTextField();
-		tfAlpha.setText("40");
-		tfAlpha.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfAlpha.setColumns(5);
-		tfAlpha.setBounds(166, 157, 62, 20);
-		getContentPane().add(tfAlpha);
-		tfAlpha.setEnabled(false);
-		tfAlpha.setInputVerifier(new InputVerifier() {
-			public boolean verify(JComponent input) {
-				JTextField tf = (JTextField) input;
-				String text = tf.getText();
-				try {
-					Double d = Double.valueOf(text);
-					if (d >= 0) {
-						tfAlpha.setBackground(Color.WHITE);
-						return true;
-					} else {
-						log.error(text + " is out of range");
-						MainGUI.writeResult("Alpha factor has to be a real number bigger than 0.", Constants.Log.ERROR);
-						tfAlpha.setBackground(new Color(240, 128, 128));
-						return false;
-					}
-				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost.");
-					MainGUI.writeResult("Alpha factor has to be a real number bigger than 0.", Constants.Log.ERROR);
-					tfAlpha.setBackground(new Color(240, 128, 128));
-					return false;
-				}
-			}
-		});
-		tfAlpha.getDocument().addDocumentListener(new TextFieldChangeListener());
-
 		lblNoTrainingThreads = new JLabel("No. Training Threads");
-		lblNoTrainingThreads.setBounds(37, 190, 100, 14);
+		lblNoTrainingThreads.setBounds(37, 160, 100, 14);
 		getContentPane().add(lblNoTrainingThreads);
 		lblNoTrainingThreads.setEnabled(false);
 
 		tfNoTrainingThreads = new JTextField();
 		tfNoTrainingThreads.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfNoTrainingThreads.setColumns(5);
-		tfNoTrainingThreads.setBounds(166, 187, 62, 20);
+		tfNoTrainingThreads.setBounds(166, 157, 62, 20);
 		getContentPane().add(tfNoTrainingThreads);
 		tfNoTrainingThreads.setEnabled(false);
 		tfNoTrainingThreads.setInputVerifier(new InputVerifier() {
@@ -327,7 +286,7 @@ public class SVDFactorizerInputDialog extends JFrame {
 				&& !tfLambda.getBackground().equals(errorColor) && !tfLambda.getBackground().equals(errorColor)
 				&& !tfNoTrainingThreads.getBackground().equals(errorColor)) {
 
-			frmFactorizerInputDialog.setVisible(false);
+			frmALSWRFactorizerInputDialog.setVisible(false);
 		}
 
 	}
@@ -348,10 +307,6 @@ public class SVDFactorizerInputDialog extends JFrame {
 		return Double.valueOf(tfLambda.getText());
 	}
 
-	public static double getAlpha() {
-		return Double.valueOf(tfAlpha.getText());
-	}
-
 	public static Factorizer getFactorizer() {
 		DataModel model = DataModelRecommenderPanel.getDataModel();
 		if (model != null) {
@@ -364,15 +319,7 @@ public class SVDFactorizerInputDialog extends JFrame {
 				}
 			} else if (rdbtnOption2.isSelected()) {
 				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true, getAlpha());
-				} catch (TasteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else if (rdbtnOption3.isSelected()) {
-				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true, getAlpha(),
-							getNoTrainingThreads());
+					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true,);
 				} catch (TasteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

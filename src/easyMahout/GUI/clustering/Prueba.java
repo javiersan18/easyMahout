@@ -1,4 +1,4 @@
-package MahoutInAction.Clustering;
+package easyMahout.GUI.clustering;
 
 import java.io.File;
 import java.io.IOException;

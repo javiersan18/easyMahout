@@ -62,7 +62,7 @@ import javax.swing.border.TitledBorder;
 			boton.setBounds(200, 190, 70, 30);
 			add(boton);
 			
-			/*JButton next = new JButton("Next          >>");
+			JButton next = new JButton("Next          >>");
 			next.setVisible(true);
 			next.setBounds(320, 380, 141, 20);
 			add(next);
@@ -70,7 +70,7 @@ import javax.swing.border.TitledBorder;
 			JButton prev = new JButton("<<          Previous");
 			prev.setVisible(true);
 			prev.setBounds(120, 380, 141, 20);
-			add(prev);*/
+			add(prev);
 			
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
