@@ -61,16 +61,7 @@ import javax.swing.border.TitledBorder;
 			boton = new JButton("OK");
 			boton.setBounds(200, 190, 70, 30);
 			add(boton);
-			
-			/*JButton next = new JButton("Next          >>");
-			next.setVisible(true);
-			next.setBounds(320, 380, 141, 20);
-			add(next);
-			
-			JButton prev = new JButton("<<          Previous");
-			prev.setVisible(true);
-			prev.setBounds(120, 380, 141, 20);
-			add(prev);*/
+		
 			
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
@@ -87,8 +78,12 @@ import javax.swing.border.TitledBorder;
 
 			boton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
 					String num = campoNum.getText();
-					if (!isInteger(num))
+					if (num.equals("")){
+						JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
+					}
+					else if (!isInteger(num))
 						JOptionPane.showMessageDialog(null, "That is not a number!");
 					else {
 						numeroIteraciones= Long.parseLong(num);

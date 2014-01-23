@@ -53,15 +53,7 @@ import javax.swing.border.TitledBorder;
 			comboBoxAlg.setBounds(38, 36, 141, 20);
 			
 			add(comboBoxAlg);
-			/*JButton next = new JButton("Next          >>");
-			next.setVisible(true);
-			next.setBounds(320, 380, 141, 20);
-			add(next);
 			
-			JButton prev = new JButton("<<          Previous");
-			prev.setVisible(true);
-			prev.setBounds(120, 380, 141, 20);
-			add(prev);*/
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -85,32 +77,19 @@ import javax.swing.border.TitledBorder;
 					
 					if (alg.equals(Constants.ClusterAlg.CANOPY)) {
 						
-						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
+						//JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
 						
 						
-						//add a new treshold section
-						numero2 = new JLabel("Convergence Treshold 2:");
-						numero2.setBounds(38, 155, 189, 14);
-						
-
-						campoNum2 = new JTextField();
-						campoNum2.setBounds(38, 181, 401, 20);
-						
-						campoNum2.setColumns(10);
-						
-						numero2.setVisible(true);
-						campoNum2.setVisible(true);
-						MainClusterPanel.getTresholdClusterPanel().add(numero2);
-						MainClusterPanel.getTresholdClusterPanel().add(campoNum2);
-						
+					
 						MainClusterPanel.setCanopy(true);
+						MainClusterPanel.getTresholdClusterPanel().hazVisible(true);
 						//MainClusterPanel.getAlgorithmClusterPanel().getComboBoxAlg().disable();
 						
 					} 
 					//If user choose KMeans algorithm...
 					else if (alg.equals(Constants.ClusterAlg.KMEANS)) {
 						
-						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
+						//JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
 				
 						
 						MainClusterPanel.getDistanceClusterPanel().setValue(0) ;
@@ -120,10 +99,11 @@ import javax.swing.border.TitledBorder;
 						MainClusterPanel.getMaxIterationsPanel().getCampoNum().setEditable(false);
 						MainClusterPanel.getNumberClusterPanel().setNumeroClusters(3) ;
 						MainClusterPanel.getNumberClusterPanel().getCampoNum().setText(Constants.ClusterKmeans.clusters);
-						MainClusterPanel.getNumberClusterPanel().getCampoNum().setEditable(false);
+						//MainClusterPanel.getNumberClusterPanel().getCampoNum().setEditable(false);
 						MainClusterPanel.getTresholdClusterPanel().setConvergenceTreshold(0.01D) ;
 						MainClusterPanel.getTresholdClusterPanel().getCampoNum().setText(Constants.ClusterKmeans.treshold);
-						MainClusterPanel.getTresholdClusterPanel().getCampoNum().setEditable(false);
+						//MainClusterPanel.getTresholdClusterPanel().getCampoNum().setEditable(false);
+						MainClusterPanel.getTresholdClusterPanel().hazVisible(false);
 					
 					}
 					else if (alg.equals(Constants.ClusterAlg.FUZZYKMEANS)) {

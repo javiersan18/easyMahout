@@ -36,9 +36,15 @@ import javax.swing.border.TitledBorder;
 			
 			private JTextField campoNum;
 			
+			private JLabel numero2;
+			
+			private JTextField campoNum2;
+			
 			private JButton boton;
 			
 			private double convergenceTreshold;
+			
+			private double convergenceTreshold2;
 			
 			private HelpTooltip helpTooltip;
 
@@ -63,6 +69,32 @@ import javax.swing.border.TitledBorder;
 				boton.setBounds(200, 210, 70, 30);
 				add(boton);
 				
+				//add a new treshold section
+				numero2 = new JLabel("Convergence Treshold 2:");
+				numero2.setBounds(38, 155, 189, 14);
+				
+
+				campoNum2 = new JTextField();
+				campoNum2.setBounds(38, 181, 401, 20);
+				
+				campoNum2.setColumns(10);
+				numero2.setVisible(false);
+				campoNum2.setVisible(false);
+				add(numero2);
+				add(campoNum2);
+				if (MainClusterPanel.isCanopy()){
+				
+				numero2.setVisible(true);
+				campoNum2.setVisible(true);
+				}
+				else {
+				numero2.setVisible(false);
+				campoNum2.setVisible(false);
+				}
+				//MainClusterPanel.getTresholdClusterPanel().add(numero2);
+				//MainClusterPanel.getTresholdClusterPanel().add(campoNum2);
+				
+				
 				
 				final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 				btnHelp.addActionListener(new ActionListener() {
@@ -86,6 +118,16 @@ import javax.swing.border.TitledBorder;
 							JOptionPane.showMessageDialog(null, "That is a number!");
 							convergenceTreshold= Double.parseDouble(num);
 							
+						}
+						if (MainClusterPanel.isCanopy()){
+							String num2 = campoNum2.getText();
+							if (!isInteger(num2))
+								JOptionPane.showMessageDialog(null, "That is not a number!");
+							else {
+								JOptionPane.showMessageDialog(null, "That is a number!");
+								convergenceTreshold2= Double.parseDouble(num2);
+								
+							}
 						}
 					}
 				});
@@ -120,6 +162,11 @@ import javax.swing.border.TitledBorder;
 			}
 			public void setCampoNum(String s){
 				campoNum.setText(s);
+			}
+			
+			public void hazVisible(boolean b){
+				numero2.setVisible(b);
+				campoNum2.setVisible(b);
 			}
 			 
 		}

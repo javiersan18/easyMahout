@@ -82,7 +82,7 @@ public class MainClusterPanel extends JPanel {
 	public MainClusterPanel() {
 		panelCluster = this;
 
-		canopy = true;
+		canopy = false;
 
 		treeMenu = new JTree(populateTree()[0]);
 		DisabledRenderer renderer = new DisabledRenderer();
