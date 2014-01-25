@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,13 +22,21 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
+import org.apache.mahout.clustering.classify.WeightedVectorWritable;
+import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
 import org.apache.mahout.common.distance.DistanceMeasure;
@@ -74,21 +83,9 @@ public class DataModelClusterPanel extends JPanel {
 
 	private JCheckBox chckbxBooleanPreferences;
 
-	private DataModel dataModel;
+	private static DataModel dataModel;
 	
-	private boolean hayError=false;
 	
-	private static String algoritmo;
-	
-	private static DistanceMeasure d;
-	
-	private static String treshold1;
-	
-	private static String treshold2;
-	
-	private static String it;
-	
-	private static String numberClusters;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataModelClusterPanel() {
@@ -263,173 +260,30 @@ public class DataModelClusterPanel extends JPanel {
 
 			}
 		});
-
-
-	
-	
-	btnRun.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-
-			//try {
-			double t1 = 0;
-			double t2 = 0;
-			algoritmo = MainClusterPanel.getAlgorithmClusterPanel().getSelectedType();
-			String dist=MainClusterPanel.getDistanceClusterPanel().getSelectedType();
-			//-------------------------------------------------------------------------------------------				
-							//cogemos el tipo de distancia
-							
-							switch(dist){
-								case	Constants.ClusterDist.EUCLIDEAN:
-								{
-									MainClusterPanel.getDistanceClusterPanel();
-									if (DistanceMeasurePanel.getChckbxWeighted().isSelected())
-									d=new WeightedEuclideanDistanceMeasure();
-									else d=new EuclideanDistanceMeasure();
-
-									break;
-								}
-								case	Constants.ClusterDist.SQUAREDEUCLIDEAN:
-								{
-									d=new SquaredEuclideanDistanceMeasure();
-									break;
-								}
-								case	Constants.ClusterDist.MANHATTAN:
-								{
-									if (MainClusterPanel.getDistanceClusterPanel().getChckbxWeighted().isSelected())
-										d=new WeightedManhattanDistanceMeasure();
-									else d=new ManhattanDistanceMeasure();
-									break;
-								}
-								case	Constants.ClusterDist.TANIMOTO:
-								{
-									d=new TanimotoDistanceMeasure();
-									break;
-								}
-								case	Constants.ClusterDist.COSINE:
-								{
-									d=new CosineDistanceMeasure();
-									break;
-								}
-								
-								default : d=new EuclideanDistanceMeasure();
-							}
-							//fin tipo distancia
-			//algoritmo=CANOPY
-				if (algoritmo.equals(Constants.ClusterAlg.CANOPY)){
-				
-//-------------------------------------------------------------------------------------------	
-				
-				//cogemos las valores treshold
-				treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-				switch(treshold1){
-				case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold 1");
-				hayError=true;
-				break;
-				}
-				default :{
-					 t1=Double.parseDouble(treshold1);
+		
+		btnRun.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					ClusterBuilder.buildCluster();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
-				
-			    treshold2=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-				switch(treshold2){
-				case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold 2");
-				hayError=true;
-				break;
-				}
-				default :{
-					 t2=Double.parseDouble(treshold2);
-				}
-			}
-				//fin treshold
-//-------------------------------------------------------------------------------------------	
-				//nº clusters
-				
-				//fin nº clusters
-//-------------------------------------------------------------------------------------------	
+		});
 
-				//nº iterations
-				it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
-				switch(it){
-					case "":{ 
-						JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
-					hayError=true;
-					break;
-					}
-					default :{
-						long iteraciones=Long.parseLong(it);
-					}
-				}
-				
-				
-				//fin nº iterations
-//-------------------------------------------------------------------------------------------	
-
-				//Data model
-				//fin Data model
-//-------------------------------------------------------------------------------------------	
-				
-				//construimos el cluster CANOPY
-				CanopyClusterer cluster = null;
-				if (!hayError) 
-				{
-					cluster = new CanopyClusterer(d,t1,t2);
-				}
-				
-				 
-				if (cluster != null) {
-					MainGUI.writeResult("OK building the clusters :Algortihm "+ algoritmo +" Distance  "+ d +" Treshold "+ treshold1 +" Iterations "+it +" Clusters "+numberClusters+" ", Constants.Log.INFO);
-				//TODO escribir los datos del cluster en un doc	
-				}	
-
-				 else 					
-					MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-				}
-				//fin CANOPY
-//--------------------------------------------------------------------------------------------
-				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.KMEANS)){
-					Double treshold1=0.1;
-					
-					Kluster kluster = new Kluster();
-					 
-					if (kluster != null) {MainGUI.writeResult("OK building the clusters" + this.toString(), Constants.Log.INFO);}	
-
-					 else 					
-						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-					}
-				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.FUZZYKMEANS)){
-					Double treshold1=0.1;
-					Double treshold2=0.2;
-					CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
-					 
-					if (cluster != null) {MainGUI.writeResult("OK building the clusters Fuzzy K-MEANS", Constants.Log.INFO);}	
-
-					 else 					
-						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-					}
-				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.USER_DEFINED)){
-					Double treshold1=0.1;
-					Double treshold2=0.2;
-					CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
-					 
-					if (cluster != null) {MainGUI.writeResult("OK building the clusters USER_Defined", Constants.Log.INFO);}	
-
-					 else 					
-						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-					}
-				}
-				
-				
-		/*	 catch (Exception e1) {
-				// TODO Auto-generated catch block
-				MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
-				e1.printStackTrace();
-			}*/
-
-	});}
+	}
+	
+	
 	
 
-	public DataModel getDataModel() {
+	public static DataModel getDataModel() {
 		return dataModel;
 	}
 
@@ -441,16 +295,5 @@ public class DataModelClusterPanel extends JPanel {
 		return helpTooltip;
 	}
 	
-	public String toString(){
-		String s="";
-		s+="Algoritmo "+ algoritmo;
-		s+="Distancia "+ d.toString();
-		s+="Treshold "+ treshold1;
-		if (MainClusterPanel.isCanopy()) s+="Treshold "+ treshold2;
-		else s+="Numero clusters "+ numberClusters;
-		s+="Numero Iteraciones "+ it;
-		
-		return s;
-		
-	}
+	
 }

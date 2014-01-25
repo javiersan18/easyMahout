@@ -15,6 +15,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.mahout.clustering.AbstractCluster;
 import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
+import org.apache.mahout.clustering.display.DisplayKMeans;
 import org.apache.mahout.clustering.iterator.DistanceMeasureCluster;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
@@ -77,8 +78,7 @@ public class Clustering72 {
 			Configuration conf = new Configuration();
 			FileSystem fs = FileSystem.get(conf);
 			writePointsToFile(vectors, "testdata/points/file1", fs, conf);
-			// ClusterHelper.writePointsToFile(vectors, conf, new
-			// Path("testdata/points/file1"));
+			
 			Path path = new Path("testdata/clusters/part-00000");
 			DistanceMeasure dm = new EuclideanDistanceMeasure();
 			SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, Text.class, Kluster.class);
@@ -89,7 +89,6 @@ public class Clustering72 {
 			}
 			writer.close();
 			
-			//log testdata/clusters/part-00000
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, conf);
 			Text key = new Text();
 			Kluster value = new Kluster();
@@ -102,7 +101,7 @@ public class Clustering72 {
 			HadoopUtil.delete(conf, output);
 
 			KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, dm, 0.001, 10, true, 0.0, true);
-			
+			DisplayKMeans.main(args);
 			// write result
 			SequenceFile.Reader reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
 			IntWritable key2 = new IntWritable();
