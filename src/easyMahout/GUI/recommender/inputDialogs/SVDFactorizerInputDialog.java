@@ -30,11 +30,11 @@ import easyMahout.GUI.recommender.DataModelRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
-public class SVDFactorizerInputDialog extends JFrame {
+public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	private JFrame frmFactorizerInputDialog;
+	private JFrame frmSVDFactorizerInputDialog;
 
 	private static JTextField tfNoFeatures;
 
@@ -67,7 +67,7 @@ public class SVDFactorizerInputDialog extends JFrame {
 	public SVDFactorizerInputDialog() {
 		super("SVD Factorizer Inputs");
 		setResizable(false);
-		frmFactorizerInputDialog = this;
+		frmSVDFactorizerInputDialog = this;
 		this.setAlwaysOnTop(true);
 		this.setType(Type.POPUP);
 		this.setSize(510, 340);
@@ -79,7 +79,7 @@ public class SVDFactorizerInputDialog extends JFrame {
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				onClose();
+				onCloseCancel();
 			}
 		});
 
@@ -312,24 +312,91 @@ public class SVDFactorizerInputDialog extends JFrame {
 		tfNoTrainingThreads.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		JButton btnOk = new JButton("Ok");
-		btnOk.setBounds(383, 265, 89, 23);
+		btnOk.setBounds(285, 264, 89, 23);
 		getContentPane().add(btnOk);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onClose();
 			}
 		});
+
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(384, 264, 89, 23);
+		getContentPane().add(btnCancel);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onCloseCancel();
+			}
+		});
 	}
 
-	private void onClose() {
+	@Override
+	protected void onCloseCancel() {
+		setReady(false);
+		frmSVDFactorizerInputDialog.setVisible(false);
+	}
+	
+	@Override
+	protected void onClose() {
 		Color errorColor = new Color(240, 128, 128);
 		if (!tfNoFeatures.getBackground().equals(errorColor) && !tfNoIterations.getBackground().equals(errorColor)
-				&& !tfLambda.getBackground().equals(errorColor) && !tfLambda.getBackground().equals(errorColor)
+				&& !tfLambda.getBackground().equals(errorColor) && !tfAlpha.getBackground().equals(errorColor)
 				&& !tfNoTrainingThreads.getBackground().equals(errorColor)) {
 
-			frmFactorizerInputDialog.setVisible(false);
+			if (rdbtnOption1.isSelected()) {
+				if (StringUtils.isBlank(tfNoFeatures.getText())) {
+					log.error("No. Features is empty, please fill the field.");
+					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
+					log.error("No. Iterations is empty, please fill the field.");
+					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfLambda.getText())) {
+					log.error("Lambda is empty, please fill the field.");
+					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
+				} else {
+					setReady(true);
+					frmSVDFactorizerInputDialog.setVisible(false);
+				}
+			} else if (rdbtnOption2.isSelected()) {
+				if (StringUtils.isBlank(tfNoFeatures.getText())) {
+					log.error("No. Features is empty, please fill the field.");
+					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
+					log.error("No. Iterations is empty, please fill the field.");
+					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfLambda.getText())) {
+					log.error("Lambda is empty, please fill the field.");
+					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfAlpha.getText())) {
+					log.error("Alpha is empty, please fill the field.");
+					MainGUI.writeResult("Alpha is empty, please fill the field.", Constants.Log.ERROR);
+				} else {
+					setReady(true);
+					frmSVDFactorizerInputDialog.setVisible(false);
+				}
+			} else if (rdbtnOption3.isSelected()) {
+				if (StringUtils.isBlank(tfNoFeatures.getText())) {
+					log.error("No. Features is empty, please fill the field.");
+					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
+					log.error("No. Iterations is empty, please fill the field.");
+					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfLambda.getText())) {
+					log.error("Lambda is empty, please fill the field.");
+					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfAlpha.getText())) {
+					log.error("Alpha is empty, please fill the field.");
+					MainGUI.writeResult("Alpha is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoTrainingThreads.getText())) {
+					log.error("No. Training Threads is empty, please fill the field.");
+					MainGUI.writeResult("No. Training Threads is empty (mandatory in Option 2), please fill the field.",
+							Constants.Log.ERROR);
+				} else {
+					setReady(true);
+					frmSVDFactorizerInputDialog.setVisible(false);
+				}
+			}
 		}
-
 	}
 
 	public static int getNoFeatures() {
@@ -384,4 +451,5 @@ public class SVDFactorizerInputDialog extends JFrame {
 		}
 		return null;
 	}
+
 }

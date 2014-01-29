@@ -48,4 +48,6 @@ public class RecommenderTips {
 
 	public static final String RECOMM_JOB = "docs/tooltips/recommender/job_dist.html";
 
+	public static final String RECOMM_FACTORIZER = "docs/tooltips/recommender/factorizer.html";
+
 }

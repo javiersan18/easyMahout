@@ -30,11 +30,19 @@ import easyMahout.GUI.recommender.DataModelRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
-public class ALSWRFactorizerInputDialog extends JFrame {
+public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 
 	private static final long serialVersionUID = 1L;
 
 	private JFrame frmALSWRFactorizerInputDialog;
+
+	private JLabel lblNoTrainingThreads;
+
+	private JLabel lblLambda;
+
+	private JLabel lblNoIterations;
+
+	private JLabel lblNoFeatures;
 
 	private static JTextField tfNoFeatures;
 
@@ -44,19 +52,11 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 
 	private static JTextField tfNoTrainingThreads;
 
-	private JLabel lblNoTrainingThreads;
-
 	private static JRadioButton rdbtnOption1;
 
 	private static JRadioButton rdbtnOption2;
 
-	// private static JRadioButton rdbtnOption3;
-
-	private JLabel lblLambda;
-
-	private JLabel lblNoIterations;
-
-	private JLabel lblNoFeatures;
+	private static final double DEFAULT_ALPHA = 40;	
 
 	private final static Logger log = Logger.getLogger(ALSWRFactorizerInputDialog.class);
 
@@ -75,7 +75,7 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				onClose();
+				onCloseCancel();
 			}
 		});
 
@@ -91,9 +91,7 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 		optionsButtonGroup.add(rdbtnOption1);
 		rdbtnOption1.setSelected(true);
 		rdbtnOption1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// lblAlpha.setEnabled(false);
-				// tfAlpha.setEnabled(false);
+			public void actionPerformed(ActionEvent e) {				
 				lblNoTrainingThreads.setEnabled(false);
 				tfNoTrainingThreads.setEnabled(false);
 			}
@@ -104,26 +102,11 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 		getContentPane().add(rdbtnOption2);
 		optionsButtonGroup.add(rdbtnOption2);
 		rdbtnOption2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// lblAlpha.setEnabled(true);
-				// tfAlpha.setEnabled(true);
+			public void actionPerformed(ActionEvent e) {				
 				lblNoTrainingThreads.setEnabled(true);
 				tfNoTrainingThreads.setEnabled(true);
 			}
 		});
-
-		// rdbtnOption3 = new JRadioButton("Option 3");
-		// rdbtnOption3.setBounds(314, 18, 72, 23);
-		// getContentPane().add(rdbtnOption3);
-		// optionsButtonGroup.add(rdbtnOption3);
-		// rdbtnOption3.addActionListener(new ActionListener() {
-		// public void actionPerformed(ActionEvent e) {
-		// lblAlpha.setEnabled(true);
-		// tfAlpha.setEnabled(true);
-		// lblNoTrainingThreads.setEnabled(true);
-		// tfNoTrainingThreads.setEnabled(true);
-		// }
-		// });
 
 		JSeparator separator = new JSeparator();
 		separator.setBounds(37, 50, 435, 2);
@@ -271,24 +254,68 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 		tfNoTrainingThreads.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		JButton btnOk = new JButton("Ok");
-		btnOk.setBounds(383, 265, 89, 23);
+		btnOk.setBounds(285, 264, 89, 23);
 		getContentPane().add(btnOk);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onClose();
 			}
 		});
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(384, 264, 89, 23);
+		getContentPane().add(btnCancel);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onCloseCancel();
+			}
+		});
+		
 	}
 
-	private void onClose() {
+	protected void onCloseCancel() {
+		setReady(false);
+		frmALSWRFactorizerInputDialog.setVisible(false);
+	}
+
+	protected void onClose() {
 		Color errorColor = new Color(240, 128, 128);
 		if (!tfNoFeatures.getBackground().equals(errorColor) && !tfNoIterations.getBackground().equals(errorColor)
-				&& !tfLambda.getBackground().equals(errorColor) && !tfLambda.getBackground().equals(errorColor)
-				&& !tfNoTrainingThreads.getBackground().equals(errorColor)) {
+				&& !tfLambda.getBackground().equals(errorColor) && !tfNoTrainingThreads.getBackground().equals(errorColor)) {
 
-			frmALSWRFactorizerInputDialog.setVisible(false);
+			if (rdbtnOption1.isSelected()) {
+				if (StringUtils.isBlank(tfNoFeatures.getText())) {
+					log.error("No. Features is empty, please fill the field.");
+					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
+					log.error("No. Iterations is empty, please fill the field.");
+					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfLambda.getText())) {
+					log.error("Lambda is empty, please fill the field.");
+					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
+				} else {
+					setReady(true);
+					frmALSWRFactorizerInputDialog.setVisible(false);
+				}
+			} else if (rdbtnOption2.isSelected()) {
+				if (StringUtils.isBlank(tfNoFeatures.getText())) {
+					log.error("No. Features is empty, please fill the field.");
+					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
+					log.error("No. Iterations is empty, please fill the field.");
+					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfLambda.getText())) {
+					log.error("Lambda is empty, please fill the field.");
+					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
+				} else if (StringUtils.isBlank(tfNoTrainingThreads.getText())) {
+					log.error("No. Training Threads is empty, please fill the field.");
+					MainGUI.writeResult("No. Training Threads is empty (mandatory in Option 2), please fill the field.", Constants.Log.ERROR);
+				} else {
+					setReady(true);
+					frmALSWRFactorizerInputDialog.setVisible(false);
+				}
+			}			
 		}
-
 	}
 
 	public static int getNoFeatures() {
@@ -312,14 +339,15 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 		if (model != null) {
 			if (rdbtnOption1.isSelected()) {
 				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations());
+					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), false, DEFAULT_ALPHA);
 				} catch (TasteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else if (rdbtnOption2.isSelected()) {
 				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true,);
+					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), false, DEFAULT_ALPHA,
+							getNoTrainingThreads());
 				} catch (TasteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -331,4 +359,5 @@ public class ALSWRFactorizerInputDialog extends JFrame {
 		}
 		return null;
 	}
+
 }
