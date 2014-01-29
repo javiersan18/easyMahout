@@ -52,6 +52,18 @@ public class Constants {
 		public static final String SVD = "Singular Value Decomposition (SVD)";
 	}
 	
+	public class RecommCandidate{
+		
+		public static final String ALL_SIMILAR_ITEMS = "All Similar Items";
+		
+		public static final String ALL_UKNOWN_ITEMS = "All Uknown Items";
+		
+		public static final String PREFERRED_ITEMS = "Preferred Items";
+
+		public static final String SAMPLING_ITEMS = "Sampling Items";
+		
+	}
+	
 	public class DataModel {
 
 		public static final String FILE = "File";
