@@ -335,7 +335,7 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 		setReady(false);
 		frmSVDFactorizerInputDialog.setVisible(false);
 	}
-	
+
 	@Override
 	protected void onClose() {
 		Color errorColor = new Color(240, 128, 128);
@@ -420,36 +420,41 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 	}
 
 	public static Factorizer getFactorizer() {
-		DataModel model = DataModelRecommenderPanel.getDataModel();
-		if (model != null) {
-			if (rdbtnOption1.isSelected()) {
-				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations());
-				} catch (TasteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		if (isReady()) {
+			DataModel model = DataModelRecommenderPanel.getDataModel();
+			if (model != null) {
+				if (rdbtnOption1.isSelected()) {
+					try {
+						return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations());
+					} catch (TasteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (rdbtnOption2.isSelected()) {
+					try {
+						return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true, getAlpha());
+					} catch (TasteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (rdbtnOption3.isSelected()) {
+					try {
+						return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true, getAlpha(),
+								getNoTrainingThreads());
+					} catch (TasteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			} else if (rdbtnOption2.isSelected()) {
-				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true, getAlpha());
-				} catch (TasteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else if (rdbtnOption3.isSelected()) {
-				try {
-					return new ALSWRFactorizer(model, getNoFeatures(), getLambda(), getNoIterations(), true, getAlpha(),
-							getNoTrainingThreads());
-				} catch (TasteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			} else {
+				MainGUI.writeResult("Trying to build a Factorizer without Data Model.", Constants.Log.ERROR);
+				return null;
 			}
+			return null;
 		} else {
-			MainGUI.writeResult("Trying to build a Factorizer without Data Model.", Constants.Log.ERROR);
+			MainGUI.writeResult("Factorizer is miss-configured, please review it.", Constants.Log.ERROR);
 			return null;
 		}
-		return null;
 	}
 
 }

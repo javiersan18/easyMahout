@@ -49,12 +49,9 @@ public class RecommenderBuilder {
 				return null;
 			}
 
-		}
-		else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
+		} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
 			DataModel model = DataModelRecommenderPanel.getDataModel();
-			if (model != null) {
-				// ItemSimilarity similarity =
-				// SimilarityRecommenderPanel.getItemSimilarity(model);
+			if (model != null) {				
 				Factorizer factorizer = FactorizerRecommenderPanel.getFactorizer();
 				if (factorizer != null) {
 					CandidateItemsStrategy candidate = FactorizerRecommenderPanel.getCandidate();
@@ -63,15 +60,15 @@ public class RecommenderBuilder {
 							return new SVDRecommender(model, factorizer, candidate);
 						} catch (TasteException e) {
 							// TODO Auto-generated catch block
-							log.error("Error building the recommender");
+							log.error("Error building the recommender.");
 							MainGUI.writeResult("Error building the recommender.", Constants.Log.ERROR);
 							e.printStackTrace();							
 						}
 					}
 				} else {
 					// TODO change error messages
-					log.error("Trying to run a recommender without datamodel loaded");
-					MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
+					log.error("Factorizer couldn't be built successfully.");
+					MainGUI.writeResult("Factorizer couldn't be built successfully.", Constants.Log.ERROR);
 					return null;
 				}
 			} else {

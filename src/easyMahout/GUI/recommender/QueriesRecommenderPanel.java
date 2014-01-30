@@ -18,9 +18,7 @@ import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
 
-import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
@@ -119,8 +117,6 @@ public class QueriesRecommenderPanel extends JPanel {
 				// cuando se ejecuta el recomm con la celda recien modificada,
 				// no actualiza el valor
 
-			
-
 				try {
 					Recommender recomm = RecommenderBuilder.buildRecommender();
 					if (recomm != null) {
@@ -138,6 +134,14 @@ public class QueriesRecommenderPanel extends JPanel {
 								} else {
 									MainGUI.writeResult("User " + user + ": No recommendatios", Constants.Log.RESULT);
 								}
+
+								// for (RecommendedItem r :
+								// recomm.recommend(user, (Integer)
+								// tableModel.getValueAt(i, 2))) {
+								// MainGUI.writeResult("User " + user + ": " +
+								// r.toString(), Constants.Log.RESULT);
+								// }
+
 							}
 							i++;
 						}
@@ -145,7 +149,7 @@ public class QueriesRecommenderPanel extends JPanel {
 					} else {
 						// TODO sobra??? puede fallar la creacion del recomm si
 						// tiene dataModel?
-						MainGUI.writeResult("error building the recommender", Constants.Log.ERROR);
+						MainGUI.writeResult("Error building the recommender.", Constants.Log.ERROR);
 					}
 
 				} catch (Exception e1) {
@@ -187,10 +191,10 @@ public class QueriesRecommenderPanel extends JPanel {
 	}
 
 	public static void emptyTable() {
-//		if (tableModel.getRowCount() > 0) {
-//			tableModel.removeRow(0);
-//			tableModel.getDataVector().clear();
-//		}
+		// if (tableModel.getRowCount() > 0) {
+		// tableModel.removeRow(0);
+		// tableModel.getDataVector().clear();
+		// }
 		tableModel.getDataVector().clear();
 	}
 
