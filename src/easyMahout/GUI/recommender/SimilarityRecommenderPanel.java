@@ -45,13 +45,13 @@ public class SimilarityRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private DefaultComboBoxModel userSimilarity;
+	private DefaultComboBoxModel<String> userSimilarity;
 
-	private DefaultComboBoxModel itemSimilarity;
+	private DefaultComboBoxModel<String> itemSimilarity;
 
-	private DefaultComboBoxModel distributedModel;
+	private DefaultComboBoxModel<String> distributedModel;
 
-	private static JComboBox comboBoxSimilarity;
+	private static JComboBox<String> comboBoxSimilarity;
 
 	private static JCheckBox chckbxWeighted;
 
@@ -74,6 +74,8 @@ public class SimilarityRecommenderPanel extends JPanel {
 	private JLabel lblMinPreferencesPer;
 
 	private JLabel lblThreshold;
+	private static JTextField tfMaxPrefsInItemSimilarity;
+	private JLabel lblMaxPrefsItemSimilarity;
 
 	public SimilarityRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Similarity metric", TitledBorder.CENTER, TitledBorder.TOP,
@@ -82,20 +84,20 @@ public class SimilarityRecommenderPanel extends JPanel {
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 
-		userSimilarity = new DefaultComboBoxModel(new String[] { Constants.Similarity.PEARSON, Constants.Similarity.EUCLIDEAN,
+		userSimilarity = new DefaultComboBoxModel<String>(new String[] { Constants.Similarity.PEARSON, Constants.Similarity.EUCLIDEAN,
 				Constants.Similarity.CITYBLOCK, Constants.Similarity.LOGARITHMIC, Constants.Similarity.SPEARMAN,
 				Constants.Similarity.TANIMOTO, Constants.Similarity.COSINE });
 
-		itemSimilarity = new DefaultComboBoxModel(new String[] { Constants.Similarity.PEARSON, Constants.Similarity.EUCLIDEAN,
+		itemSimilarity = new DefaultComboBoxModel<String>(new String[] { Constants.Similarity.PEARSON, Constants.Similarity.EUCLIDEAN,
 				Constants.Similarity.CITYBLOCK, Constants.Similarity.LOGARITHMIC, Constants.Similarity.TANIMOTO,
 				Constants.Similarity.COSINE });
 
-		distributedModel = new DefaultComboBoxModel(new String[] { Constants.SimilarityDistributed.EUCLIDEAN,
+		distributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.SimilarityDistributed.EUCLIDEAN,
 				Constants.SimilarityDistributed.PEARSON, Constants.SimilarityDistributed.COOCURRENCE,
 				Constants.SimilarityDistributed.LOGARITHMIC, Constants.SimilarityDistributed.TANIMOTO,
 				Constants.SimilarityDistributed.COSINE, Constants.SimilarityDistributed.ZERO_COSINE });
 
-		comboBoxSimilarity = new JComboBox();
+		comboBoxSimilarity = new JComboBox<String>();
 		comboBoxSimilarity.setMaximumRowCount(16);
 
 		MainRecommenderPanel.getTypePanel();
@@ -124,13 +126,13 @@ public class SimilarityRecommenderPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_SIMILARITY);
 		add(helpTooltip);
 
-		lblMaxsimilaritiesperitem = new JLabel("Max similarities per Item");
+		lblMaxsimilaritiesperitem = new JLabel("Max similarities per item");
 		lblMaxsimilaritiesperitem.setBounds(38, 80, 135, 14);
 		add(lblMaxsimilaritiesperitem);
 		lblMaxsimilaritiesperitem.setVisible(false);
 
 		tfMaxSimilarities = new JTextField();
-		tfMaxSimilarities.setBounds(183, 77, 86, 20);
+		tfMaxSimilarities.setBounds(256, 80, 86, 20);
 		add(tfMaxSimilarities);
 		tfMaxSimilarities.setColumns(10);
 		tfMaxSimilarities.setVisible(false);
@@ -142,7 +144,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		lblMaxPreferencesPer.setVisible(false);
 
 		tfMaxPreferences = new JTextField();
-		tfMaxPreferences.setBounds(183, 112, 86, 20);
+		tfMaxPreferences.setBounds(256, 115, 86, 20);
 		add(tfMaxPreferences);
 		tfMaxPreferences.setColumns(10);
 		tfMaxPreferences.setVisible(false);
@@ -154,27 +156,41 @@ public class SimilarityRecommenderPanel extends JPanel {
 		lblMinPreferencesPer.setVisible(false);
 
 		tfMinPreferences = new JTextField();
-		tfMinPreferences.setBounds(183, 147, 86, 20);
+		tfMinPreferences.setBounds(256, 150, 86, 20);
 		add(tfMinPreferences);
 		tfMinPreferences.setColumns(10);
 		tfMinPreferences.setVisible(false);
 		tfMinPreferences.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblThreshold = new JLabel("Threshold");
-		lblThreshold.setBounds(38, 185, 128, 14);
+		lblThreshold.setBounds(38, 220, 128, 14);
 		add(lblThreshold);
 		lblThreshold.setVisible(false);
+		
 
 		tfThreshold = new JTextField();
-		tfThreshold.setBounds(183, 182, 86, 20);
+		tfThreshold.setBounds(256, 220, 86, 20);
 		add(tfThreshold);
 		tfThreshold.setColumns(10);
 		tfThreshold.setVisible(false);
 		tfThreshold.getDocument().addDocumentListener(new TextFieldChangeListener());
+		
+		lblMaxPrefsItemSimilarity = new JLabel("Max prefs. per user in Item Similarity");
+		lblMaxPrefsItemSimilarity.setBounds(38, 185, 197, 14);
+		add(lblMaxPrefsItemSimilarity);
+		lblMaxPrefsItemSimilarity.setVisible(false);
+		
+		tfMaxPrefsInItemSimilarity = new JTextField();
+		tfMaxPrefsInItemSimilarity.setBounds(256, 185, 86, 20);
+		add(tfMaxPrefsInItemSimilarity);
+		tfMaxPrefsInItemSimilarity.setColumns(10);
+		tfMaxPrefsInItemSimilarity.setVisible(false);
+		tfMaxPrefsInItemSimilarity.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		comboBoxSimilarity.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				String similarity = (String) ((JComboBox) e.getSource()).getSelectedItem();
+				String similarity = (String) ((JComboBox<String>) e.getSource()).getSelectedItem();
 				if (similarity.equals(Constants.Similarity.EUCLIDEAN) || similarity.equals(Constants.Similarity.PEARSON)
 						|| similarity.equals(Constants.Similarity.COSINE)) {
 					chckbxWeighted.setEnabled(true);
@@ -294,10 +310,12 @@ public class SimilarityRecommenderPanel extends JPanel {
 			tfMaxPreferences.setVisible(true);
 			tfMaxSimilarities.setVisible(true);
 			tfMinPreferences.setVisible(true);
+			tfMaxPrefsInItemSimilarity.setVisible(true);
 			tfThreshold.setVisible(true);
 			lblMaxPreferencesPer.setVisible(true);
 			lblMinPreferencesPer.setVisible(true);
 			lblMaxsimilaritiesperitem.setVisible(true);
+			lblMaxPrefsItemSimilarity.setVisible(true);
 			lblThreshold.setVisible(true);
 			comboBoxSimilarity.setModel(distributedModel);
 			helpTooltip.setText(RecommenderTips.RECOMM_SIMILARITY_DIST);
@@ -306,10 +324,12 @@ public class SimilarityRecommenderPanel extends JPanel {
 			tfMaxPreferences.setVisible(false);
 			tfMaxSimilarities.setVisible(false);
 			tfMinPreferences.setVisible(false);
+			tfMaxPrefsInItemSimilarity.setVisible(false);
 			tfThreshold.setVisible(false);
 			lblMaxPreferencesPer.setVisible(false);
 			lblMinPreferencesPer.setVisible(false);
 			lblMaxsimilaritiesperitem.setVisible(false);
+			lblMaxPrefsItemSimilarity.setVisible(false);
 			lblThreshold.setVisible(false);
 			MainRecommenderPanel.getTypePanel();
 			String type = TypeRecommenderPanel.getSelectedType();
@@ -356,6 +376,14 @@ public class SimilarityRecommenderPanel extends JPanel {
 	public static String getMaxPreferences() {		
 		if (StringUtils.isNotBlank(tfMaxPreferences.getText())) {
 			return tfMaxPreferences.getText();
+		} else {
+			return " ";
+		}
+	}
+	
+	public static String getMaxPrefsInItemSimilarity() {		
+		if (StringUtils.isNotBlank(tfMaxPrefsInItemSimilarity.getText())) {
+			return tfMaxPrefsInItemSimilarity.getText();
 		} else {
 			return " ";
 		}
@@ -408,6 +436,4 @@ public class SimilarityRecommenderPanel extends JPanel {
 	public static void setThreshold(String threshold) {
 		tfThreshold.setText(threshold);
 	}
-	
-
 }

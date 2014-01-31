@@ -63,6 +63,8 @@ public class MainRecommenderPanel extends JPanel {
 
 	private ArrayList<DisabledNode> treeNodes;
 
+	private static DisabledNode nodeSimilarity;
+
 	private static DisabledNode nodeNeighborhood;
 
 	private static DisabledNode nodeEvaluator;
@@ -233,6 +235,7 @@ public class MainRecommenderPanel extends JPanel {
 		nodeNeighborhood = treeNodes.get(5);
 		nodeQueries = treeNodes.get(8);
 		nodeEvaluator = treeNodes.get(7);
+		nodeSimilarity = treeNodes.get(4);
 		nodeJob = treeNodes.get(9);
 		nodeJob.setEnabled(false);
 		nodeFactorization = treeNodes.get(6);
@@ -303,17 +306,19 @@ public class MainRecommenderPanel extends JPanel {
 
 						} else if (category.equals("Similarity")) {
 							log.info("similarityB1");
-							configPanel.setVisible(false);
-							typePanel.setVisible(false);
-							dataModelPanel.setVisible(false);
-							similarityPanel.setVisible(true);
-							neighborhoodPanel.setVisible(false);
-							factorizerPanel.setVisible(false);
-							evaluatorPanel.setVisible(false);
-							queriesPanel.setVisible(false);
-							jobPanel.setVisible(false);
-							disableHelpTips();
-
+							log.info(MainGUI.isDistributed());
+							if (!MainGUI.isDistributed() || (MainGUI.isDistributed() && !matrixBased)) {
+								configPanel.setVisible(false);
+								typePanel.setVisible(false);
+								dataModelPanel.setVisible(false);
+								similarityPanel.setVisible(true);
+								neighborhoodPanel.setVisible(false);
+								factorizerPanel.setVisible(false);
+								evaluatorPanel.setVisible(false);
+								queriesPanel.setVisible(false);
+								jobPanel.setVisible(false);
+								disableHelpTips();
+							}
 						} else if (category.equals("Neighborhood")) {
 							log.info(MainGUI.isDistributed());
 							if (!MainGUI.isDistributed() && !itembased) {
@@ -329,10 +334,9 @@ public class MainRecommenderPanel extends JPanel {
 								jobPanel.setVisible(false);
 								disableHelpTips();
 							}
-							
+
 						} else if (category.equals("Factorization")) {
-							log.info(MainGUI.isDistributed());
-							if (!MainGUI.isDistributed() && matrixBased) {
+							if (matrixBased) {
 								log.info("neighB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
@@ -345,9 +349,8 @@ public class MainRecommenderPanel extends JPanel {
 								jobPanel.setVisible(false);
 								disableHelpTips();
 							}
-
 						} else if (category.equals("Evaluator")) {
-							if (!MainGUI.isDistributed()) {
+							if (!MainGUI.isDistributed() && !matrixBased) {
 								log.info("evalB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
@@ -363,16 +366,18 @@ public class MainRecommenderPanel extends JPanel {
 
 						} else if (category.equals("Queries")) {
 							log.info("queriesB1");
-							configPanel.setVisible(false);
-							typePanel.setVisible(false);
-							dataModelPanel.setVisible(false);
-							similarityPanel.setVisible(false);
-							neighborhoodPanel.setVisible(false);
-							factorizerPanel.setVisible(false);
-							evaluatorPanel.setVisible(false);
-							queriesPanel.setVisible(true);
-							jobPanel.setVisible(false);
-							disableHelpTips();
+							if (!MainGUI.isDistributed()) {
+								configPanel.setVisible(false);
+								typePanel.setVisible(false);
+								dataModelPanel.setVisible(false);
+								similarityPanel.setVisible(false);
+								neighborhoodPanel.setVisible(false);
+								factorizerPanel.setVisible(false);
+								evaluatorPanel.setVisible(false);
+								queriesPanel.setVisible(true);
+								jobPanel.setVisible(false);
+								disableHelpTips();
+							}
 						}
 
 						else if (category.equals("Hadoop Job")) {
@@ -546,6 +551,7 @@ public class MainRecommenderPanel extends JPanel {
 		nodeJob.setEnabled(distributed);
 		treeMenu.repaint();
 		typePanel.setDistributed(distributed);
+		factorizerPanel.setDistributed(distributed);
 		dataModelPanel.setDistributed(distributed);
 		similarityPanel.setDistributed(distributed);
 		configPanel.setDistributed(distributed);
@@ -640,7 +646,7 @@ public class MainRecommenderPanel extends JPanel {
 		itembased = !enabled;
 		treeMenu.repaint();
 	}
-	
+
 	public static void setEnableFactorization(boolean enabled) {
 		nodeFactorization.setEnabled(enabled);
 		matrixBased = enabled;
@@ -669,6 +675,16 @@ public class MainRecommenderPanel extends JPanel {
 
 	public static String getFileName() {
 		return fileName;
+	}
+
+	public static void setEnableEvaluator(boolean enabled) {
+		nodeEvaluator.setEnabled(enabled);
+		treeMenu.repaint();
+	}
+
+	public static void setEnableSimilarity(boolean enabled) {
+		nodeSimilarity.setEnabled(enabled);
+		treeMenu.repaint();
 	}
 
 }

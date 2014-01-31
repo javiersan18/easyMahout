@@ -34,28 +34,39 @@ public class FactorizerRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("rawtypes")
-	private static JComboBox comboBoxFactorizer;
+	private static JComboBox<String> comboBoxFactorizer;
+
+	private DefaultComboBoxModel<String> distributedModel;
+
+	private DefaultComboBoxModel<String> nonDistributedModel;
 
 	private HelpTooltip helpTooltip;
 
-	private FactorizerInputDialog inputDialog;
+	private static FactorizerInputDialog inputDialog;
+
+	private static JComboBox<String> comboBoxCandidate;
 
 	private final static Logger log = Logger.getLogger(FactorizerRecommenderPanel.class);
-	private static JComboBox comboBoxCandidate;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private JLabel lblCandidateItemStrategy;
+
 	public FactorizerRecommenderPanel() {
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Rating Matrix Factorization ", TitledBorder.CENTER, TitledBorder.TOP, null,
-				null));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Rating Matrix Factorization ", TitledBorder.CENTER,
+				TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 
-		comboBoxFactorizer = new JComboBox();
+		distributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommFactorizer.ALSWR_SHORT,
+				Constants.RecommFactorizer.SVD });
+
+		nonDistributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommFactorizer.ALSWR_SHORT,
+				Constants.RecommFactorizer.SVD, Constants.RecommFactorizer.SVD_PLUS_PLUS, Constants.RecommFactorizer.PARALLEL_SGD,
+				Constants.RecommFactorizer.RATING_SGD });
+
+		comboBoxFactorizer = new JComboBox<String>();
 		comboBoxFactorizer.setMaximumRowCount(16);
-		comboBoxFactorizer.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommFactorizer.ALSWR_SHORT, Constants.RecommFactorizer.SVD,
-				Constants.RecommFactorizer.SVD_PLUS_PLUS, Constants.RecommFactorizer.PARALLEL_SGD, Constants.RecommFactorizer.RATING_SGD }));
+		comboBoxFactorizer.setModel(nonDistributedModel);
 		comboBoxFactorizer.setBounds(38, 70, 249, 20);
 		add(comboBoxFactorizer);
 		comboBoxFactorizer.addItemListener(new ItemChangeListener());
@@ -69,13 +80,6 @@ public class FactorizerRecommenderPanel extends JPanel {
 		btnHelp.setBounds(10, 358, 40, 40);
 		add(btnHelp);
 
-		// CandidateItemsStrategy can = new
-		// AllSimilarItemsCandidateItemsStrategy(SimilarityRecommenderPanel.getItemSimilarity(DataModelRecommenderPanel.getDataModel()));
-		// CandidateItemsStrategy can2 = new
-		// AllUnknownItemsCandidateItemsStrategy();
-		// CandidateItemsStrategy can3 = new
-		// PreferredItemsNeighborhoodCandidateItemsStrategy();
-
 		// Help Tip
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_FACTORIZER);
 		add(helpTooltip);
@@ -88,14 +92,15 @@ public class FactorizerRecommenderPanel extends JPanel {
 		lblFactorizer.setBounds(38, 40, 77, 14);
 		add(lblFactorizer);
 
-		JLabel lblCandidateItemStrategy = new JLabel("Candidate Item Strategy");
+		lblCandidateItemStrategy = new JLabel("Candidate Item Strategy");
 		lblCandidateItemStrategy.setBounds(38, 110, 176, 14);
 		add(lblCandidateItemStrategy);
 
-		comboBoxCandidate = new JComboBox();
+		comboBoxCandidate = new JComboBox<String>();
 		comboBoxCandidate.setBounds(38, 140, 129, 20);
-		comboBoxCandidate.setModel(new DefaultComboBoxModel(new String[] { Constants.RecommCandidate.PREFERRED_ITEMS,
-				Constants.RecommCandidate.ALL_SIMILAR_ITEMS, Constants.RecommCandidate.ALL_UKNOWN_ITEMS, Constants.RecommCandidate.SAMPLING_ITEMS }));
+		comboBoxCandidate.setModel(new DefaultComboBoxModel<String>(new String[] { Constants.RecommCandidate.PREFERRED_ITEMS,
+				Constants.RecommCandidate.ALL_SIMILAR_ITEMS, Constants.RecommCandidate.ALL_UKNOWN_ITEMS,
+				Constants.RecommCandidate.SAMPLING_ITEMS }));
 		add(comboBoxCandidate);
 
 		btnConfigure.addActionListener(new ActionListener() {
@@ -138,7 +143,7 @@ public class FactorizerRecommenderPanel extends JPanel {
 	public static String getSelectedFunction() {
 		return (String) comboBoxFactorizer.getSelectedItem();
 	}
-	
+
 	public static String getSelectedCandidate() {
 		return (String) comboBoxCandidate.getSelectedItem();
 	}
@@ -163,7 +168,8 @@ public class FactorizerRecommenderPanel extends JPanel {
 		if (getSelectedCandidate().equals(Constants.RecommCandidate.PREFERRED_ITEMS)) {
 			return new PreferredItemsNeighborhoodCandidateItemsStrategy();
 		} else if (getSelectedCandidate().equals(Constants.RecommCandidate.ALL_SIMILAR_ITEMS)) {
-			return new AllSimilarItemsCandidateItemsStrategy(SimilarityRecommenderPanel.getItemSimilarity(DataModelRecommenderPanel.getDataModel()));
+			return new AllSimilarItemsCandidateItemsStrategy(
+					SimilarityRecommenderPanel.getItemSimilarity(DataModelRecommenderPanel.getDataModel()));
 		} else if (getSelectedCandidate().equals(Constants.RecommCandidate.ALL_UKNOWN_ITEMS)) {
 			return new AllUnknownItemsCandidateItemsStrategy();
 		} else if (getSelectedCandidate().equals(Constants.RecommCandidate.SAMPLING_ITEMS)) {
@@ -171,5 +177,23 @@ public class FactorizerRecommenderPanel extends JPanel {
 		} else {
 			return null;
 		}
+	}
+
+	public void setDistributed(boolean distributed) {
+		if (distributed) {
+			comboBoxFactorizer.setModel(distributedModel);
+			helpTooltip.setText(RecommenderTips.RECOMM_FACTORIZER_DIST);
+			lblCandidateItemStrategy.setVisible(!distributed);
+			comboBoxCandidate.setVisible(!distributed);
+		} else {
+			comboBoxFactorizer.setModel(nonDistributedModel);
+			helpTooltip.setText(RecommenderTips.RECOMM_FACTORIZER);
+			lblCandidateItemStrategy.setVisible(distributed);
+			comboBoxCandidate.setVisible(distributed);
+		}
+	}
+	
+	public static FactorizerInputDialog getFactorizerInput(){
+		return inputDialog;
 	}
 }

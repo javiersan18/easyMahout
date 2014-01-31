@@ -56,7 +56,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 
 	private static JRadioButton rdbtnOption2;
 
-	private static final double DEFAULT_ALPHA = 40;	
+	private static final double DEFAULT_ALPHA = 40;
 
 	private final static Logger log = Logger.getLogger(ALSWRFactorizerInputDialog.class);
 
@@ -91,7 +91,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		optionsButtonGroup.add(rdbtnOption1);
 		rdbtnOption1.setSelected(true);
 		rdbtnOption1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				lblNoTrainingThreads.setEnabled(false);
 				tfNoTrainingThreads.setEnabled(false);
 			}
@@ -102,7 +102,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		getContentPane().add(rdbtnOption2);
 		optionsButtonGroup.add(rdbtnOption2);
 		rdbtnOption2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				lblNoTrainingThreads.setEnabled(true);
 				tfNoTrainingThreads.setEnabled(true);
 			}
@@ -261,7 +261,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 				onClose();
 			}
 		});
-		
+
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.setBounds(384, 264, 89, 23);
 		getContentPane().add(btnCancel);
@@ -270,7 +270,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 				onCloseCancel();
 			}
 		});
-		
+
 	}
 
 	protected void onCloseCancel() {
@@ -309,12 +309,13 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfNoTrainingThreads.getText())) {
 					log.error("No. Training Threads is empty, please fill the field.");
-					MainGUI.writeResult("No. Training Threads is empty (mandatory in Option 2), please fill the field.", Constants.Log.ERROR);
+					MainGUI.writeResult("No. Training Threads is empty (mandatory in Option 2), please fill the field.",
+							Constants.Log.ERROR);
 				} else {
 					setReady(true);
 					frmALSWRFactorizerInputDialog.setVisible(false);
 				}
-			}			
+			}
 		}
 	}
 
@@ -358,6 +359,38 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 			return null;
 		}
 		return null;
+	}
+
+	public static String getNoFeaturesArg() {
+		if (StringUtils.isNotBlank(tfNoFeatures.getText())) {
+			return tfNoFeatures.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getNoIterationsArg() {
+		if (StringUtils.isNotBlank(tfNoIterations.getText())) {
+			return tfNoIterations.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getNoTrainingThreadsArg() {
+		if (StringUtils.isNotBlank(tfNoTrainingThreads.getText())) {
+			return tfNoTrainingThreads.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getLambdaArg() {
+		if (StringUtils.isNotBlank(tfLambda.getText())) {
+			return tfLambda.getText();
+		} else {
+			return " ";
+		}
 	}
 
 }

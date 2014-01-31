@@ -457,4 +457,44 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 		}
 	}
 
+	public static String getNoFeaturesArg() {
+		if (StringUtils.isNotBlank(tfNoFeatures.getText())) {
+			return tfNoFeatures.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getNoIterationsArg() {
+		if (StringUtils.isNotBlank(tfNoIterations.getText())) {
+			return tfNoIterations.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getNoTrainingThreadsArg() {
+		if (StringUtils.isNotBlank(tfNoTrainingThreads.getText())) {
+			return tfNoTrainingThreads.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getLambdaArg() {
+		if (StringUtils.isNotBlank(tfLambda.getText())) {
+			return tfLambda.getText();
+		} else {
+			return " ";
+		}
+	}
+
+	public static String getAlphaArg() {
+		if (StringUtils.isNotBlank(tfAlpha.getText())) {
+			return tfAlpha.getText();
+		} else {
+			return " ";
+		}
+	}
+
 }

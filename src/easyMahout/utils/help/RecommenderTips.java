@@ -50,4 +50,6 @@ public class RecommenderTips {
 
 	public static final String RECOMM_FACTORIZER = "docs/tooltips/recommender/factorizer.html";
 
+	public static final String RECOMM_FACTORIZER_DIST = "docs/tooltips/recommender/factorizer_dist.html";
+
 }

@@ -28,14 +28,11 @@ public class TypeRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("rawtypes")
-	private static JComboBox comboBoxType;
+	private static JComboBox<String> comboBoxType;
 
-	@SuppressWarnings("rawtypes")
-	private DefaultComboBoxModel distributedModel;
+	private DefaultComboBoxModel<String> distributedModel;
 
-	@SuppressWarnings("rawtypes")
-	private DefaultComboBoxModel nonDistributedModel;
+	private DefaultComboBoxModel<String> nonDistributedModel;
 
 	private final JButton btnHelp;
 
@@ -58,7 +55,7 @@ public class TypeRecommenderPanel extends JPanel {
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 
-		distributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.ITEMSIMILARITY,
+		distributedModel = new DefaultComboBoxModel(new String[] { // Constants.RecommType.ITEMSIMILARITY,
 				Constants.RecommType.ITEMBASED_DISTRIBUTED, Constants.RecommType.FACTORIZED_RECOMMENDER });
 		nonDistributedModel = new DefaultComboBoxModel(new String[] { Constants.RecommType.USERBASED, Constants.RecommType.ITEMBASED,
 				Constants.RecommType.FACTORIZED_RECOMMENDER });
@@ -85,13 +82,13 @@ public class TypeRecommenderPanel extends JPanel {
 		rdbtnALSWR = new JRadioButton(Constants.RecommFactorizer.ALSWR);
 		rdbtnALSWR.setVisible(false);
 		rdbtnALSWR.setBounds(37, 73, 325, 23);
-		//add(rdbtnALSWR);
+		// add(rdbtnALSWR);
 		factorizedButtonGroup.add(rdbtnALSWR);
 
 		rdbtnSVD = new JRadioButton(Constants.RecommFactorizer.SVD);
 		rdbtnSVD.setVisible(false);
 		rdbtnSVD.setBounds(37, 99, 325, 23);
-		//add(rdbtnSVD);
+		// add(rdbtnSVD);
 		factorizedButtonGroup.add(rdbtnSVD);
 
 		comboBoxType.addActionListener(new ActionListener() {
@@ -101,19 +98,31 @@ public class TypeRecommenderPanel extends JPanel {
 				if (type.equals(Constants.RecommType.ITEMBASED)) {
 					MainRecommenderPanel.setEnableNeighborhood(false);
 					MainRecommenderPanel.setEnableFactorization(false);
+					MainRecommenderPanel.setEnableEvaluator(true);
+					MainRecommenderPanel.setEnableSimilarity(true);
 				} else if (type.equals(Constants.RecommType.USERBASED)) {
 					MainRecommenderPanel.setEnableNeighborhood(true);
 					MainRecommenderPanel.setEnableFactorization(false);
+					MainRecommenderPanel.setEnableEvaluator(true);
+					MainRecommenderPanel.setEnableSimilarity(true);
 				} else if (type.equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
-					// TODO desactivar casi todo, activar menu de factorizacion					
-					setFactoricerOptions(true);
+					// TODO desactivar casi todo, activar menu de factorizacion
+					// setFactoricerOptions(true);
 					MainRecommenderPanel.setEnableFactorization(true);
 					MainRecommenderPanel.setEnableNeighborhood(false);
+					MainRecommenderPanel.setEnableEvaluator(false);
+					if (MainGUI.isDistributed()) {
+						MainRecommenderPanel.setEnableSimilarity(false);
+					} else {
+						MainRecommenderPanel.setEnableSimilarity(true);
+					}
 				} else if (type.equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
-					setFactoricerOptions(false);
-				} else if (type.equals(Constants.RecommType.ITEMSIMILARITY)) {
-					setFactoricerOptions(false);
+					MainRecommenderPanel.setEnableFactorization(false);
+					MainRecommenderPanel.setEnableSimilarity(true);					
 				}
+				// else if (type.equals(Constants.RecommType.ITEMSIMILARITY)) {
+				// //setFactoricerOptions(false);
+				// }
 			}
 		});
 		comboBoxType.addItemListener(new ItemChangeListener());
@@ -132,15 +141,15 @@ public class TypeRecommenderPanel extends JPanel {
 		comboBoxType.setSelectedItem(type);
 	}
 
-	private void setFactoricerOptions(boolean flag) {
-		if (MainGUI.isDistributed()) {
-			rdbtnALSWR.setVisible(flag);
-			rdbtnSVD.setVisible(flag);
-		} else {
-			rdbtnALSWR.setVisible(false);
-			rdbtnSVD.setVisible(false);
-		}
-	}
+	// private void setFactoricerOptions(boolean flag) {
+	// if (MainGUI.isDistributed()) {
+	// rdbtnALSWR.setVisible(flag);
+	// rdbtnSVD.setVisible(flag);
+	// } else {
+	// rdbtnALSWR.setVisible(false);
+	// rdbtnSVD.setVisible(false);
+	// }
+	// }
 
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
@@ -148,6 +157,8 @@ public class TypeRecommenderPanel extends JPanel {
 					TitledBorder.TOP, null, null));
 			comboBoxType.setModel(distributedModel);
 			helpTooltip.setText(RecommenderTips.RECOMM_TYPE_DIST);
+			MainRecommenderPanel.setEnableFactorization(false);			
+			MainRecommenderPanel.setEnableSimilarity(true);			
 		} else {
 			setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Non distributed recommender", TitledBorder.CENTER,
 					TitledBorder.TOP, null, null));

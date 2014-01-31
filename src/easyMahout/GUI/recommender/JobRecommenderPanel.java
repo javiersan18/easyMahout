@@ -17,6 +17,7 @@ import javax.swing.JTextPane;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob;
+import org.apache.mahout.cf.taste.hadoop.als.RecommenderJob;
 
 import easyMahout.GUI.recommender.builder.JobBuilder;
 import easyMahout.utils.Constants;
@@ -71,8 +72,22 @@ public class JobRecommenderPanel extends JPanel {
 		add(btnRun);
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				String[] args = {"a","b"};
+				
+				try {
+					//ToolRunner.run(new RecommenderJob(), args);
+					
+					//ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(), args);
+					ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob(), args);
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				log.info("run");
-				String[] args = JobBuilder.buildRecommenderJob();
+				//args = JobBuilder.buildRecommenderJob();
+				//String[] args = JobBuilder.buildRecommenderJob();
 				if (args != null) {
 					if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
 						try {
