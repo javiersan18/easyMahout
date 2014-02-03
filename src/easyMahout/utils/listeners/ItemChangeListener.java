@@ -5,6 +5,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
 
 import org.apache.log4j.Logger;
 
@@ -24,6 +25,11 @@ public class ItemChangeListener implements ItemListener {
 		} else if (event.getSource() instanceof JCheckBox) {
 			if (event.getStateChange() == ItemEvent.SELECTED || event.getStateChange() == ItemEvent.DESELECTED) {
 				log.info("checkbox change");
+				MainRecommenderPanel.setConfigurationModified(true);
+			}
+		} else if (event.getSource() instanceof JRadioButton) {
+			if (event.getStateChange() == ItemEvent.SELECTED || event.getStateChange() == ItemEvent.DESELECTED) {
+				log.info("JRadioButton change");
 				MainRecommenderPanel.setConfigurationModified(true);
 			}
 		}

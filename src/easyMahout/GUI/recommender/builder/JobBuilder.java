@@ -7,6 +7,7 @@ import org.apache.mahout.math.hadoop.similarity.cooccurrence.RowSimilarityJob;
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.DataModelRecommenderPanel;
 import easyMahout.GUI.recommender.FactorizerRecommenderPanel;
+import easyMahout.GUI.recommender.JobRecommenderPanel;
 import easyMahout.GUI.recommender.SimilarityRecommenderPanel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.GUI.recommender.inputDialogs.ALSWRFactorizerInputDialog;
@@ -16,13 +17,18 @@ import easyMahout.utils.Constants;
 
 public class JobBuilder {
 
-	private final static Logger log = Logger.getLogger(JobBuilder.class);
+	private static final int ARGS_ITEMBASED_SIZE = 20;
 
-	public final static String[] buildRecommenderJob() {
+	private static final int ARGS_FACTORIZEDBASED_SIZE = 18;
+
+	private static final Logger log = Logger.getLogger(JobBuilder.class);
+
+	public static final String[] buildRecommenderJob() {
 		if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
 
 			String inputPath = DataModelRecommenderPanel.getInputPath();
 			String outputPath = DataModelRecommenderPanel.getOutputPath();
+			String numRecommendations = JobRecommenderPanel.getNumRecommendations();
 			String similarityClassname = SimilarityRecommenderPanel.getDistributedSimilarity();
 			String maxSimilaritiesPerItem = SimilarityRecommenderPanel.getMaxSimilarities();
 			String maxPrefsPerUser = SimilarityRecommenderPanel.getMaxPreferences();
@@ -31,48 +37,54 @@ public class JobBuilder {
 			String booleanData = DataModelRecommenderPanel.getBooleanPrefs();
 			String threshold = SimilarityRecommenderPanel.getThreshold();
 
-			String[] args = new String[18];
+			String[] args = new String[ARGS_ITEMBASED_SIZE];
 
 			if (StringUtils.isBlank(inputPath)) {
-				MainGUI.writeResult("Input folder is empty, please choose one before run the recommender", Constants.Log.ERROR);
+				MainGUI.writeResult("Input folder is empty, please choose one before run the recommender.", Constants.Log.ERROR);
 				return null;
 			} else if (StringUtils.isBlank(outputPath)) {
-				MainGUI.writeResult("Output folder is empty, please choose one before run the recommender", Constants.Log.ERROR);
+				MainGUI.writeResult("Output folder is empty, please choose one before run the recommender.", Constants.Log.ERROR);
 				return null;
 			} else {
-				args[0] = "--input";
-				args[1] = inputPath;
-				args[2] = "--output";
-				args[3] = outputPath;
-				args[4] = "--similarityClassname";
-				args[5] = similarityClassname;
-				args[6] = "--maxSimilaritiesPerItem";
-				args[7] = StringUtils.isBlank(maxSimilaritiesPerItem) ? "100" : maxSimilaritiesPerItem;
-				args[8] = "--maxPrefsPerUser";
-				args[9] = StringUtils.isBlank(maxPrefsPerUser) ? "500" : maxPrefsPerUser;
-				args[10] = "--minPrefsPerUser";
-				args[11] = StringUtils.isBlank(minPrefsPerUser) ? "1" : minPrefsPerUser;
-				args[12] = "--maxPrefPerUserInItemSimilarity";
-				args[13] = StringUtils.isBlank(maxPrefPerUserInItemSimilarity) ? "1000" : maxPrefPerUserInItemSimilarity;				
-				args[14] = "--booleanData";
-				args[15] = StringUtils.isBlank(booleanData) ? String.valueOf(Boolean.FALSE) : booleanData;
+				int p = 0;
+				args[p] = "--input";
+				args[++p] = inputPath;
+				args[++p] = "--output";
+				args[++p] = outputPath;
+				args[++p] = "--numRecommendations";
+				args[++p] = StringUtils.isBlank(numRecommendations) ? "10" : numRecommendations;
+				args[++p] = "--similarityClassname";
+				args[++p] = similarityClassname;
+				args[++p] = "--maxSimilaritiesPerItem";
+				args[++p] = StringUtils.isBlank(maxSimilaritiesPerItem) ? "100" : maxSimilaritiesPerItem;
+				args[++p] = "--maxPrefsPerUser";
+				args[++p] = StringUtils.isBlank(maxPrefsPerUser) ? "500" : maxPrefsPerUser;
+				args[++p] = "--minPrefsPerUser";
+				args[++p] = StringUtils.isBlank(minPrefsPerUser) ? "1" : minPrefsPerUser;
+				args[++p] = "--maxPrefPerUserInItemSimilarity";
+				args[++p] = StringUtils.isBlank(maxPrefPerUserInItemSimilarity) ? "1000" : maxPrefPerUserInItemSimilarity;
+				args[++p] = "--booleanData";
+				args[++p] = StringUtils.isBlank(booleanData) ? String.valueOf(Boolean.FALSE) : booleanData;
 				// TODO: threshold can be wrong in this way "4.9E-324"
-				args[16] = "--threshold";
-				args[17] = StringUtils.isBlank(threshold) ? String.valueOf(RowSimilarityJob.NO_THRESHOLD) : threshold;
+				args[++p] = "--threshold";
+				args[++p] = StringUtils.isBlank(threshold) ? String.valueOf(RowSimilarityJob.NO_THRESHOLD) : threshold;
 
-				for (int i = 0; i < 18; i++) {
+				for (int i = 0; i < ARGS_ITEMBASED_SIZE; i++) {
 					log.info(args[i].toString());
 				}
 				return args;
 			}
 
-//		} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY)) {
-//			// TODO
-//			return null;
+			// } else if
+			// (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY))
+			// {
+			// // TODO
+			// return null;
 		} else {
 
 			String inputPath = DataModelRecommenderPanel.getInputPath();
 			String outputPath = DataModelRecommenderPanel.getOutputPath();
+			//String numRecommendations = JobRecommenderPanel.getNumRecommendations();
 			String numFeatures;
 			String numIterations;
 			String lambda;
@@ -85,17 +97,17 @@ public class JobBuilder {
 				numIterations = ALSWRFactorizerInputDialog.getNoIterationsArg();
 				lambda = ALSWRFactorizerInputDialog.getLambdaArg();
 				numThreadsPerSolver = ALSWRFactorizerInputDialog.getNoTrainingThreadsArg();
-				implicitFeedback = String.valueOf(false);				
+				implicitFeedback = String.valueOf(false);
 			} else { // SVD
 				numFeatures = SVDFactorizerInputDialog.getNoFeaturesArg();
 				numIterations = SVDFactorizerInputDialog.getNoIterationsArg();
 				lambda = SVDFactorizerInputDialog.getLambdaArg();
-				numThreadsPerSolver = SVDFactorizerInputDialog.getNoTrainingThreadsArg();				
-				implicitFeedback = String.valueOf(false);	
+				numThreadsPerSolver = SVDFactorizerInputDialog.getNoTrainingThreadsArg();
+				implicitFeedback = String.valueOf(false);
 				alpha = SVDFactorizerInputDialog.getAlphaArg();
 			}
 
-			String[] args = new String[16];
+			String[] args = new String[ARGS_FACTORIZEDBASED_SIZE];
 
 			if (StringUtils.isBlank(inputPath)) {
 				MainGUI.writeResult("Input folder is empty, please choose one before run the recommender.", Constants.Log.ERROR);
@@ -104,24 +116,28 @@ public class JobBuilder {
 				MainGUI.writeResult("Output folder is empty, please choose one before run the recommender.", Constants.Log.ERROR);
 				return null;
 			} else {
-				args[0] = "--input";
-				args[1] = inputPath;
-				args[2] = "--output";
-				args[3] = outputPath;
-				args[4] = "--numFeatures";
-				args[5] = numFeatures;
-				args[6] = "--numIterations";
-				args[7] = numIterations;
-				args[8] = "--lambda";
-				args[9] = lambda;
-				args[10] = "--numThreadsPerSolver";
-				args[11] = StringUtils.isBlank(numThreadsPerSolver) ? "1" : numThreadsPerSolver;
-				args[12] = "--implicitFeedback";
-				args[13] = StringUtils.isBlank(implicitFeedback) ? String.valueOf(Boolean.FALSE) : String.valueOf(Boolean.TRUE);
-				args[14] = "--alpha";
-				args[15] = StringUtils.isBlank(alpha) ? String.valueOf(40) : alpha;
+				
+				int p = 0;
+				args[p] = "--input";
+				args[++p] = inputPath;
+				args[++p] = "--output";
+				args[++p] = outputPath;
+//				args[++p] = "--numRecommendations";
+//				args[++p] = StringUtils.isBlank(numRecommendations) ? "10" : numRecommendations;
+				args[++p] = "--numFeatures";
+				args[++p] = numFeatures;
+				args[++p] = "--numIterations";
+				args[++p] = numIterations;
+				args[++p] = "--lambda";
+				args[++p] = lambda;
+				args[++p] = "--numThreadsPerSolver";
+				args[++p] = StringUtils.isBlank(numThreadsPerSolver) ? "1" : numThreadsPerSolver;
+				args[++p] = "--implicitFeedback";
+				args[++p] = StringUtils.isBlank(implicitFeedback) ? String.valueOf(Boolean.FALSE) : String.valueOf(Boolean.TRUE);
+				args[++p] = "--alpha";
+				args[++p] = StringUtils.isBlank(alpha) ? String.valueOf(40) : alpha;
 
-				for (int i = 0; i < 16; i++) {
+				for (int i = 0; i < ARGS_FACTORIZEDBASED_SIZE; i++) {
 					log.info(args[i].toString());
 				}
 				return args;
