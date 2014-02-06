@@ -100,7 +100,7 @@ public class Clustering72 {
 			Path output = new Path("output");
 			HadoopUtil.delete(conf, output);
 
-			KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, dm, 0.001, 10, true, 0.0, true);
+			KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, dm, 0.001, 1, true, 0.0, true);
 			DisplayKMeans.main(args);
 			// write result
 			SequenceFile.Reader reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
