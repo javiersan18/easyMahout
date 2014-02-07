@@ -22,6 +22,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.BasicConfigurator;

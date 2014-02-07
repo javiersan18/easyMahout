@@ -57,17 +57,13 @@ import javax.swing.border.TitledBorder;
 				setBounds(228, 11, 480, 408);
 				
 				numero = new JLabel("Convergence Treshold:");
-				numero.setBounds(38, 105, 189, 14);
+				numero.setBounds(38, 55, 189, 14);
 				add(numero);
 
 				campoNum = new JTextField();
-				campoNum.setBounds(38, 131, 401, 20);
+				campoNum.setBounds(38, 80, 157, 23);
 				add(campoNum);
 				campoNum.setColumns(10);
-				
-				boton = new JButton("OK");
-				boton.setBounds(200, 210, 70, 30);
-				add(boton);
 				
 				//add a new treshold section
 				numero2 = new JLabel("Convergence Treshold 2:");
@@ -75,7 +71,7 @@ import javax.swing.border.TitledBorder;
 				
 
 				campoNum2 = new JTextField();
-				campoNum2.setBounds(38, 181, 401, 20);
+				campoNum2.setBounds(38, 181, 157, 23);
 				
 				campoNum2.setColumns(10);
 				numero2.setVisible(false);
@@ -91,11 +87,7 @@ import javax.swing.border.TitledBorder;
 				numero2.setVisible(false);
 				campoNum2.setVisible(false);
 				}
-				//MainClusterPanel.getTresholdClusterPanel().add(numero2);
-				//MainClusterPanel.getTresholdClusterPanel().add(campoNum2);
-				
-				
-				
+							
 				final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 				btnHelp.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -108,29 +100,6 @@ import javax.swing.border.TitledBorder;
 				// Help Tip
 				helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_NITERATIONS);
 				add(helpTooltip);
-
-				boton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						String num = campoNum.getText();
-						if (!isInteger(num))
-							JOptionPane.showMessageDialog(null, "That is not a number!");
-						else {
-							JOptionPane.showMessageDialog(null, "That is a number!");
-							convergenceTreshold= Double.parseDouble(num);
-							
-						}
-						if (MainClusterPanel.isCanopy()){
-							String num2 = campoNum2.getText();
-							if (!isInteger(num2))
-								JOptionPane.showMessageDialog(null, "That is not a number!");
-							else {
-								JOptionPane.showMessageDialog(null, "That is a number!");
-								convergenceTreshold2= Double.parseDouble(num2);
-								
-							}
-						}
-					}
-				});
 
 			}
 

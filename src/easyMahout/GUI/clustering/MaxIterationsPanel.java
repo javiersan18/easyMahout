@@ -50,18 +50,13 @@ import javax.swing.border.TitledBorder;
 			setBounds(228, 11, 480, 408);
 			
 			numero = new JLabel("Maximum number of iterations:");
-			numero.setBounds(38, 105, 189, 14);
+			numero.setBounds(38, 70, 189, 14);
 			add(numero);
 
 			campoNum = new JTextField();
-			campoNum.setBounds(38, 131, 401, 20);
+			campoNum.setBounds(38, 95, 157, 23);
 			add(campoNum);
-			campoNum.setColumns(10);
-			
-			boton = new JButton("OK");
-			boton.setBounds(200, 190, 70, 30);
-			add(boton);
-		
+			campoNum.setColumns(10);		
 			
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
@@ -76,20 +71,6 @@ import javax.swing.border.TitledBorder;
 			helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_NITERATIONS);
 			add(helpTooltip);
 
-			boton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					
-					String num = campoNum.getText();
-					if (num.equals("")){
-						JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
-					}
-					else if (!isInteger(num))
-						JOptionPane.showMessageDialog(null, "That is not a number!");
-					else {
-						numeroIteraciones= Long.parseLong(num);
-					}
-				}
-			});
 
 		}
 

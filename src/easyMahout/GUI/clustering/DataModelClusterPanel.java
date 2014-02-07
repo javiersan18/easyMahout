@@ -151,7 +151,7 @@ public class DataModelClusterPanel extends JPanel {
 		btnCreate.setBounds(241, 165, 107, 23);
 		add(btnCreate);
 		
-		btnRun = new JButton("Run");
+		btnRun = new JButton("Run Clustering");
 		btnRun.setVisible(true);
 		btnRun.setBounds(320, 380, 107, 23);
 		add(btnRun);

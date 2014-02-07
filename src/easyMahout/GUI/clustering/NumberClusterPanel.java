@@ -49,27 +49,14 @@ public class NumberClusterPanel extends JPanel {
 		setBounds(228, 11, 480, 408);
 		
 		numero = new JLabel("Number of clusters:");
-		numero.setBounds(38, 105, 189, 14);
+		numero.setBounds(38,65, 189, 14);
 		add(numero);
 
 		campoNum = new JTextField();
-		campoNum.setBounds(38, 131, 401, 20);
+		campoNum.setBounds(38, 91, 157, 23);
 		add(campoNum);
 		campoNum.setColumns(10);
 		
-		boton = new JButton("OK");
-		boton.setBounds(200, 190, 70, 30);
-		add(boton);
-		
-		/*JButton next = new JButton("Next          >>");
-		next.setVisible(true);
-		next.setBounds(320, 380, 141, 20);
-		add(next);
-		
-		JButton prev = new JButton("<<          Previous");
-		prev.setVisible(true);
-		prev.setBounds(120, 380, 141, 20);
-		add(prev);*/
 		
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -83,17 +70,6 @@ public class NumberClusterPanel extends JPanel {
 		// Help Tip
 		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_NCLUSTERS);
 		add(helpTooltip);
-
-		boton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String num = campoNum.getText();
-				if (!isInteger(num))
-					JOptionPane.showMessageDialog(null, "That is not a number!");
-				else {
-					numeroClusters= Integer.parseInt(num);
-				}
-			}
-		});
 
 	}
 
