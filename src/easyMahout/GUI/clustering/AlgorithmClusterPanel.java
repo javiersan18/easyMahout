@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 	import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -24,6 +25,7 @@ import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClusterTips;
 import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
 
 	//import easyMahout.utils.IconHelpPanel;
 
@@ -38,6 +40,9 @@ import javax.swing.border.TitledBorder;
 		private HelpTooltip helpTooltip;
 		private JLabel numero2;
 		private JTextField campoNum2;
+		private static JCheckBox emitMostLikely;
+		private JLabel fuzzyFactor;
+		private static JTextField campoFuzzyFactor;
 
 		public AlgorithmClusterPanel() {
 			// super();
@@ -53,6 +58,24 @@ import javax.swing.border.TitledBorder;
 			comboBoxAlg.setBounds(38, 36, 141, 20);
 			
 			add(comboBoxAlg);
+			
+			emitMostLikely = new JCheckBox("Emit Most Likely");
+			emitMostLikely.setBounds(256, 35, 157, 23);
+			add(emitMostLikely);
+			emitMostLikely.addItemListener(new ItemChangeListener());
+			emitMostLikely.setEnabled(false);
+			
+			fuzzyFactor = new JLabel("Fuzzyfication Factor");
+			fuzzyFactor.setBounds(286, 65, 157, 23);
+			add(fuzzyFactor);
+			
+			fuzzyFactor.setEnabled(false);
+			
+			campoFuzzyFactor = new JTextField();
+			campoFuzzyFactor.setBounds(256, 95, 157, 23);
+			add(campoFuzzyFactor);
+			
+			campoFuzzyFactor.setEnabled(false);
 			
 			final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 			btnHelp.addActionListener(new ActionListener() {
@@ -76,47 +99,39 @@ import javax.swing.border.TitledBorder;
 					//If user choose Canopy algorithm...
 					
 					if (alg.equals(Constants.ClusterAlg.CANOPY)) {
-						
-						//JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-						
-						
 					
 						MainClusterPanel.setCanopy(true);
 						MainClusterPanel.getTresholdClusterPanel().hazVisible(true);
-						//MainClusterPanel.getAlgorithmClusterPanel().getComboBoxAlg().disable();
-						
+						emitMostLikely.setEnabled(false);
+						fuzzyFactor.setEnabled(false);
+						campoFuzzyFactor.setEnabled(false);	
 					} 
 					//If user choose KMeans algorithm...
 					else if (alg.equals(Constants.ClusterAlg.KMEANS)) {
-						
-						//JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-				
-						
-						MainClusterPanel.getDistanceClusterPanel().setValue(0) ;
-						MainClusterPanel.getDistanceClusterPanel().getComboBoxDistance().disable();
-						MainClusterPanel.getMaxIterationsPanel().setNumeroIteraciones(10) ;
-						MainClusterPanel.getMaxIterationsPanel().getCampoNum().setText(Constants.ClusterKmeans.iterations);
-						MainClusterPanel.getMaxIterationsPanel().getCampoNum().setEditable(false);
-						MainClusterPanel.getNumberClusterPanel().setNumeroClusters(3) ;
-						MainClusterPanel.getNumberClusterPanel().getCampoNum().setText(Constants.ClusterKmeans.clusters);
-						//MainClusterPanel.getNumberClusterPanel().getCampoNum().setEditable(false);
-						MainClusterPanel.getTresholdClusterPanel().setConvergenceTreshold(0.01D) ;
-						MainClusterPanel.getTresholdClusterPanel().getCampoNum().setText(Constants.ClusterKmeans.treshold);
-						//MainClusterPanel.getTresholdClusterPanel().getCampoNum().setEditable(false);
+						MainClusterPanel.setCanopy(false);
+						emitMostLikely.setEnabled(false);
+						fuzzyFactor.setEnabled(false);
+						campoFuzzyFactor.setEnabled(false);
 						MainClusterPanel.getTresholdClusterPanel().hazVisible(false);
 					
 					}
 					else if (alg.equals(Constants.ClusterAlg.FUZZYKMEANS)) {
-						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-						//ClusterJPanel.setEnableNeighborhood(true);
+						MainClusterPanel.setCanopy(false);
+						emitMostLikely.setEnabled(true);
+						fuzzyFactor.setEnabled(true);
+						campoFuzzyFactor.setEnabled(true);
 					}
 					else if (alg.equals(Constants.ClusterAlg.DIRICHLET)) {
-						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-						//ClusterJPanel.setEnableNeighborhood(true);
+						MainClusterPanel.setCanopy(false);
+						emitMostLikely.setEnabled(false);
+						fuzzyFactor.setEnabled(false);
+						campoFuzzyFactor.setEnabled(false);
 					}
 					else if (alg.equals(Constants.ClusterAlg.USER_DEFINED)) {
-						JOptionPane.showMessageDialog(null, "You've selected "+ alg+ " algorithm!!" );
-						//ClusterJPanel.setEnableNeighborhood(true);
+						MainClusterPanel.setCanopy(false);
+						emitMostLikely.setEnabled(false);
+						fuzzyFactor.setEnabled(false);
+						campoFuzzyFactor.setEnabled(false);
 					}
 					
 				}
@@ -137,6 +152,14 @@ import javax.swing.border.TitledBorder;
 		public JComboBox getComboBoxAlg() {
 			
 			return this.comboBoxAlg;
+		}
+		
+		public static JCheckBox getEmitMostLikely() {
+			return emitMostLikely;
+		}
+		
+		public static JTextField getFuzzyFactor(){
+			return campoFuzzyFactor;
 		}
 	}
 

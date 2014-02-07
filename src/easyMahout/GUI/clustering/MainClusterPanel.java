@@ -325,12 +325,13 @@ public class MainClusterPanel extends JPanel {
 							
 						} else if (category.equals("Number of Clusters")) {
 							log.info("numberOfClustersB1");
-							if ((!MainGUI.isDistributed()) /*&& (!isCanopy())*/){
+							if (!MainGUI.isDistributed()){
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
 							tresholdClusterPanel.setVisible(false);
-							numberClusterPanel.setVisible(true);
+							if (!isCanopy())	
+								numberClusterPanel.setVisible(true);
 							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(false);
 							jobClusterPanel.setVisible(false);
@@ -429,9 +430,9 @@ public class MainClusterPanel extends JPanel {
 
 	public void setDistributed(boolean distributed) {
 		nodeAlgorithm.setEnabled(!distributed);
-		nodeDistanceMeasure.setEnabled(distributed);
+		/*nodeDistanceMeasure.setEnabled(distributed);
 		nodeDataModel.setEnabled(distributed);
-		nodeConvergence.setEnabled(distributed);
+		nodeConvergence.setEnabled(distributed);*/
 		nodeNClusters.setEnabled(!distributed);
 		nodeJob.setEnabled(distributed);
 		treeMenu.repaint();
@@ -451,14 +452,9 @@ public class MainClusterPanel extends JPanel {
 	
 	public static void setCanopy(boolean can) {
 		canopy=can;
-		//nodeAlgorithm.setEnabled(!can);
-		nodeDistanceMeasure.setEnabled(can);
-		nodeDataModel.setEnabled(can);
-		nodeConvergence.setEnabled(can);
-		nodeNClusters.setEnabled(!can);
-		//nodeJob.setEnabled(can);
+		nodeNClusters.setEnabled(!can);//deshabilitamos el nodo clusters
 		treeMenu.repaint();
-		//this.setConfigPanelEnabled();
+		
 	}
 
 	public static boolean isCanopy() {
