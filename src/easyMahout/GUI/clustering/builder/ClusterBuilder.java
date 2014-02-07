@@ -25,6 +25,7 @@ import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
+import org.apache.mahout.clustering.canopy.CanopyDriver;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
 import org.apache.mahout.clustering.display.DisplayKMeans;
 import org.apache.mahout.clustering.fuzzykmeans.FuzzyKMeansDriver;
@@ -83,7 +84,10 @@ public class ClusterBuilder {
 	
 	private static boolean hadoop=MainGUI.isDistributed();//hadoop =true
 	
+	private static boolean esCanopy;
+	
 	private final static Logger log = Logger.getLogger(ClusterBuilder.class);
+	
 	
 	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } } ;
 	
@@ -149,7 +153,7 @@ public class ClusterBuilder {
 				if (algoritmo.equals(Constants.ClusterAlg.CANOPY)){
 				
 //-------------------------------------------------------------------------------------------	
-				
+				esCanopy = true;
 				//cogemos las valores treshold
 				treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
 				switch(treshold1){
@@ -209,7 +213,7 @@ public class ClusterBuilder {
 				
 				 
 				if (cluster != null) {
-					
+					constructCluster(false);
 					MainGUI.writeResult("OK building the clusters :Algorithm "+ algoritmo +" Distance  "+ d +" Treshold "+ treshold1 +" Iterations "+it , Constants.Log.INFO);
 				//TODO escribir los datos del cluster en un doc	
 				}	
@@ -259,7 +263,7 @@ public class ClusterBuilder {
 							e2.printStackTrace();
 						}
 						
-						constructCluster(true,!hadoop);
+						constructCluster(true);
 						
 					}	
 
@@ -307,7 +311,7 @@ public class ClusterBuilder {
 							e2.printStackTrace();
 						}
 						
-						constructCluster(false,!hadoop);
+						constructCluster(false);
 						
 					}	
 
@@ -319,7 +323,8 @@ public class ClusterBuilder {
 					
 					treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
 					switch(treshold1){
-					case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+					case "":{ 
+						JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
 					hayError=true;
 					break;
 					}
@@ -340,7 +345,7 @@ public class ClusterBuilder {
 						}
 					}
 					
-					constructCluster(false,hadoop);
+					constructCluster(false);
 				}
 				
 				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.USER_DEFINED)){
@@ -384,7 +389,7 @@ public class ClusterBuilder {
 		}
 	}
 	
-	public static void constructCluster(boolean kmeans,boolean distributed){
+	public static void constructCluster(boolean kmeans){
 		List<Vector> vectors = getPoints(points);
 		File testData = new File("testdata");
 		if (!testData.exists()) {
@@ -468,8 +473,10 @@ public class ClusterBuilder {
 			}
 
 			try {
-				if (kmeans || hadoop)
-				KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
+				if (kmeans || hadoop) KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
+				else if (esCanopy){
+					CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
+				}
 				else {
 					//FuzzyKMeansDriver.run(conf, input, clustersIn, output, measure, convergenceDelta, maxIterations, m, runClustering, emitMostLikely, threshold, runSequential/notHadoop)
 					
