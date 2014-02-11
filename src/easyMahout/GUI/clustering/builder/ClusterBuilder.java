@@ -92,7 +92,7 @@ public class ClusterBuilder {
 	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } } ;
 	
 	public static void transformData(){
-		//This method will take the data model from the input dialog and transform it to a vector using the Vectorizer class.
+		//This method will take the data model from the input dialog and transform it to a vector of vectors using the Vectorizer class.
 		DataModel dataModel=DataModelClusterPanel.getDataModel();
 		try {
 			int features=dataModel.getNumItems();
