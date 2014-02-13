@@ -27,6 +27,8 @@ import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
 import org.apache.mahout.clustering.canopy.CanopyDriver;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
+import org.apache.mahout.clustering.display.DisplayCanopy;
+import org.apache.mahout.clustering.display.DisplayFuzzyKMeans;
 import org.apache.mahout.clustering.display.DisplayKMeans;
 import org.apache.mahout.clustering.fuzzykmeans.FuzzyKMeansDriver;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
@@ -89,7 +91,7 @@ public class ClusterBuilder {
 	private final static Logger log = Logger.getLogger(ClusterBuilder.class);
 	
 	
-	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } } ;
+	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
 	
 	public static void transformData(){
 		//This method will take the data model from the input dialog and transform it to a vector of vectors using the Vectorizer class.
@@ -497,7 +499,9 @@ public class ClusterBuilder {
 			}
 			String[] args=null; 
 			try {
-				DisplayKMeans.main(args);
+				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayKMeans.main(args);
+				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayCanopy.main(args);
+				else if (algoritmo.equals(Constants.ClusterAlg.FUZZYKMEANS)) DisplayFuzzyKMeans.main(args);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
