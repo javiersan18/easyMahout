@@ -84,6 +84,8 @@ public class ClusterBuilder {
 	
 	private static String numberClusters;
 	
+	private static int numero;
+	
 	private static boolean hadoop=MainGUI.isDistributed();//hadoop =true
 	
 	private static boolean esCanopy;
@@ -180,10 +182,7 @@ public class ClusterBuilder {
 			}
 				//fin treshold
 //-------------------------------------------------------------------------------------------	
-				//nº clusters
 				
-				//fin nº clusters
-//-------------------------------------------------------------------------------------------	
 
 				//nº iterations
 				it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
@@ -226,7 +225,23 @@ public class ClusterBuilder {
 				//fin CANOPY
 //--------------------------------------------------------------------------------------------
 				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.KMEANS)){
+					//nº clusters
+					if (!esCanopy)	{
+						numberClusters=MainClusterPanel.getNumberClusterPanel().getCampoNum().getText();
+						switch(numberClusters){
+						case "":{ 
+							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+							hayError=true;
+							break;
+							}
+						default :{
+							 numero=Integer.parseInt(numberClusters);
+							}
+						}
+					}
 					
+					//fin nº clusters
+		
 					treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
 					switch(treshold1){
 					case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
@@ -274,7 +289,23 @@ public class ClusterBuilder {
 					}
 				//if user choose Fuzzy K-Means
 				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.FUZZYKMEANS)){
+					//nº clusters
+					if (!esCanopy)	{
+						numberClusters=MainClusterPanel.getNumberClusterPanel().getCampoNum().getText();
+						switch(numberClusters){
+						case "":{ 
+							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+							hayError=true;
+							break;
+							}
+						default :{
+							 numero=Integer.parseInt(numberClusters);
+							}
+						}
+					}
 					
+					//fin nº clusters
+		
 					treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
 					switch(treshold1){
 					case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
@@ -392,12 +423,15 @@ public class ClusterBuilder {
 	}
 	
 	public static void constructCluster(boolean kmeans){
+		ArrayList<Object> parametrosFuzzy= new ArrayList<Object>();
+		ArrayList<Object> parametrosCanopy= new ArrayList<Object>();
+		ArrayList<Object> parametrosKMEANS= new ArrayList<Object>();
 		List<Vector> vectors = getPoints(points);
 		File testData = new File("testdata");
 		if (!testData.exists()) {
 			testData.mkdir();
 		}
-		System.out.println("hjola");
+		System.out.println("hola");
 		testData = new File("testdata/points");
 		if (!testData.exists()) {
 			testData.mkdir();
@@ -475,9 +509,40 @@ public class ClusterBuilder {
 			}
 
 			try {
-				if (kmeans || hadoop) KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
+			
+				/*run(Configuration conf, Path input, Path clustersIn, Path output, DistanceMeasure measure,
+			      double convergenceDelta, int maxIterations, boolean runClustering, double clusterClassificationThreshold,
+			      boolean runSequential)*/
+				if (kmeans || hadoop){
+					KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
+					
+					parametrosKMEANS.add(conf);
+					parametrosKMEANS.add(new Path("testdata/points"));
+					parametrosKMEANS.add(new Path("testdata/clusters"));
+					parametrosKMEANS.add(output);
+					parametrosKMEANS.add(d);
+					parametrosKMEANS.add(t1);
+					parametrosKMEANS.add(iteraciones);
+					parametrosKMEANS.add(true);
+					parametrosKMEANS.add(t1);
+					parametrosKMEANS.add(!hadoop);
+					parametrosKMEANS.add(numero);
+				}
 				else if (esCanopy){
 					CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
+					
+					//-------------CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
+					
+					parametrosCanopy.add(conf);
+					parametrosCanopy.add(new Path("testdata/points"));
+					parametrosCanopy.add(output);
+					parametrosCanopy.add(d);
+					parametrosCanopy.add(t1);
+					parametrosCanopy.add(t2);
+					parametrosCanopy.add(true);
+					parametrosCanopy.add(t1);
+					parametrosCanopy.add(!hadoop);
+					//----------
 				}
 				else {
 					//FuzzyKMeansDriver.run(conf, input, clustersIn, output, measure, convergenceDelta, maxIterations, m, runClustering, emitMostLikely, threshold, runSequential/notHadoop)
@@ -486,6 +551,25 @@ public class ClusterBuilder {
 					String s=AlgorithmClusterPanel.getFuzzyFactor().getText();
 					float fuzzyFactor=Float.parseFloat(s);
 					FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);
+					
+					//--------
+					/*FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d,
+					 *  t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);*/
+					
+					parametrosFuzzy.add(conf);
+					parametrosFuzzy.add(new Path("testdata/points"));
+					parametrosFuzzy.add(new Path("testdata/clusters"));
+					parametrosFuzzy.add(output);
+					parametrosFuzzy.add(d);
+					parametrosFuzzy.add(t1);
+					parametrosFuzzy.add(iteraciones);
+					parametrosFuzzy.add(fuzzyFactor);
+					parametrosFuzzy.add(true);
+					parametrosFuzzy.add(emitMostLikely);
+					parametrosFuzzy.add(t1);
+					parametrosFuzzy.add(!hadoop);
+					parametrosKMEANS.add(numero);
+					//--------
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -497,11 +581,11 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String[] args=null; 
+	
 			try {
-				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayKMeans.main(args);
-				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayCanopy.main(args);
-				else if (algoritmo.equals(Constants.ClusterAlg.FUZZYKMEANS)) DisplayFuzzyKMeans.main(args);
+				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayGraphicKMeans.main(parametrosKMEANS);
+				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayGraphicCanopy.main(parametrosCanopy);
+				else if (algoritmo.equals(Constants.ClusterAlg.FUZZYKMEANS)) DisplayGraphicFuzzy.main(parametrosFuzzy);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
