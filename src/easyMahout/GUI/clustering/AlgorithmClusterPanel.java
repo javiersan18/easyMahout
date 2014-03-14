@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 	import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -32,6 +33,8 @@ import easyMahout.utils.listeners.ItemChangeListener;
 
 import javax.swing.border.TitledBorder;
 
+import org.apache.log4j.Logger;
+
 	public class AlgorithmClusterPanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
@@ -43,6 +46,9 @@ import javax.swing.border.TitledBorder;
 		private static JCheckBox emitMostLikely;
 		private JLabel fuzzyFactor;
 		private static JTextField campoFuzzyFactor;
+		private final static Logger log = Logger.getLogger(MaxIterationsPanel.class);
+		
+		private final static String ayuda = "[2..9999]";
 
 		public AlgorithmClusterPanel() {
 			// super();
@@ -73,7 +79,34 @@ import javax.swing.border.TitledBorder;
 			
 			campoFuzzyFactor = new JTextField();
 			campoFuzzyFactor.setBounds(256, 95, 157, 23);
+			
+			campoFuzzyFactor.setToolTipText(ayuda);
 			add(campoFuzzyFactor);
+			
+			campoFuzzyFactor.setInputVerifier(new InputVerifier() {
+				public boolean verify(JComponent input) {
+					JTextField tf = (JTextField) input;
+					String text = tf.getText();
+					try {
+						Long i = Long.parseLong(text);
+						if (i > 1 && i <= 9999) {
+							campoFuzzyFactor.setBackground(Color.WHITE);
+							return true;
+						} else {
+							log.error(text + " is out of range");
+							MainGUI.writeResult("Size has to be an integer number in range [2..9999]", Constants.Log.ERROR);
+							campoFuzzyFactor.setBackground(new Color(240, 128, 128));
+							return false;
+						}
+					} catch (NumberFormatException e) {
+						log.error(text + " is not a number, focus not lost");
+						MainGUI.writeResult("Size has to be an integer number in range [2..9999]", Constants.Log.ERROR);
+						campoFuzzyFactor.setBackground(new Color(240, 128, 128));
+						return false;
+					}
+				}
+			});
+			
 			
 			campoFuzzyFactor.setEnabled(false);
 			

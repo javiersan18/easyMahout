@@ -24,11 +24,12 @@ import org.apache.mahout.math.Vector;
 
 import com.google.common.collect.Lists;
 
-public class DisplayGraphicKMeans extends DisplayClustering {
+@SuppressWarnings("serial")
+public class DisplayGraphicKMeans extends DisplayCluster {
   
-  DisplayGraphicKMeans() {
+	DisplayGraphicKMeans() {
     initialize();
-    this.setTitle("k-Means Clusters (>" + (int) (0.08 * 100) + "% of population)");
+    this.setTitle("k-Means Clusters (>" + (int) (significance * 100) + "% of population)");
   }
   
   public static void main(ArrayList<Object> parametrosKMEANS) throws Exception {

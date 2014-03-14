@@ -100,6 +100,7 @@ public class ClusterBuilder {
 		DataModel dataModel=DataModelClusterPanel.getDataModel();
 		try {
 			int features=dataModel.getNumItems();
+			if (features>0) log.assertLog(true, "modelo datos "+features);
 		} catch (TasteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,6 +203,8 @@ public class ClusterBuilder {
 //-------------------------------------------------------------------------------------------	
 
 				//Data model
+				
+				
 				//fin Data model
 //-------------------------------------------------------------------------------------------	
 				
@@ -582,14 +585,14 @@ public class ClusterBuilder {
 				e.printStackTrace();
 			}
 	
-			/*try {
+			try {
 				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayGraphicKMeans.main(parametrosKMEANS);
 				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayGraphicCanopy.main(parametrosCanopy);
 				else if (algoritmo.equals(Constants.ClusterAlg.FUZZYKMEANS)) DisplayGraphicFuzzy.main(parametrosFuzzy);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 			// write result
 			SequenceFile.Reader reader2 = null;
 			try {
