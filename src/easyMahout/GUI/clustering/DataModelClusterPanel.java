@@ -264,7 +264,7 @@ public class DataModelClusterPanel extends JPanel {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					//ClusterBuilder.transformData();
+					ClusterBuilder.transformData();
 					ClusterBuilder.buildCluster();
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block

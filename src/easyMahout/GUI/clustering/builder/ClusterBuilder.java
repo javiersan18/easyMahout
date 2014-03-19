@@ -98,13 +98,29 @@ public class ClusterBuilder {
 	public static void transformData(){
 		//This method will take the data model from the input dialog and transform it to a vector of vectors using the Vectorizer class.
 		DataModel dataModel=DataModelClusterPanel.getDataModel();
-		try {
+		/*try {
 			int features=dataModel.getNumItems();
 			if (features>0) log.assertLog(true, "modelo datos "+features);
 		} catch (TasteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
+		if (dataModel != null) {
+			int features;
+			try {
+				features = dataModel.getNumItems();
+				if (features>0) log.assertLog(true, "modelo datos "+features);
+			} catch (TasteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} else {
+			log.error("Trying to run a cluster without datamodel loaded");
+			MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
+		}
+		
 		
 	}
 		
