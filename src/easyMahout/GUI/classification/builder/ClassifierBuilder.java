@@ -1,6 +1,7 @@
 package easyMahout.GUI.classification.builder;
 
 import org.apache.log4j.Logger;
+import org.apache.mahout.classifier.df.mapreduce.Classifier;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
@@ -9,8 +10,11 @@ public class ClassifierBuilder {
 
 	private final static Logger log = Logger.getLogger(ClassifierBuilder.class);
 
-	/*public static Recommender buildRecommender() {
-		if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
+	private static String algorithm;
+	private static int numCharacteristics;
+	
+	public static Classifier buildClassifier(){
+		/*if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
 			DataModel model = DataModelRecommenderPanel.getDataModel();
 			if (model != null) {
 				UserSimilarity similarity = SimilarityRecommenderPanel.getUserSimilarity(model);
@@ -63,9 +67,7 @@ public class ClassifierBuilder {
 
 		} else {
 			return null;
-		}
-		return null;
-				
-		
-	}*/	
+		}*/
+		return null;		
+	}	
 }

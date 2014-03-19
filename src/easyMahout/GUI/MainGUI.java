@@ -29,7 +29,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import easyMahout.GUI.classification.ClassificationJPanel;
+import easyMahout.GUI.classification.MainClassifierPanel;
 import easyMahout.GUI.clustering.MainClusterPanel;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
 import easyMahout.recommender.RecommenderXMLPreferences;
@@ -45,7 +45,7 @@ public class MainGUI extends JFrame {
 
 	private MainClusterPanel clusterTab;
 
-	private ClassificationJPanel classificationTab;
+	private MainClassifierPanel classificationTab;
 
 	private JScrollPane logScrollPane;
 
@@ -140,7 +140,7 @@ public class MainGUI extends JFrame {
 		recommenderTab = new MainRecommenderPanel();
 		tabbedPane.addTab("Recommendation", null, recommenderTab, null);
 
-		classificationTab = new ClassificationJPanel();
+		classificationTab = new MainClassifierPanel();
 		tabbedPane.addTab("Classification", null, classificationTab, null);
 
 		clusterTab = new MainClusterPanel();

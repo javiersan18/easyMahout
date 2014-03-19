@@ -19,11 +19,11 @@ import java.awt.Color;
 
 import javax.swing.JSeparator;
 
-public class ClassificationJPanel extends JPanel {
+public class MainClassifierPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JPanel panelClassification;
+	private JPanel panelClassifier;
 
 	private JPanel treePanel;
 
@@ -31,13 +31,16 @@ public class ClassificationJPanel extends JPanel {
 
 	private DynamicTree treeMenu;
 
-	private final static Logger log = Logger.getLogger(ClassificationJPanel.class);
+	private final static Logger log = Logger.getLogger(MainClassifierPanel.class);
 
 	private JSeparator separator;
 
-	public ClassificationJPanel() {
-		super();
-		panelClassification = this;
+	public MainClassifierPanel() {
+		//super();
+		
+		this.setLayout(null);
+		
+		panelClassifier = this;
 
 		treePanel = new JPanel();
 		treePanel.setBounds(0, 0, 220, 395);
@@ -58,27 +61,27 @@ public class ClassificationJPanel extends JPanel {
 
 		// Create different panes
 		// 1 panel por cada posible configuracion
-		p1 = new DataModelClassificationPanel();
+		p1 = new DataModelClassifierPanel();
 		p1.setBounds(238, 11, 481, 382);
-		panelClassification.add(p1);
+		panelClassifier.add(p1);
 		p1.setLayout(null);
 		p1.setVisible(false);
 
 		p2 = new TrainingDataClassificationPanel();
 		p2.setBounds(238, 11, 481, 382);
-		panelClassification.add(p2);
+		panelClassifier.add(p2);
 		p2.setLayout(null);
 		p2.setVisible(false);
 
-		p3 = new AlgorithmClassificationPanel();
+		p3 = new AlgorithmClassifierPanel();
 		p3.setBounds(238, 11, 481, 382);
-		panelClassification.add(p3);
+		panelClassifier.add(p3);
 		p3.setLayout(null);
 		p3.setVisible(false);
 
-		p4 = new EvaluatorClassificationPanel();
+		p4 = new EvaluatorClassifierPanel();
 		p4.setBounds(238, 11, 481, 382);
-		panelClassification.add(p4);
+		panelClassifier.add(p4);
 		p4.setLayout(null);
 		p4.setVisible(false);
 	}

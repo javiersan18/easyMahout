@@ -10,7 +10,7 @@ import javax.swing.border.LineBorder;
 
 import easyMahout.utils.Constants;
 
-public class AlgorithmClassificationPanel extends JPanel {
+public class AlgorithmClassifierPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -18,7 +18,7 @@ public class AlgorithmClassificationPanel extends JPanel {
 	
 	private DefaultComboBoxModel algorithmModel;
 
-	public AlgorithmClassificationPanel() {
+	public AlgorithmClassifierPanel() {
 		//super();
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setForeground(Color.BLACK);
