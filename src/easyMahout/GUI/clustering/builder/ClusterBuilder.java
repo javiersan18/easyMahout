@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.apache.hadoop.conf.Configuration;
+
+import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -601,14 +602,14 @@ public class ClusterBuilder {
 				e.printStackTrace();
 			}
 	
-			try {
+			/*try {
 				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayGraphicKMeans.main(parametrosKMEANS);
 				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayGraphicCanopy.main(parametrosCanopy);
 				else if (algoritmo.equals(Constants.ClusterAlg.FUZZYKMEANS)) DisplayGraphicFuzzy.main(parametrosFuzzy);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			// write result
 			SequenceFile.Reader reader2 = null;
 			try {

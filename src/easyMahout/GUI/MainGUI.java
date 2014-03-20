@@ -25,6 +25,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -74,6 +75,7 @@ public class MainGUI extends JFrame {
 		try {
 			// Set System(Windows, Mac, linux) Look and fell
 			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName()); 
+			
 		} catch (Exception e) {
 		}
 		EventQueue.invokeLater(new Runnable() {
@@ -81,6 +83,8 @@ public class MainGUI extends JFrame {
 				try {
 					MainGUI window = new MainGUI();
 					window.setVisible(true);
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -107,7 +111,6 @@ public class MainGUI extends JFrame {
 		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
 
 		distributed = false;
-
 		main = this;
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
