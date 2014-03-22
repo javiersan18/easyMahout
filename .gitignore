@@ -4,3 +4,6 @@
 /.sonar
 /.settings
 prueba.log
+/lib
+/output
+/testdata
