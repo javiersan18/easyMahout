@@ -11,7 +11,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.classify.ClusterClassifier;
-import org.apache.mahout.clustering.display.DisplayClustering;
+//import org.apache.mahout.clustering.display.DisplayClustering;
 import org.apache.mahout.clustering.fuzzykmeans.FuzzyKMeansDriver;
 import org.apache.mahout.clustering.fuzzykmeans.SoftCluster;
 import org.apache.mahout.clustering.iterator.ClusterIterator;
@@ -25,7 +25,7 @@ import org.apache.mahout.math.Vector;
 
 import com.google.common.collect.Lists;
 
-public class DisplayGraphicFuzzy extends DisplayClustering {
+public class DisplayGraphicFuzzy extends DisplayCluster {
   
   DisplayGraphicFuzzy() {
     initialize();
@@ -45,10 +45,10 @@ public class DisplayGraphicFuzzy extends DisplayClustering {
     Path samples = new Path("samples");
     Path output = new Path("output");
     Configuration conf = (Configuration) parametrosFuzzy.get(0);
-    HadoopUtil.delete(conf, output);
-    HadoopUtil.delete(conf, samples);
+    //HadoopUtil.delete(conf, output);
+    //HadoopUtil.delete(conf, samples);
     RandomUtils.useTestSeed();
-    DisplayClustering.generateSamples();
+    DisplayCluster.generateSamples();
     writeSampleData(samples);
     boolean runClusterer = (boolean) parametrosFuzzy.get(8);
     int maxIterations = (int) parametrosFuzzy.get(6);
@@ -80,18 +80,18 @@ public class DisplayGraphicFuzzy extends DisplayClustering {
     prior.writeToSeqFiles(priorPath);
     
     ClusterIterator.iterateSeq(conf, samples, priorPath, output, maxIterations);
-    loadClustersWritable(output);
+    loadClustersWritable(output,maxIterations);
   }
   
   private static void runSequentialFuzzyKClusterer(Configuration conf, Path samples, Path output,
       DistanceMeasure measure, int maxIterations, float m, double threshold) throws IOException,
       ClassNotFoundException, InterruptedException {
     Path clustersIn = new Path(output, "random-seeds");
-    RandomSeedGenerator.buildRandom(conf, samples, clustersIn, 3, measure);
+    RandomSeedGenerator.buildRandom(conf, samples, clustersIn, maxIterations, measure);
    FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, measure, m, maxIterations, m, true,  true, threshold, true);
    // FuzzyKMeansDriver.run(samples, clustersIn, output, measure, threshold, maxIterations, m, true, true, threshold,true);
     
-    loadClustersWritable(output);
+    loadClustersWritable(output,maxIterations);
   }
 }
 

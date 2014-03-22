@@ -32,6 +32,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import easyMahout.GUI.classification.ClassificationJPanel;
 import easyMahout.GUI.clustering.MainClusterPanel;
+import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
 import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
@@ -212,6 +213,7 @@ public class MainGUI extends JFrame {
 				System.exit(0);
 			}
 		} else {
+			
 			System.exit(0);
 		}
 	}

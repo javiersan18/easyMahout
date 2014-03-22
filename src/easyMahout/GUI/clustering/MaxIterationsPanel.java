@@ -68,7 +68,7 @@ import org.apache.log4j.Logger;
 			campoNum.setToolTipText(ayuda);
 			add(campoNum);
 			campoNum.setColumns(10);
-			
+			campoNum.setText("2");  //quitar al acabar
 			campoNum.setInputVerifier(new InputVerifier() {
 				public boolean verify(JComponent input) {
 					JTextField tf = (JTextField) input;

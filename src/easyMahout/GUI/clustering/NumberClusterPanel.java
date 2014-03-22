@@ -66,7 +66,7 @@ public class NumberClusterPanel extends JPanel {
 		campoNum.setToolTipText(ayuda);
 		add(campoNum);
 		campoNum.setColumns(10);
-		
+		campoNum.setText("5");  //quitar al acabar
 		campoNum.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
 				JTextField tf = (JTextField) input;

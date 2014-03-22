@@ -61,8 +61,8 @@ public class DisplayGraphicCanopy extends DisplayClustering {
     Configuration conf = (Configuration) parametrosCanopy.get(0);
     DistanceMeasure measure=  (DistanceMeasure) parametrosCanopy.get(3);
    
-    HadoopUtil.delete(conf, samples);
-    HadoopUtil.delete(conf, output);
+   // HadoopUtil.delete(conf, samples);
+   // HadoopUtil.delete(conf, output);
     RandomUtils.useTestSeed();
     generateSamples();
     writeSampleData(samples);

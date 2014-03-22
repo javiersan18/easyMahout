@@ -34,11 +34,11 @@ public class DisplayGraphicKMeans extends DisplayCluster {
   
   public static void main(ArrayList<Object> parametrosKMEANS) throws Exception {
     DistanceMeasure measure = (DistanceMeasure) parametrosKMEANS.get(4);
-    Path samples = new Path("samples");//(Path) parametrosKMEANS.get(1);
+    Path samples = new Path("samples");//(Path) parametrosKMEANS.get(1);//
     Path output = new Path("output");//(Path) parametrosKMEANS.get(3);//
     Configuration conf = (Configuration) parametrosKMEANS.get(0);
-    HadoopUtil.delete(conf, samples);
-    HadoopUtil.delete(conf, output);
+   // HadoopUtil.delete(conf, samples);
+    //HadoopUtil.delete(conf, output);
     
     RandomUtils.useTestSeed();
     generateSamples();
@@ -47,11 +47,12 @@ public class DisplayGraphicKMeans extends DisplayCluster {
     double convergenceDelta = (double) parametrosKMEANS.get(5);
     int numClusters = (int) parametrosKMEANS.get(10);;
     int maxIterations = (int) parametrosKMEANS.get(6);
-    if (runClusterer) {
+    runSequentialKMeansClusterer(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
+    /*if (runClusterer) {
       runSequentialKMeansClusterer(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
     } else {
       runSequentialKMeansClassifier(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
-    }
+    }*/
     new DisplayGraphicKMeans();
   }
   
@@ -71,7 +72,7 @@ public class DisplayGraphicKMeans extends DisplayCluster {
     prior.writeToSeqFiles(priorPath);
     
     ClusterIterator.iterateSeq(conf, samples, priorPath, output, maxIterations);
-    loadClustersWritable(output);
+    loadClustersWritable(output,maxIterations);
   }
   
   private static void runSequentialKMeansClusterer(Configuration conf, Path samples, Path output,
@@ -79,9 +80,9 @@ public class DisplayGraphicKMeans extends DisplayCluster {
     throws IOException, InterruptedException, ClassNotFoundException {
     Path clustersIn = new Path(output, "random-seeds");
     RandomSeedGenerator.buildRandom(conf, samples, clustersIn, numClusters, measure);
-    KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, measure,numClusters, maxIterations, true, convergenceDelta, true);
+    KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, measure,numClusters, maxIterations--, true, convergenceDelta, true);
     //KMeansDriver.run(samples, clustersIn, output, measure, convergenceDelta, maxIterations, true, 0.0, true);
-    loadClustersWritable(output);
+    loadClustersWritable(output,maxIterations);
   }
   
   // Override the paint() method
