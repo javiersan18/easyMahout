@@ -316,26 +316,35 @@ public class DisplayCluster extends Frame {
   }
   
   protected static List<Cluster> readClustersWritable(Path clustersIn) {
-    List<Cluster> clusters = Lists.newArrayList();
-    Configuration conf = new Configuration();
-    for (ClusterWritable value : new SequenceFileDirValueIterable<ClusterWritable>(clustersIn, PathType.LIST,
-        PathFilters.logsCRCFilter(), conf)) {
-      Cluster cluster = value.getValue();
-      log.info(
-          "Reading Cluster:{} center:{} numPoints:{} radius:{}",
-          cluster.getId(), AbstractCluster.formatVector(cluster.getCenter(), null),
-          cluster.getNumObservations(), AbstractCluster.formatVector(cluster.getRadius(), null));
-      clusters.add(cluster);
-    }
-    return clusters;
+	 
+	  List<Cluster> clusters = Lists.newArrayList();
+	  Configuration conf = new Configuration();
+	  for (ClusterWritable value : new SequenceFileDirValueIterable<ClusterWritable>(clustersIn, PathType.LIST,
+			  PathFilters.logsCRCFilter(), conf)) {
+		  Cluster cluster = value.getValue();
+		  log.info("Reading Cluster:{} center:{} numPoints:{} radius:{}",
+				  cluster.getId(), AbstractCluster.formatVector(cluster.getCenter(), null),
+				  cluster.getNumObservations(), AbstractCluster.formatVector(cluster.getRadius(), null));
+		  clusters.add(cluster);
+	  }
+	  return clusters;	  
   }
   
-  protected static void loadClustersWritable(Path output) throws IOException {
+  protected static void loadClustersWritable(Path output,int max) throws IOException {
     Configuration conf = new Configuration();
     FileSystem fs = FileSystem.get(output.toUri(), conf);
     for (FileStatus s : fs.listStatus(output, new ClusterFilter())) {
-      List<Cluster> clusters = readClustersWritable(s.getPath());
-      CLUSTERS.add(clusters);
+    	Path p=s.getPath();
+    	if (!(p.getName().contains("final"))){
+	    	List<Cluster> clusters = readClustersWritable(p);
+	        CLUSTERS.add(clusters);
+    	}
+    	else {
+    		max++;
+    		Path p1=new Path(p + "/clusters-"+max );
+    		List<Cluster> clusters = readClustersWritable(p1);
+	        CLUSTERS.add(clusters);
+    	}
     }
   }
   

@@ -75,6 +75,7 @@ import org.apache.log4j.Logger;
 				campoNum.setToolTipText(ayuda);
 				add(campoNum);
 				campoNum.setColumns(10);
+				campoNum.setText("0.9");  //quitar al acabar
 				
 				campoNum.setInputVerifier(new InputVerifier() {
 					public boolean verify(JComponent input) {
@@ -112,9 +113,10 @@ import org.apache.log4j.Logger;
 				campoNum2.setToolTipText(ayuda);
 				numero2.setVisible(false);
 				campoNum2.setVisible(false);
+				
 				add(numero2);
 				add(campoNum2);
-				
+				campoNum2.setText("0.9");  //quitar al acabar
 				campoNum2.setInputVerifier(new InputVerifier() {
 					public boolean verify(JComponent input) {
 						JTextField tf = (JTextField) input;

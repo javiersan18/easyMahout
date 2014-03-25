@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.apache.hadoop.conf.Configuration;
+
+import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -60,41 +61,42 @@ import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 
 public class ClusterBuilder {
-	
+
 	private static boolean hayError;
-	
+
 	private static String algoritmo;
-	
+
 	private static DistanceMeasure d;
-	
+
 	private static String treshold1;
-	
+
 	private static String treshold2;
-	
+
 	private static double t1 = 0;
 	private static double t2 = 0;
-	
+
 	private static String it;
-	
+
 	private static int iteraciones;
-	
+
 	private static FileSystem fs;
-	
+
 	private static Configuration conf;
-	
+
 	private static String numberClusters;
-	
+
 	private static int numero;
-	
+
 	private static boolean hadoop=MainGUI.isDistributed();//hadoop =true
-	
+
 	private static boolean esCanopy;
-	
+
 	private final static Logger log = Logger.getLogger(ClusterBuilder.class);
-	
-	
+
+	private static File testData;
+
 	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
-	
+
 	public static void transformData(){
 		//This method will take the data model from the input dialog and transform it to a vector of vectors using the Vectorizer class.
 		DataModel dataModel=DataModelClusterPanel.getDataModel();
@@ -105,7 +107,7 @@ public class ClusterBuilder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		 */
 		if (dataModel != null) {
 			int features;
 			try {
@@ -115,313 +117,323 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			log.error("Trying to run a cluster without datamodel loaded");
 			MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
 		}
-		
-		
+
+
 	}
-		
+
 	public static Cluster buildCluster() throws ClassNotFoundException, InterruptedException, IOException {
-			
-			hayError=false;
-			
-			algoritmo = MainClusterPanel.getAlgorithmClusterPanel().getSelectedType();
-			String dist=MainClusterPanel.getDistanceClusterPanel().getSelectedType();
-			//-------------------------------------------------------------------------------------------				
-							//cogemos el tipo de distancia
-							
-							switch(dist){
-								case	Constants.ClusterDist.EUCLIDEAN:
-								{
-									MainClusterPanel.getDistanceClusterPanel();
-									if (DistanceMeasurePanel.getChckbxWeighted().isSelected())
-									d=new WeightedEuclideanDistanceMeasure();
-									else d=new EuclideanDistanceMeasure();
 
-									break;
-								}
-								case	Constants.ClusterDist.SQUAREDEUCLIDEAN:
-								{
-									d=new SquaredEuclideanDistanceMeasure();
-									break;
-								}
-								case	Constants.ClusterDist.MANHATTAN:
-								{
-									MainClusterPanel.getDistanceClusterPanel();
-									if (DistanceMeasurePanel.getChckbxWeighted().isSelected())
-										d=new WeightedManhattanDistanceMeasure();
-									else d=new ManhattanDistanceMeasure();
-									break;
-								}
-								case	Constants.ClusterDist.TANIMOTO:
-								{
-									d=new TanimotoDistanceMeasure();
-									break;
-								}
-								case	Constants.ClusterDist.COSINE:
-								{
-									d=new CosineDistanceMeasure();
-									break;
-								}
-								
-								default : d=new EuclideanDistanceMeasure();
-							}
-							//fin tipo distancia
-			//algoritmo=CANOPY
-				if (algoritmo.equals(Constants.ClusterAlg.CANOPY)){
-				
-//-------------------------------------------------------------------------------------------	
-				esCanopy = true;
-				//cogemos las valores treshold
-				treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-				switch(treshold1){
-				case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold 1");
-				hayError=true;
-				break;
-				}
-				default :{
-					 t1=Double.parseDouble(treshold1);
-				}
-			}
-				
-			    treshold2=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-				switch(treshold2){
-				case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold 2");
-				hayError=true;
-				break;
-				}
-				default :{
-					 t2=Double.parseDouble(treshold2);
-				}
-			}
-				//fin treshold
-//-------------------------------------------------------------------------------------------	
-				
+		hayError=false;
 
-				//nº iterations
-				it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
-				switch(it){
-					case "":{ 
-						JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
-					hayError=true;
-					break;
-					}
-					default :{
-						 iteraciones=Integer.parseInt(it);
-					}
-				}
-				
-				
-				//fin nº iterations
-//-------------------------------------------------------------------------------------------	
+		algoritmo = MainClusterPanel.getAlgorithmClusterPanel().getSelectedType();
+		String dist=MainClusterPanel.getDistanceClusterPanel().getSelectedType();
+		//-------------------------------------------------------------------------------------------				
+		//cogemos el tipo de distancia
 
-				//Data model
-				
-				
-				//fin Data model
-//-------------------------------------------------------------------------------------------	
-				
-				//construimos el cluster CANOPY
-				CanopyClusterer cluster = null;
-				if (!hayError) 
-				{
-					cluster = new CanopyClusterer(d,t1,t2);
-				}
-				
-				 
-				if (cluster != null) {
-					constructCluster(false);
-					MainGUI.writeResult("OK building the clusters :Algorithm "+ algoritmo +" Distance  "+ d +" Treshold "+ treshold1 +" Iterations "+it , Constants.Log.INFO);
-				//TODO escribir los datos del cluster en un doc	
-				}	
+		switch(dist){
+		case	Constants.ClusterDist.EUCLIDEAN:
+		{
+			MainClusterPanel.getDistanceClusterPanel();
+			if (DistanceMeasurePanel.getChckbxWeighted().isSelected())
+				d=new WeightedEuclideanDistanceMeasure();
+			else d=new EuclideanDistanceMeasure();
 
-				 else 					
-					MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-				}
-				//fin CANOPY
-//--------------------------------------------------------------------------------------------
-				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.KMEANS)){
-					//nº clusters
-					if (!esCanopy)	{
-						numberClusters=MainClusterPanel.getNumberClusterPanel().getCampoNum().getText();
-						switch(numberClusters){
-						case "":{ 
-							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
-							hayError=true;
-							break;
-							}
-						default :{
-							 numero=Integer.parseInt(numberClusters);
-							}
-						}
-					}
-					
-					//fin nº clusters
-		
-					treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-					switch(treshold1){
-					case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
-					hayError=true;
-					break;
-					}
-					default :{
-						 t1=Double.parseDouble(treshold1);
-					}
-				}
-					//nº iterations
-					it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
-					switch(it){
-						case "":{ 
-							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
-						hayError=true;
-						break;
-						}
-						default :{
-							 iteraciones=Integer.parseInt(it);
-						}
-					}
-					
-					
-					//fin nº iterations
-					
-					Kluster kluster = new Kluster();
-					 
-					if (kluster != null) {
-						Path output = new Path("output");
-					    conf = new Configuration();
-						try {
-							fs = FileSystem.get(conf);
-						} catch (IOException e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
-						}
-						
-						constructCluster(true);
-						
-					}	
-
-					 else 					
-						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-					}
-				//if user choose Fuzzy K-Means
-				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.FUZZYKMEANS)){
-					//nº clusters
-					if (!esCanopy)	{
-						numberClusters=MainClusterPanel.getNumberClusterPanel().getCampoNum().getText();
-						switch(numberClusters){
-						case "":{ 
-							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
-							hayError=true;
-							break;
-							}
-						default :{
-							 numero=Integer.parseInt(numberClusters);
-							}
-						}
-					}
-					
-					//fin nº clusters
-		
-					treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-					switch(treshold1){
-					case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
-					hayError=true;
-					break;
-					}
-					default :{
-						 t1=Double.parseDouble(treshold1);
-					}
-				}
-					//nº iterations
-					it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
-					switch(it){
-						case "":{ 
-							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
-						hayError=true;
-						break;
-						}
-						default :{
-							 iteraciones=Integer.parseInt(it);
-						}
-					}
-					
-					
-					//fin nº iterations
-					
-					Kluster kluster = new Kluster();
-					 
-					if (kluster != null) {
-						Path output = new Path("output");
-					    conf = new Configuration();
-						try {
-							fs = FileSystem.get(conf);
-						} catch (IOException e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
-						}
-						
-						constructCluster(false);
-						
-					}	
-
-					 else 					
-						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-					}
-				// fin Fuzzy K-Means
-				else if (hadoop){
-					
-					treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
-					switch(treshold1){
-					case "":{ 
-						JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
-					hayError=true;
-					break;
-					}
-					default :{
-						 t1=Double.parseDouble(treshold1);
-					}
-				}
-					//nº iterations
-					it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
-					switch(it){
-						case "":{ 
-							JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
-						hayError=true;
-						break;
-						}
-						default :{
-							 iteraciones=Integer.parseInt(it);
-						}
-					}
-					
-					constructCluster(false);
-				}
-				
-				else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.USER_DEFINED)){
-					Double treshold1=0.1;
-					Double treshold2=0.2;
-					CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
-					 
-					if (cluster != null) {MainGUI.writeResult("OK building the clusters USER_Defined", Constants.Log.INFO);}	
-
-					 else 					
-						MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
-					}
-			
-				return null;
+			break;
 		}
-	
-	
+		case	Constants.ClusterDist.SQUAREDEUCLIDEAN:
+		{
+			d=new SquaredEuclideanDistanceMeasure();
+			break;
+		}
+		case	Constants.ClusterDist.MANHATTAN:
+		{
+			MainClusterPanel.getDistanceClusterPanel();
+			if (DistanceMeasurePanel.getChckbxWeighted().isSelected())
+				d=new WeightedManhattanDistanceMeasure();
+			else d=new ManhattanDistanceMeasure();
+			break;
+		}
+		case	Constants.ClusterDist.TANIMOTO:
+		{
+			d=new TanimotoDistanceMeasure();
+			break;
+		}
+		case	Constants.ClusterDist.COSINE:
+		{
+			d=new CosineDistanceMeasure();
+			break;
+		}
+
+		default : d=new EuclideanDistanceMeasure();
+		}
+		//fin tipo distancia
+		//algoritmo=CANOPY
+		if (algoritmo.equals(Constants.ClusterAlg.CANOPY)){
+
+			//-------------------------------------------------------------------------------------------	
+			esCanopy = true;
+			//cogemos las valores treshold
+			treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+			switch(treshold1){
+			case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold 1");
+			hayError=true;
+			break;
+			}
+			default :{
+				t1=Double.parseDouble(treshold1);
+			}
+			}
+
+			treshold2=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+			switch(treshold2){
+			case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold 2");
+			hayError=true;
+			break;
+			}
+			default :{
+				t2=Double.parseDouble(treshold2);
+			}
+			}
+			//fin treshold
+			//-------------------------------------------------------------------------------------------	
+
+
+			//nº iterations
+			it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
+			switch(it){
+			case "":{ 
+				JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
+				hayError=true;
+				break;
+			}
+			default :{
+				iteraciones=Integer.parseInt(it);
+			}
+			}
+
+
+			//fin nº iterations
+			//-------------------------------------------------------------------------------------------	
+
+			//Data model
+
+
+			//fin Data model
+			//-------------------------------------------------------------------------------------------	
+
+			//construimos el cluster CANOPY
+			CanopyClusterer cluster = null;
+			if (!hayError) 
+			{
+				cluster = new CanopyClusterer(d,t1,t2);
+			}
+
+
+			if (cluster != null) {
+				constructCluster(false);
+				MainGUI.writeResult("OK building the clusters :Algorithm "+ algoritmo +" Distance  "+ d +" Treshold "+ treshold1 +" Iterations "+it , Constants.Log.INFO);
+				//TODO escribir los datos del cluster en un doc	
+			}	
+
+			else 					
+				MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+		}
+		//fin CANOPY
+		//--------------------------------------------------------------------------------------------
+		else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.KMEANS)){
+			//nº clusters
+			if (!esCanopy)	{
+				numberClusters=MainClusterPanel.getNumberClusterPanel().getCampoNum().getText();
+				switch(numberClusters){
+				case "":{ 
+					JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+					hayError=true;
+					break;
+				}
+				default :{
+					numero=Integer.parseInt(numberClusters);
+				}
+				}
+			}
+
+			//fin nº clusters
+
+			treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+			switch(treshold1){
+			case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+			hayError=true;
+			break;
+			}
+			default :{
+				t1=Double.parseDouble(treshold1);
+			}
+			}
+			//nº iterations
+			it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
+			switch(it){
+			case "":{ 
+				JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
+				hayError=true;
+				break;
+			}
+			default :{
+				iteraciones=Integer.parseInt(it);
+			}
+			}
+
+
+			//fin nº iterations
+
+			Kluster kluster = new Kluster();
+
+			if (kluster != null) {
+				Path output = new Path("output");
+				conf = new Configuration();
+				try {
+					fs = FileSystem.get(conf);
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+
+				constructCluster(true);
+
+			}	
+
+			else 					
+				MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+		}
+		//if user choose Fuzzy K-Means
+		else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.FUZZYKMEANS)){
+			//nº clusters
+			if (!esCanopy)	{
+				numberClusters=MainClusterPanel.getNumberClusterPanel().getCampoNum().getText();
+				switch(numberClusters){
+				case "":{ 
+					JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+					hayError=true;
+					break;
+				}
+				default :{
+					numero=Integer.parseInt(numberClusters);
+				}
+				}
+			}
+
+			//fin nº clusters
+
+			treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+			switch(treshold1){
+			case "":{ JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+			hayError=true;
+			break;
+			}
+			default :{
+				t1=Double.parseDouble(treshold1);
+			}
+			}
+			//nº iterations
+			it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
+			switch(it){
+			case "":{ 
+				JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
+				hayError=true;
+				break;
+			}
+			default :{
+				iteraciones=Integer.parseInt(it);
+			}
+			}
+
+
+			//fin nº iterations
+
+			Kluster kluster = new Kluster();
+
+			if (kluster != null) {
+				Path output = new Path("output");
+				conf = new Configuration();
+				try {
+					fs = FileSystem.get(conf);
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+
+				constructCluster(false);
+
+			}	
+
+			else 					
+				MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+		}
+		// fin Fuzzy K-Means
+		else if (hadoop){
+
+			treshold1=MainClusterPanel.getTresholdClusterPanel().getCampoNum().getText();
+			switch(treshold1){
+			case "":{ 
+				JOptionPane.showMessageDialog(null, "You haven't introduced a value for Treshold ");
+				hayError=true;
+				break;
+			}
+			default :{
+				t1=Double.parseDouble(treshold1);
+			}
+			}
+			//nº iterations
+			it=MainClusterPanel.getMaxIterationsPanel().getCampoNum().getText();
+			switch(it){
+			case "":{ 
+				JOptionPane.showMessageDialog(null, "You haven't introduced a value for Max Iterations!");
+				hayError=true;
+				break;
+			}
+			default :{
+				iteraciones=Integer.parseInt(it);
+			}
+			}
+
+			constructCluster(false);
+		}
+
+		else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.USER_DEFINED)){
+			Double treshold1=0.1;
+			Double treshold2=0.2;
+			CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
+
+			if (cluster != null) {MainGUI.writeResult("OK building the clusters USER_Defined", Constants.Log.INFO);}	
+
+			else 					
+				MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+		}
+
+		return null;
+	}
+
+
 	public static void writeResult(){
 		SequenceFile.Reader reader2=null;
+		if (hadoop){
 		try {
 			reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		}
+		else {
+			try {
+				reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		IntWritable key2 = new IntWritable();
 		WeightedVectorWritable value2 = new WeightedVectorWritable();
@@ -440,18 +452,19 @@ public class ClusterBuilder {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void constructCluster(boolean kmeans){
 		ArrayList<Object> parametrosFuzzy= new ArrayList<Object>();
 		ArrayList<Object> parametrosCanopy= new ArrayList<Object>();
 		ArrayList<Object> parametrosKMEANS= new ArrayList<Object>();
 		List<Vector> vectors = getPoints(points);
-		File testData = new File("testdata");
+		testData = new File("testdata");
 		if (!testData.exists()) {
 			testData.mkdir();
 		}
 		System.out.println("hola");
 		testData = new File("testdata/points");
+		
 		if (!testData.exists()) {
 			testData.mkdir();
 			Configuration conf = new Configuration();
@@ -468,9 +481,14 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			Path path = new Path("testdata/clusters/part-00000");
-			
+//hadoop?
+			Path path=new Path("help");
+			if (!hadoop){
+			 path = new Path("testdata/clusters/part-00000");
+			}
+			else {
+				 path = new Path("testdata"+File.separatorChar+"clusters"+File.separatorChar+"part-m-0");
+			}
 			SequenceFile.Writer writer = null;
 			try {
 				writer = new SequenceFile.Writer(fs, conf, path, Text.class, Kluster.class);
@@ -478,14 +496,29 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			for (int i = 0; i < 2; i++) {
-				Vector vec = vectors.get(i);
-				Kluster cluster = new Kluster(vec, i, d);
-				try {
-					writer.append(new Text(cluster.getIdentifier()), cluster);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			//¿hadoop?
+			if (!hadoop){
+				for (int i = 0; i < numero; i++) {
+					Vector vec = vectors.get(i);
+					Kluster cluster = new Kluster(vec, i, d);
+					try {
+						writer.append(new Text(cluster.getIdentifier()), cluster);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < 5; i++) {
+					Vector vec = vectors.get(i);
+					Kluster cluster = new Kluster(vec, i, d);
+					try {
+						writer.append(new Text(cluster.getIdentifier()), cluster);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 			try {
@@ -494,7 +527,7 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			SequenceFile.Reader reader = null;
 			try {
 				reader = new SequenceFile.Reader(fs, path, conf);
@@ -528,13 +561,13 @@ public class ClusterBuilder {
 			}
 
 			try {
-			
+
 				/*run(Configuration conf, Path input, Path clustersIn, Path output, DistanceMeasure measure,
 			      double convergenceDelta, int maxIterations, boolean runClustering, double clusterClassificationThreshold,
 			      boolean runSequential)*/
 				if (kmeans || hadoop){
 					KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
-					
+
 					parametrosKMEANS.add(conf);
 					parametrosKMEANS.add(new Path("testdata/points"));
 					parametrosKMEANS.add(new Path("testdata/clusters"));
@@ -549,9 +582,9 @@ public class ClusterBuilder {
 				}
 				else if (esCanopy){
 					CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
-					
+
 					//-------------CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
-					
+
 					parametrosCanopy.add(conf);
 					parametrosCanopy.add(new Path("testdata/points"));
 					parametrosCanopy.add(output);
@@ -565,16 +598,16 @@ public class ClusterBuilder {
 				}
 				else {
 					//FuzzyKMeansDriver.run(conf, input, clustersIn, output, measure, convergenceDelta, maxIterations, m, runClustering, emitMostLikely, threshold, runSequential/notHadoop)
-					
+
 					boolean emitMostLikely=AlgorithmClusterPanel.getEmitMostLikely().isSelected();
 					String s=AlgorithmClusterPanel.getFuzzyFactor().getText();
 					float fuzzyFactor=Float.parseFloat(s);
 					FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);
-					
+
 					//--------
 					/*FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d,
 					 *  t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);*/
-					
+
 					parametrosFuzzy.add(conf);
 					parametrosFuzzy.add(new Path("testdata/points"));
 					parametrosFuzzy.add(new Path("testdata/clusters"));
@@ -600,7 +633,7 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
+
 			try {
 				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayGraphicKMeans.main(parametrosKMEANS);
 				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayGraphicCanopy.main(parametrosCanopy);
@@ -611,11 +644,21 @@ public class ClusterBuilder {
 			}
 			// write result
 			SequenceFile.Reader reader2 = null;
+			if (hadoop){
 			try {
-				reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
+				reader2 = new SequenceFile.Reader(fs, new Path("output" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-00000"), conf);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			}
+			}
+			else {
+				try {
+					reader2 = new SequenceFile.Reader(fs, new Path("output" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-0"), conf);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			IntWritable key2 = new IntWritable();
 			WeightedVectorWritable value2 = new WeightedVectorWritable();
@@ -633,9 +676,11 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
+		
 	}
-	
+
 	public static void writePointsToFile(List<Vector> points, String fileName, FileSystem fs, Configuration conf) throws IOException {
 		Path path = new Path(fileName);
 		SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, LongWritable.class, VectorWritable.class);
@@ -667,7 +712,15 @@ public class ClusterBuilder {
 		}
 		return points;
 	}
-	
+
+	public static File getTestData() {
+		return testData.getParentFile();
+	}
+
+	public static void setTestData(File testData) {
+		ClusterBuilder.testData = testData;
+	}
+
 }
-		
-	
+
+
