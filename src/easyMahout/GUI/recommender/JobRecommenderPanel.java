@@ -208,12 +208,35 @@ public class JobRecommenderPanel extends JPanel {
 							e2.printStackTrace();
 						}
 					}
-				} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY)) {
-					// TODO
+				 else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
+					StringBuilder textBuilder = new StringBuilder();
+					textBuilder.append("#!/bin/bash")
+							.append("\n\n")
+							.append("MAHOUT=\"../../bin/mahout\"")
+							.append("\n\n")
+							.append("$MAHOUT FACTORIZERRRRRRRRRR")
+							.append("\n\t")
+							.append(args[0] + " " + args[1])
+							.append("\n\t")
+							.append(args[2] + " " + args[3])
+							.append("\n\t")
+							.append(args[4] + " " + args[5])
+							.append("\n\t")
+							.append(args[6] + " " + args[7])
+							.append("\n\t")
+							.append(args[8] + " " + args[9])
+							.append("\n\t")
+							.append(args[10] + " " + args[11])
+							.append("\n\t")
+							.append(args[12] + " " + args[13])
+							.append("\n\t")
+							.append(args[14] + " " + args[15]);
+
+					shellTextPane.setText(textBuilder.toString());
 				} else {
 					// TODO
 				}
-			}
+			}}
 		});
 
 	}
