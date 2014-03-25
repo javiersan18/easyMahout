@@ -49,8 +49,7 @@ public class JobRecommenderPanel extends JPanel {
 
 	public JobRecommenderPanel() {
 		setVisible(false);
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Run Hadoop Job", TitledBorder.CENTER, TitledBorder.TOP,
-				null, null));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Run Hadoop Job", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
@@ -84,40 +83,42 @@ public class JobRecommenderPanel extends JPanel {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				String[] args = { "a", "b" };
+				// String[] args = { "a", "b" };
 
-				try {
-					ToolRunner.run(new RecommenderJob(), args);
-
-					// ToolRunner.run(new
-					// org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(),
-					// args);
-					// ToolRunner.run(new
-					// org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob(),
-					// args);
-
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				// try {
+				// ToolRunner.run(new RecommenderJob(), args);
+				//
+				// ToolRunner.run(new
+				// org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(),
+				// args);
+				// ToolRunner.run(new
+				// org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob(),
+				// args);
+				//
+				// } catch (Exception e1) {
+				// // TODO Auto-generated catch block
+				// e1.printStackTrace();
+				// }
 				log.info("run");
 				// args = JobBuilder.buildRecommenderJob();
-				// String[] args = JobBuilder.buildRecommenderJob();
+				String[] args = JobBuilder.buildRecommenderJob();
 				if (args != null) {
 					if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
 						try {
 							// cause exception (not hadoop started yet)
-							// ToolRunner.run(new ItemSimilarityJob(), args);
+							ToolRunner.run(new ItemSimilarityJob(), args);
 
 						} catch (Exception e2) {
 							// TODO Auto-generated catch block
 							e2.printStackTrace();
 						}
+					} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
+						// TODO
+					} else {
+						// TODO
 					}
-//				} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMSIMILARITY)) {
-//					// TODO
 				} else {
-					// TODO 					
+					log.error("args ==  null");
 				}
 			}
 		});
@@ -155,15 +156,13 @@ public class JobRecommenderPanel extends JPanel {
 						return true;
 					} else {
 						log.error(text + " is out of range");
-						MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).",
-								Constants.Log.ERROR);
+						MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).", Constants.Log.ERROR);
 						tfNumRecommendations.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
 					log.error(text + " is not a number, focus not lost.");
-					MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).",
-							Constants.Log.ERROR);
+					MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).", Constants.Log.ERROR);
 					tfNumRecommendations.setBackground(new Color(240, 128, 128));
 					return false;
 				}
@@ -179,26 +178,11 @@ public class JobRecommenderPanel extends JPanel {
 					if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
 						try {
 							StringBuilder textBuilder = new StringBuilder();
-							textBuilder.append("#!/bin/bash")
-									.append("\n\n")
-									.append("MAHOUT=\"../../bin/mahout\"")
-									.append("\n\n")
-									.append("$MAHOUT recommenditembased")
-									.append("\n\t")
-									.append(args[0] + " " + args[1])
-									.append("\n\t")
-									.append(args[2] + " " + args[3])
-									.append("\n\t")
-									.append(args[4] + " " + args[5])
-									.append("\n\t")
-									.append(args[6] + " " + args[7])
-									.append("\n\t")
-									.append(args[8] + " " + args[9])
-									.append("\n\t")
-									.append(args[10] + " " + args[11])
-									.append("\n\t")
-									.append(args[12] + " " + args[13])
-									.append("\n\t")
+							textBuilder.append("#!/bin/bash").append("\n\n").append("MAHOUT=\"../../bin/mahout\"").append("\n\n")
+									.append("$MAHOUT recommenditembased").append("\n\t").append(args[0] + " " + args[1]).append("\n\t")
+									.append(args[2] + " " + args[3]).append("\n\t").append(args[4] + " " + args[5]).append("\n\t")
+									.append(args[6] + " " + args[7]).append("\n\t").append(args[8] + " " + args[9]).append("\n\t")
+									.append(args[10] + " " + args[11]).append("\n\t").append(args[12] + " " + args[13]).append("\n\t")
 									.append(args[14] + " " + args[15]);
 
 							shellTextPane.setText(textBuilder.toString());
@@ -208,36 +192,22 @@ public class JobRecommenderPanel extends JPanel {
 							e2.printStackTrace();
 						}
 					}
-					
-				 else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
-					StringBuilder textBuilder = new StringBuilder();
-					textBuilder.append("#!/bin/bash")
-							.append("\n\n")
-							.append("MAHOUT=\"../../bin/mahout\"")
-							.append("\n\n")
-							.append("$MAHOUT FACTORIZERRRRRRRRRR")
-							.append("\n\t")
-							.append(args[0] + " " + args[1])
-							.append("\n\t")
-							.append(args[2] + " " + args[3])
-							.append("\n\t")
-							.append(args[4] + " " + args[5])
-							.append("\n\t")
-							.append(args[6] + " " + args[7])
-							.append("\n\t")
-							.append(args[8] + " " + args[9])
-							.append("\n\t")
-							.append(args[10] + " " + args[11])
-							.append("\n\t")
-							.append(args[12] + " " + args[13])
-							.append("\n\t")
-							.append(args[14] + " " + args[15]);
 
-					shellTextPane.setText(textBuilder.toString());
-				} else {
-					// TODO
+					else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
+						StringBuilder textBuilder = new StringBuilder();
+						textBuilder.append("#!/bin/bash").append("\n\n").append("MAHOUT=\"../../bin/mahout\"").append("\n\n")
+								.append("$MAHOUT FACTORIZERRRRRRRRRR").append("\n\t").append(args[0] + " " + args[1]).append("\n\t")
+								.append(args[2] + " " + args[3]).append("\n\t").append(args[4] + " " + args[5]).append("\n\t")
+								.append(args[6] + " " + args[7]).append("\n\t").append(args[8] + " " + args[9]).append("\n\t")
+								.append(args[10] + " " + args[11]).append("\n\t").append(args[12] + " " + args[13]).append("\n\t")
+								.append(args[14] + " " + args[15]);
+
+						shellTextPane.setText(textBuilder.toString());
+					} else {
+						// TODO
+					}
 				}
-			}}
+			}
 		});
 
 	}
