@@ -208,6 +208,7 @@ public class JobRecommenderPanel extends JPanel {
 							e2.printStackTrace();
 						}
 					}
+					
 				 else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
 					StringBuilder textBuilder = new StringBuilder();
 					textBuilder.append("#!/bin/bash")
