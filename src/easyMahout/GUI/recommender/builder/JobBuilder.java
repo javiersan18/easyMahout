@@ -92,7 +92,7 @@ public class JobBuilder {
 			String implicitFeedback;
 			String alpha = null;
 
-			if (FactorizerRecommenderPanel.getSelectedFunction().equals(Constants.RecommFactorizer.ALSWR)) {
+			if (FactorizerRecommenderPanel.getSelectedFunction().equals(Constants.RecommFactorizer.ALSWR_SHORT)) {
 				numFeatures = ALSWRFactorizerInputDialog.getNoFeaturesArg();
 				numIterations = ALSWRFactorizerInputDialog.getNoIterationsArg();
 				lambda = ALSWRFactorizerInputDialog.getLambdaArg();
@@ -117,6 +117,7 @@ public class JobBuilder {
 				return null;
 			} else {
 				
+				
 				int p = 0;
 				args[p] = "--input";
 				args[++p] = inputPath;
@@ -137,7 +138,7 @@ public class JobBuilder {
 				args[++p] = "--alpha";
 				args[++p] = StringUtils.isBlank(alpha) ? String.valueOf(40) : alpha;
 
-				for (int i = 0; i < ARGS_FACTORIZEDBASED_SIZE; i++) {
+				for (int i = 0; i < ARGS_FACTORIZEDBASED_SIZE-2; i++) {
 					log.info(args[i].toString());
 				}
 				return args;
