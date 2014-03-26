@@ -43,7 +43,7 @@ public class MainClassifierPanel extends JPanel {
 
 	private JPanel panelClassifier;
 
-	private JPanel treePanel;
+	private JPanel treePanel; 
 
 	private JPanel p1, p2, p3, p4;
 	
