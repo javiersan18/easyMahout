@@ -3,11 +3,16 @@ package easyMahout.GUI.clustering.builder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+
 
 import javax.swing.JOptionPane;
 
 
+import org.apache.avro.mapred.Pair;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -16,6 +21,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
@@ -43,9 +49,13 @@ import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
+import org.apache.mahout.math.NamedVector;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
+import org.apache.mahout.vectorizer.DictionaryVectorizer;
+import org.apache.mahout.vectorizer.DocumentProcessor;
+import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
 
 import MahoutInAction.Clustering.Clustering72;
 
@@ -97,35 +107,7 @@ public class ClusterBuilder {
 
 	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
 
-	public static void transformData(){
-		//This method will take the data model from the input dialog and transform it to a vector of vectors using the Vectorizer class.
-		DataModel dataModel=DataModelClusterPanel.getDataModel();
-		/*try {
-			int features=dataModel.getNumItems();
-			if (features>0) log.assertLog(true, "modelo datos "+features);
-		} catch (TasteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		 */
-		if (dataModel != null) {
-			int features;
-			try {
-				features = dataModel.getNumItems();
-				if (features>0) log.assertLog(true, "modelo datos "+features);
-			} catch (TasteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} else {
-			log.error("Trying to run a cluster without datamodel loaded");
-			MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
-		}
-
-
-	}
-
+	
 	public static Cluster buildCluster() throws ClassNotFoundException, InterruptedException, IOException {
 
 		hayError=false;

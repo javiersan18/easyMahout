@@ -47,14 +47,22 @@ import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
 
+import com.jidesoft.swing.FolderChooser;
+
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.clustering.builder.ClusterBuilder;
+import easyMahout.GUI.clustering.builder.CreateSequenceFile;
+import easyMahout.GUI.clustering.builder.ReadSequenceFile;
+import easyMahout.GUI.recommender.EvaluatorRecommenderPanel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.GUI.recommender.builder.RecommenderBuilder;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClusterTips;
+import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
+import easyMahout.utils.listeners.TextFieldChangeListener;
 
 import java.awt.ComponentOrientation;
 
@@ -67,34 +75,45 @@ public class DataModelClusterPanel extends JPanel {
 
 	private DefaultComboBoxModel booleanModels, restModels;
 
-	private JComboBox comboBoxDatamodel;
+	private static JComboBox comboBoxDatamodel;
+
+	private static JTextField textInputPath;
+
+	private static JTextField tfDelimiter;
+
+	private static JTextField textOutputPath;
+
+	private JLabel lblDelimiter;
+
+	private JLabel lblInputDataSource;
+
+	private JLabel lblOutputDataSource;
+
+	private JButton btnSelectInput;
+
+	private JButton btnSelectOutput;
+
+	private JButton btnCreate;
+
+	private final JButton btnHelp;
+
+	private static JCheckBox chckbxBooleanPreferences;
+
+	private static DataModel dataModel;
+
+	private HelpTooltip helpTooltip;
 
 	private final static Logger log = Logger.getLogger(DataModelClusterPanel.class);
 
-	private JTextField textPath, tfDelimiter;
-	
-	private HelpTooltip helpTooltip;
-
-	private JLabel lblDelimiter, lblDataSource;
-
-	private JButton btnSelect;
-	
-	private JButton btnRun;
-
-	private JCheckBox chckbxBooleanPreferences;
-
-	private static DataModel dataModel;
-	
-	
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataModelClusterPanel() {
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Data Model", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Data Model", TitledBorder.CENTER, TitledBorder.TOP, null,
+				null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 
 		comboBoxDatamodel = new JComboBox();
+		comboBoxDatamodel.addItemListener(new ItemChangeListener());
 		booleanModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC_BOOLEAN });
 		restModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.FILE, Constants.DataModel.GENERIC,
 				Constants.DataModel.EXTENDED, Constants.DataModel.CASSANDRA, Constants.DataModel.HBASE, Constants.DataModel.KDDCUP,
@@ -102,37 +121,25 @@ public class DataModelClusterPanel extends JPanel {
 		comboBoxDatamodel.setModel(restModels);
 		comboBoxDatamodel.setBounds(38, 68, 216, 20);
 		add(comboBoxDatamodel);
-		
-		
-		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
-		btnHelp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnHelp.setPreferredSize(new Dimension(65, 40));
-		btnHelp.setBounds(10, 358, 40, 40);
-		add(btnHelp);
 
-		// Help Tip
-		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_DATAMODEL);
-		add(helpTooltip);
-		
 		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
+		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
 
-		lblDataSource = new JLabel("Data source:");
-		lblDataSource.setBounds(38, 105, 89, 14);
-		add(lblDataSource);
+		lblInputDataSource = new JLabel("Input data source:");
+		lblInputDataSource.setBounds(38, 105, 107, 14);
+		add(lblInputDataSource);
 
-		textPath = new JTextField();
-		textPath.setBounds(38, 131, 401, 20);
-		add(textPath);
-		textPath.setColumns(10);
+		textInputPath = new JTextField();
+		textInputPath.setBounds(38, 130, 401, 20);
+		add(textInputPath);
+		textInputPath.setColumns(10);
+		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		btnSelect = new JButton("Select File...");
-		btnSelect.setBounds(130, 165, 107, 23);
-		add(btnSelect);
+		btnSelectInput = new JButton("Select File...");
+		btnSelectInput.setBounds(130, 165, 107, 23);
+		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
 		lblDelimiter.setBounds(274, 71, 68, 14);
@@ -146,90 +153,122 @@ public class DataModelClusterPanel extends JPanel {
 		tfDelimiter.setColumns(10);
 		tfDelimiter.setText(",");
 		tfDelimiter.setEnabled(false);
+		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		JButton btnCreate = new JButton("Create Model");
+		btnCreate = new JButton("Create Model");
 		btnCreate.setBounds(241, 165, 107, 23);
 		add(btnCreate);
-		
-		btnRun = new JButton("Run Clustering");
-		btnRun.setVisible(true);
-		btnRun.setBounds(320, 380, 107, 23);
-		add(btnRun);
 
-		btnSelect.addActionListener(new ActionListener() {
+		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser selectedFile = new JFileChooser();
-				int i = selectedFile.showOpenDialog(DataModelClusterPanel.this);
-				if (i == JFileChooser.APPROVE_OPTION) {
-					File data = selectedFile.getSelectedFile();
-					String absPath = data.getAbsolutePath();
-					textPath.setText(absPath);
-				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error openig the file", Constants.Log.ERROR);
-					log.error("Error opening data file");
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
+		add(helpTooltip);
+
+		lblOutputDataSource = new JLabel("Output data source (Optional):");
+		lblOutputDataSource.setBounds(38, 206, 157, 14);
+		add(lblOutputDataSource);
+
+		textOutputPath = new JTextField();
+		textOutputPath.setColumns(10);
+		textOutputPath.setBounds(38, 230, 401, 20);
+		add(textOutputPath);
+		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
+
+		btnSelectOutput = new JButton("Select File...");
+		btnSelectOutput.setBounds(182, 265, 107, 23);
+		add(btnSelectOutput);
+
+		btnSelectInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (MainGUI.isDistributed()) {
+					FolderChooser chooser = new FolderChooser();
+					int returnVal = chooser.showOpenDialog(DataModelClusterPanel.this);
+					if (returnVal == FolderChooser.APPROVE_OPTION) {
+						File data = chooser.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textInputPath.setText(absPath);
+					} else if (returnVal == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
+						log.error("Error searching input directory");
+					}
+				} else {
+					JFileChooser selectedFile = new JFileChooser();
+					int i = selectedFile.showOpenDialog(DataModelClusterPanel.this);
+					if (i == JFileChooser.APPROVE_OPTION) {
+						File data = selectedFile.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textInputPath.setText(absPath);
+					} else if (i == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error openig the file.", Constants.Log.ERROR);
+						log.error("Error opening data file");
+					}
 				}
 			}
 		});
-		
+
+		btnSelectOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (MainGUI.isDistributed()) {
+					FolderChooser chooser = new FolderChooser();
+					int returnVal = chooser.showOpenDialog(DataModelClusterPanel.this);
+					if (returnVal == FolderChooser.APPROVE_OPTION) {
+						File data = chooser.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textOutputPath.setText(absPath);
+					} else if (returnVal == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
+						log.error("Error searching input directory");
+					}
+				} else {
+					JFileChooser selectedFile = new JFileChooser();
+					int i = selectedFile.showOpenDialog(DataModelClusterPanel.this);
+					if (i == JFileChooser.APPROVE_OPTION) {
+						File data = selectedFile.getSelectedFile();
+						String absPath = data.getAbsolutePath();
+						textOutputPath.setText(absPath);
+					} else if (i == JFileChooser.ERROR_OPTION) {
+						MainGUI.writeResult("Error searching the file.", Constants.Log.ERROR);
+						log.error("Error searching output data file");
+					}
+				}
+			}
+		});
+
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int selected = comboBoxDatamodel.getSelectedIndex();
-				String filePath = textPath.getText();
+
+				String filePath = textInputPath.getText();//input
+				String output = textOutputPath.getText();
+				String delimiter = tfDelimiter.getText(); //delimiter
+
+				tfDelimiter.setBackground(Color.WHITE);
+
+				CreateSequenceFile.convert(filePath, output, delimiter);
+				ReadSequenceFile.readSequenceFile(output,output+".csv" );
 				try {
-					// TODO: distintos tipos de modelos...
-					switch (selected) {
-						case 0:
-							setDataModel(new FileDataModel(new File(filePath)));							
-							MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-							break;
-						case 1:
-							setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(filePath)))));							
-							MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-							break;
-						case 2:
-							String delimiter = tfDelimiter.getText();
-							if (StringUtils.isBlank(delimiter)) {
-								tfDelimiter.setBackground(new Color(240, 128, 128));
-								log.error("Delimiter for ExtendedDataModel is empty.");
-								MainGUI.writeResult("Delimiter for Extended Data Model is empty.", Constants.Log.ERROR);
-							} else {
-								tfDelimiter.setBackground(Color.WHITE);
-								setDataModel(new ExtendedDataModel(new File(filePath), tfDelimiter.getText()));								
-								MainGUI.writeResult("Data Model successfully created from file", Constants.Log.INFO);
-							}
-							break;
-						case 3:
-							// dataModel = new CassandraDataModel(new
-							// File(absPath));
-							break;
-						case 4:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						case 5:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						case 6:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						case 7:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						default:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-					}
-					// TODO: revisar errores de excepciones mostrados en
-					// consola
-				} catch (IllegalArgumentException e1) {
-					MainGUI.writeResult("Error reading data file: " + e1.getMessage(), Constants.Log.ERROR);
-					log.error("Error reading data file", e1);
-				} catch (Exception e1) {
-					MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
-					log.error("Error reading data file", e1);
+					ClusterBuilder.buildCluster();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 
-			}
-		});
+
+
+			}});
 
 		chckbxBooleanPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -238,8 +277,10 @@ public class DataModelClusterPanel extends JPanel {
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
 					log.info("boolean");
+					EvaluatorRecommenderPanel.setBooleanPreferences(true);
 				} else {
 					comboBoxDatamodel.setModel(restModels);
+					EvaluatorRecommenderPanel.setBooleanPreferences(false);
 					log.info("rest");
 				}
 
@@ -260,41 +301,90 @@ public class DataModelClusterPanel extends JPanel {
 
 			}
 		});
-		
-		btnRun.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					ClusterBuilder.transformData();
-					ClusterBuilder.buildCluster();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
 
 	}
-	
-	
-	
+
+	public HelpTooltip getHelpTooltip() {
+		return helpTooltip;
+	}
 
 	public static DataModel getDataModel() {
 		return dataModel;
 	}
 
 	public void setDataModel(DataModel dataModel) {
-		this.dataModel = dataModel;
+		DataModelClusterPanel.dataModel = dataModel;
 	}
-	
-	public HelpTooltip getHelpTooltip() {
-		return helpTooltip;
+
+	public void setDistributed(boolean distributed) {
+
+		if (distributed) {
+			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
+			lblOutputDataSource.setText("Output directory:");
+			lblInputDataSource.setText("Input directory:");
+			btnSelectOutput.setText("Select Folder...");
+			btnSelectInput.setText("Select Folder...");
+		} else {
+			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);
+			lblOutputDataSource.setText("Output data file (Optional):");
+			lblInputDataSource.setText("Input data source:");
+			btnSelectOutput.setText("Select File...");
+			btnSelectInput.setText("Select File...");
+		}
+
+		comboBoxDatamodel.setEnabled(!distributed);
+		btnCreate.setEnabled(!distributed);
 	}
-	
-	
+
+	public static String getInputPath() {
+		if (StringUtils.isNotBlank(textInputPath.getText())) {
+			return textInputPath.getText();
+		} else {
+			return "  ";
+		}
+	}
+
+	public static String getOutputPath() {
+		if (StringUtils.isNotBlank(textOutputPath.getText())) {
+			return textOutputPath.getText();
+		} else {
+			return "  ";
+		}
+	}
+
+	public static String getBooleanPrefs() {
+		return String.valueOf(chckbxBooleanPreferences.isSelected());
+	}
+
+	public static String getSelectedDataModel() {
+		return (String) comboBoxDatamodel.getSelectedItem();
+	}
+
+	public static String getDelimiter() {
+		if (StringUtils.isNotBlank(tfDelimiter.getText())) {
+			return tfDelimiter.getText();
+		} else {
+			return "  ";
+		}
+	}
+
+	public static void setBooleanPrefs(boolean selected) {
+		chckbxBooleanPreferences.setSelected(selected);
+	}
+
+	public static void setSelectedModel(String model) {
+		comboBoxDatamodel.setSelectedItem(model);
+	}
+
+	public static void setDelimiter(String delimiter) {
+		tfDelimiter.setText(delimiter);
+	}
+
+	public static void setInputPath(String inputPath) {
+		textInputPath.setText(inputPath);
+	}
+
+	public static void setOutputPath(String outputPath) {
+		textOutputPath.setText(outputPath);
+	}
 }
