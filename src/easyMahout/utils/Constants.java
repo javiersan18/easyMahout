@@ -268,7 +268,7 @@ public class Constants {
 
 		public static final String CLUSTERING = "saves/clustering/";
 
-		public static final String CLASSIFICATION = "saves/classification/";
+		public static final String CLASSIFIER = "saves/classifier/";
 
 		public static final String EXTENSION = ".xml";
 
