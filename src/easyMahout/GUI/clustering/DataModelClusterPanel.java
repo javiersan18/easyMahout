@@ -100,6 +100,8 @@ public class DataModelClusterPanel extends JPanel {
 	private static JCheckBox chckbxBooleanPreferences;
 
 	private static DataModel dataModel;
+	
+	private static String outputFormatted;
 
 	private HelpTooltip helpTooltip;
 
@@ -248,13 +250,15 @@ public class DataModelClusterPanel extends JPanel {
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
 				String delimiter = tfDelimiter.getText(); //delimiter
+				outputFormatted = output+".csv";
 
 				tfDelimiter.setBackground(Color.WHITE);
 
 				CreateSequenceFile.convert(filePath, output, delimiter);
-				ReadSequenceFile.readSequenceFile(output,output+".csv" );
+				ReadSequenceFile.readSequenceFile(output,outputFormatted);
 				try {
 					ClusterBuilder.buildCluster();
+					
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -387,4 +391,13 @@ public class DataModelClusterPanel extends JPanel {
 	public static void setOutputPath(String outputPath) {
 		textOutputPath.setText(outputPath);
 	}
+
+	public static String getOutputFormatted() {
+		return outputFormatted;
+	}
+
+	public static void setOutputFormatted(String outputFormatted) {
+		DataModelClusterPanel.outputFormatted = outputFormatted;
+	}
+	
 }

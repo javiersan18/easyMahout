@@ -41,6 +41,7 @@ import org.apache.mahout.clustering.fuzzykmeans.FuzzyKMeansDriver;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
 import org.apache.mahout.common.HadoopUtil;
+import org.apache.mahout.common.RandomUtils;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
 import org.apache.mahout.common.distance.DistanceMeasure;
 import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
@@ -202,7 +203,7 @@ public class ClusterBuilder {
 			//fin nº iterations
 			//-------------------------------------------------------------------------------------------	
 
-			//Data model
+			//Data model outputFormatted
 
 
 			//fin Data model
@@ -439,7 +440,7 @@ public class ClusterBuilder {
 		ArrayList<Object> parametrosFuzzy= new ArrayList<Object>();
 		ArrayList<Object> parametrosCanopy= new ArrayList<Object>();
 		ArrayList<Object> parametrosKMEANS= new ArrayList<Object>();
-		List<Vector> vectors = getPoints(points);
+		List<Vector> vectors =  CreateSequenceFile.getVectors();
 		testData = new File("testdata");
 		if (!testData.exists()) {
 			testData.mkdir();
@@ -492,7 +493,7 @@ public class ClusterBuilder {
 				}
 			}
 			else {
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < numero; i++) {
 					Vector vec = vectors.get(i);
 					Kluster cluster = new Kluster(vec, i, d);
 					try {
@@ -548,10 +549,13 @@ public class ClusterBuilder {
 			      double convergenceDelta, int maxIterations, boolean runClustering, double clusterClassificationThreshold,
 			      boolean runSequential)*/
 				if (kmeans || hadoop){
-					KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
-
+					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
+					
+					//KMeansDriver.run(conf,pointsPath , new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
+					DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
+					//KMeansDriver.run(pointsPath, new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
 					parametrosKMEANS.add(conf);
-					parametrosKMEANS.add(new Path("testdata/points"));
+					parametrosKMEANS.add(pointsPath);
 					parametrosKMEANS.add(new Path("testdata/clusters"));
 					parametrosKMEANS.add(output);
 					parametrosKMEANS.add(d);
@@ -563,12 +567,13 @@ public class ClusterBuilder {
 					parametrosKMEANS.add(numero);
 				}
 				else if (esCanopy){
-					CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
+					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
+					CanopyDriver.run(conf,pointsPath , output, d, t1, t2, true, t1, !hadoop);
 
 					//-------------CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
 
 					parametrosCanopy.add(conf);
-					parametrosCanopy.add(new Path("testdata/points"));
+					parametrosCanopy.add(pointsPath);
 					parametrosCanopy.add(output);
 					parametrosCanopy.add(d);
 					parametrosCanopy.add(t1);
@@ -580,18 +585,19 @@ public class ClusterBuilder {
 				}
 				else {
 					//FuzzyKMeansDriver.run(conf, input, clustersIn, output, measure, convergenceDelta, maxIterations, m, runClustering, emitMostLikely, threshold, runSequential/notHadoop)
-
+					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
 					boolean emitMostLikely=AlgorithmClusterPanel.getEmitMostLikely().isSelected();
 					String s=AlgorithmClusterPanel.getFuzzyFactor().getText();
 					float fuzzyFactor=Float.parseFloat(s);
-					FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d, t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);
-
-					//--------
+					//FuzzyKMeansDriver.run(conf, pointsPath, new Path("testdata/clusters"), output, d, t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);
+					 DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
+					 new DisplayGraphicFuzzy();
+					 //--------
 					/*FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d,
 					 *  t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);*/
 
 					parametrosFuzzy.add(conf);
-					parametrosFuzzy.add(new Path("testdata/points"));
+					parametrosFuzzy.add(pointsPath);
 					parametrosFuzzy.add(new Path("testdata/clusters"));
 					parametrosFuzzy.add(output);
 					parametrosFuzzy.add(d);
@@ -603,6 +609,8 @@ public class ClusterBuilder {
 					parametrosFuzzy.add(t1);
 					parametrosFuzzy.add(!hadoop);
 					parametrosKMEANS.add(numero);
+					
+				     
 					//--------
 				}
 			} catch (ClassNotFoundException e) {
@@ -616,14 +624,7 @@ public class ClusterBuilder {
 				e.printStackTrace();
 			}
 
-			try {
-				if (algoritmo.equals(Constants.ClusterAlg.KMEANS))	DisplayGraphicKMeans.main(parametrosKMEANS);
-				else if (algoritmo.equals(Constants.ClusterAlg.CANOPY)) DisplayGraphicCanopy.main(parametrosCanopy);
-				else if (algoritmo.equals(Constants.ClusterAlg.FUZZYKMEANS)) DisplayGraphicFuzzy.main(parametrosFuzzy);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			// write result
 			SequenceFile.Reader reader2 = null;
 			if (hadoop){
@@ -636,6 +637,7 @@ public class ClusterBuilder {
 			}
 			else {
 				try {
+					
 					reader2 = new SequenceFile.Reader(fs, new Path("output" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-0"), conf);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -663,12 +665,12 @@ public class ClusterBuilder {
 		
 	}
 
-	public static void writePointsToFile(List<Vector> points, String fileName, FileSystem fs, Configuration conf) throws IOException {
+	public static void writePointsToFile(List<Vector> vectori, String fileName, FileSystem fs, Configuration conf) throws IOException {
 		Path path = new Path(fileName);
 		SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, LongWritable.class, VectorWritable.class);
 		long recNum = 0;
 		VectorWritable vec = new VectorWritable();
-		for (Vector point : points) {
+		for (Vector point : vectori) {
 			vec.set(point);
 			writer.append(new LongWritable(recNum++), vec);
 		}
@@ -684,16 +686,6 @@ public class ClusterBuilder {
 
 	}
 
-	public static ArrayList<Vector> getPoints(double[][] raw) {
-		ArrayList<Vector> points = new ArrayList<Vector>();
-		for (int i = 0; i < raw.length; i++) {
-			double[] fr = raw[i];
-			Vector vec = new RandomAccessSparseVector(fr.length);
-			vec.assign(fr);
-			points.add(vec);
-		}
-		return points;
-	}
 
 	public static File getTestData() {
 		return testData.getParentFile();

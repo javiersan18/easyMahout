@@ -34,15 +34,15 @@ public class DisplayGraphicKMeans extends DisplayCluster {
   
   public static void main(ArrayList<Object> parametrosKMEANS) throws Exception {
     DistanceMeasure measure = (DistanceMeasure) parametrosKMEANS.get(4);
-    Path samples = new Path("samples");//(Path) parametrosKMEANS.get(1);//
+    Path samples = (Path) parametrosKMEANS.get(1);//
     Path output = new Path("output");//(Path) parametrosKMEANS.get(3);//
     Configuration conf = (Configuration) parametrosKMEANS.get(0);
    // HadoopUtil.delete(conf, samples);
     //HadoopUtil.delete(conf, output);
     
     RandomUtils.useTestSeed();
-    generateSamples();
-    writeSampleData(samples);
+    //generateSamples();
+   // writeSampleData(samples);
     boolean runClusterer = (boolean) parametrosKMEANS.get(7);
     double convergenceDelta = (double) parametrosKMEANS.get(5);
     int numClusters = (int) parametrosKMEANS.get(10);;
@@ -75,12 +75,12 @@ public class DisplayGraphicKMeans extends DisplayCluster {
     loadClustersWritable(output,maxIterations);
   }
   
-  private static void runSequentialKMeansClusterer(Configuration conf, Path samples, Path output,
+  public static void runSequentialKMeansClusterer(Configuration conf, Path samples, Path output,
     DistanceMeasure measure, int numClusters, int maxIterations, double convergenceDelta)
     throws IOException, InterruptedException, ClassNotFoundException {
     Path clustersIn = new Path(output, "random-seeds");
     RandomSeedGenerator.buildRandom(conf, samples, clustersIn, numClusters, measure);
-    KMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, measure,numClusters, maxIterations--, true, convergenceDelta, true);
+    KMeansDriver.run(conf, samples, new Path("testdata/clusters"), output, measure,numClusters, maxIterations--, true, convergenceDelta, true);
     //KMeansDriver.run(samples, clustersIn, output, measure, convergenceDelta, maxIterations, true, 0.0, true);
     loadClustersWritable(output,maxIterations);
   }

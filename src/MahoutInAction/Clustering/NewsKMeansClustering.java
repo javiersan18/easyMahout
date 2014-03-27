@@ -14,57 +14,32 @@ import org.apache.mahout.clustering.kmeans.RandomSeedGenerator;
 import org.apache.mahout.common.HadoopUtil;
 import org.apache.mahout.common.Pair;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
+import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
 import org.apache.mahout.vectorizer.DictionaryVectorizer;
 import org.apache.mahout.vectorizer.DocumentProcessor;
 import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
 
 public class NewsKMeansClustering {
 	
-	/*public static void main(String args[]) throws Exception {
-		int minSupport = 5;
-		int minDf = 5;
-		int maxDFPercent = 99;
-		int maxNGramSize = 1;
-		int minLLRValue = 50;
-		int reduceTasks = 1;
-		Pair<Long[], List<Path>> chunkSize = 200;
-		int norm = -1;
-		boolean sequentialAccessOutput = true;
-		String inputDir = "reuters-seqfiles";
-		File inputDirFile = new File(inputDir);
-		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(conf);
-		String outputDir = "newsClusters";
-		HadoopUtil.delete(conf, new Path(outputDir));
-		Path tokenizedPath = new Path(outputDir,
-				DocumentProcessor.TOKENIZED_DOCUMENT_OUTPUT_FOLDER);
-		MyAnalyzer analyzer = new MyAnalyzer();
-		DocumentProcessor.tokenizeDocuments(
-				new Path(inputDir), analyzer.getClass()
-				.asSubclass(Analyzer.class), tokenizedPath, conf);
-		DictionaryVectorizer.createTermFrequencyVectors(
-				tokenizedPath,
-				new Path(outputDir), conf, minSupport, maxNGramSize,
-				minLLRValue, 2, true, reduceTasks,
-				chunkSize, sequentialAccessOutput, false);
-		TFIDFConverter.processTfIdf(
-				new Path(outputDir,
-						DictionaryVectorizer.DOCUMENT_VECTOR_OUTPUT_FOLDER),
-						new Path(outputDir) , conf, chunkSize,
-						minDf, maxDFPercent, norm, true, sequentialAccessOutput,
-						false, reduceTasks);
-		Path vectorsFolder = new Path(outputDir,
-				"/vectors");
-		Path centroids = new Path(outputDir, "/centroids");
-		Path clusterOutput = new Path(outputDir, "/clusters");
-		RandomSeedGenerator.buildRandom(conf, vectorsFolder, centroids,
-				20, new CosineDistanceMeasure());
-		
-		KMeansDriver.run(conf, vectorsFolder, centroids,
-				clusterOutput, new CosineDistanceMeasure(), 0.01,
-				20, true, norm, false);
-		SequenceFile.Reader reader = new SequenceFile.Reader(fs,
-				new Path(clusterOutput, Cluster.CLUSTERED_POINTS_DIR
-						+ "/points/part-m-00000"), conf);
-	}*/
-}
+	public static void main(String args[]) throws Exception {
+		/*//generate sample dummy vectors
+		generateSamples(sampleData, 400, 1, 1, 3);
+		generateSamples(sampleData, 300, 1, 0, 0.5);
+		generateSamples(sampleData, 300, 0, 2, 0.1);
+		//create the first cluster vectors
+		List<Vector> randomPoints = RandomSeedGenerator.chooseRandomPoints(points, k);
+		List<Cluster> clusters = new ArrayList<Cluster>();
+		// associate the cluster with the random point
+		int clusterId = 0;
+		for (Vector v : randomPoints) {
+			clusters.add(new Cluster(v, clusterId++));
+			}
+			// execute the kmeans cluster
+			List<List<Cluster>> finalClusters = KMeansClusterer.clusterPoints(points, clusters, new EuclideanDistanceMeasure(), 3,0.01);
+			// display final cluster center
+			for(Cluster cluster : finalClusters.get(finalClusters.size() - 1))
+			{
+			System.out.println("Cluster id: " + cluster.getId() + " center:"+ cluster.getCenter().asFormatString());
+			}
+			}*/
+}}

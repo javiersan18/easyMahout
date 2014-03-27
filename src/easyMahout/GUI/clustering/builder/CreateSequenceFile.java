@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.BufferedReader;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -16,16 +19,19 @@ import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
 
 public class CreateSequenceFile {
-
+   static SequenceFile.Writer writer;
+   static List<Vector> vectors;
+   
 	public static void convert(String input, String output, String delimiter) {
 		Configuration conf = new Configuration();
 		FileSystem fs;
+		vectors = new ArrayList<Vector>();
 		try {
 			fs = FileSystem.get(conf);
 			BufferedReader reader;
 			try {
 				reader = new BufferedReader(new FileReader(input));
-				SequenceFile.Writer writer;
+				//SequenceFile.Writer writer;
 				try {
 					writer = new SequenceFile.Writer(fs, conf, new Path(output), LongWritable.class, VectorWritable.class);
 					String line;
@@ -44,6 +50,7 @@ public class CreateSequenceFile {
 							}
 							Vector vec = new RandomAccessSparseVector(c.length);
 							vec.assign(d);
+							vectors.add(vec);
 							VectorWritable writable = new VectorWritable();
 							writable.set(vec);
 							try {
@@ -79,4 +86,14 @@ public class CreateSequenceFile {
 		}
 
 	}
+
+	public static SequenceFile.Writer getWriter() {
+		return writer;
+	}
+
+	public static List<Vector> getVectors() {
+		return vectors;
+	}
+	
+	
 }

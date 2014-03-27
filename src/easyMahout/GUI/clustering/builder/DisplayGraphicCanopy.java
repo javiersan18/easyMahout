@@ -22,7 +22,7 @@ import org.apache.mahout.math.DenseVector;
  * Java desktop graphics class that runs canopy clustering and displays the results.
  * This class generates random data and clusters it.
  */
-public class DisplayGraphicCanopy extends DisplayClustering {
+public class DisplayGraphicCanopy extends DisplayCluster {
  static final Color[] COLORES = { Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta,Color.lightGray };
   DisplayGraphicCanopy() {
     initialize();
@@ -56,7 +56,7 @@ public class DisplayGraphicCanopy extends DisplayClustering {
   }
 
   public static void main(ArrayList<Object> parametrosCanopy) throws Exception {
-    Path samples = new Path("samples");
+    Path samples = (Path) parametrosCanopy.get(1);
     Path output = new Path("output");
     Configuration conf = (Configuration) parametrosCanopy.get(0);
     DistanceMeasure measure=  (DistanceMeasure) parametrosCanopy.get(3);
@@ -64,10 +64,10 @@ public class DisplayGraphicCanopy extends DisplayClustering {
    // HadoopUtil.delete(conf, samples);
    // HadoopUtil.delete(conf, output);
     RandomUtils.useTestSeed();
-    generateSamples();
-    writeSampleData(samples);
+    //generateSamples();
+    //writeSampleData(samples);
     CanopyDriver.buildClusters(conf, samples, output, measure,(double)parametrosCanopy.get(4), (double)parametrosCanopy.get(5),0, (boolean)parametrosCanopy.get(8));
-    loadClustersWritable(output);
+    loadClustersWritable(output,30);
 
     new DisplayGraphicCanopy();
   }

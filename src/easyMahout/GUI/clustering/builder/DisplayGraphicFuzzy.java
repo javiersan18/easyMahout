@@ -64,7 +64,7 @@ public class DisplayGraphicFuzzy extends DisplayCluster {
     new DisplayGraphicFuzzy();
   }
   
-  private static void runSequentialFuzzyKClassifier(Configuration conf, Path samples, Path output,
+  public static void runSequentialFuzzyKClassifier(Configuration conf, Path samples, Path output,
       DistanceMeasure measure, int numClusters, int maxIterations, float m, double threshold) throws IOException {
     Collection<Vector> points = Lists.newArrayList();
     for (int i = 0; i < numClusters; i++) {
@@ -83,12 +83,12 @@ public class DisplayGraphicFuzzy extends DisplayCluster {
     loadClustersWritable(output,maxIterations);
   }
   
-  private static void runSequentialFuzzyKClusterer(Configuration conf, Path samples, Path output,
+  public static void runSequentialFuzzyKClusterer(Configuration conf, Path samples, Path output,
       DistanceMeasure measure, int maxIterations, float m, double threshold) throws IOException,
       ClassNotFoundException, InterruptedException {
     Path clustersIn = new Path(output, "random-seeds");
-    RandomSeedGenerator.buildRandom(conf, samples, clustersIn, maxIterations, measure);
-   FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, measure, m, maxIterations, m, true,  true, threshold, true);
+   // RandomSeedGenerator.buildRandom(conf, samples, clustersIn, maxIterations, measure);
+   FuzzyKMeansDriver.run(conf, samples, new Path("testdata/clusters"), output, measure, m, maxIterations, m, true,  true, threshold, true);
    // FuzzyKMeansDriver.run(samples, clustersIn, output, measure, threshold, maxIterations, m, true, true, threshold,true);
     
     loadClustersWritable(output,maxIterations);
