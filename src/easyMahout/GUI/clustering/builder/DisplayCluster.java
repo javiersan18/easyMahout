@@ -147,6 +147,7 @@ public class DisplayCluster extends Frame {
     // plot the sample data
     g2.setColor(Color.DARK_GRAY);
     dv.assign(0.03);
+   
     for (VectorWritable v : SAMPLE_DATA) {
       plotRectangle(g2, v.get(), dv);
     }

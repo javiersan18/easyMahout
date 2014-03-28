@@ -14,12 +14,17 @@ import javax.swing.JOptionPane;
 
 import org.apache.avro.mapred.Pair;
 import org.apache.hadoop.conf.*;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.mahout.cf.taste.common.TasteException;
@@ -54,8 +59,11 @@ import org.apache.mahout.math.NamedVector;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
+import org.apache.mahout.text.SequenceFilesFromDirectory;
+import org.apache.mahout.utils.SplitInput;
 import org.apache.mahout.vectorizer.DictionaryVectorizer;
 import org.apache.mahout.vectorizer.DocumentProcessor;
+import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
 
 import MahoutInAction.Clustering.Clustering72;
@@ -108,7 +116,11 @@ public class ClusterBuilder {
 
 	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
 
-	
+	private static final String[] KEY_PREFIX_OPTION = null;
+
+	private static final Object[] CHUNK_SIZE_OPTION = null;
+
+
 	public static Cluster buildCluster() throws ClassNotFoundException, InterruptedException, IOException {
 
 		hayError=false;
@@ -201,12 +213,7 @@ public class ClusterBuilder {
 
 
 			//fin nº iterations
-			//-------------------------------------------------------------------------------------------	
 
-			//Data model outputFormatted
-
-
-			//fin Data model
 			//-------------------------------------------------------------------------------------------	
 
 			//construimos el cluster CANOPY
@@ -403,12 +410,12 @@ public class ClusterBuilder {
 	public static void writeResult(){
 		SequenceFile.Reader reader2=null;
 		if (hadoop){
-		try {
-			reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			try {
+				reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else {
 			try {
@@ -440,14 +447,27 @@ public class ClusterBuilder {
 		ArrayList<Object> parametrosFuzzy= new ArrayList<Object>();
 		ArrayList<Object> parametrosCanopy= new ArrayList<Object>();
 		ArrayList<Object> parametrosKMEANS= new ArrayList<Object>();
-		List<Vector> vectors =  CreateSequenceFile.getVectors();
+		List<Vector> vectors;
+		if (isSequential()){
+			vectors =  CreateSequenceFile.getVectors();
+		}
+		else{
+			vectors =null;
+			try {
+				getHadoopJob();
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		testData = new File("testdata");
 		if (!testData.exists()) {
 			testData.mkdir();
 		}
 		System.out.println("hola");
 		testData = new File("testdata/points");
-		
+
 		if (!testData.exists()) {
 			testData.mkdir();
 			Configuration conf = new Configuration();
@@ -464,13 +484,13 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//hadoop?
+			//hadoop?
 			Path path=new Path("help");
 			if (!hadoop){
-			 path = new Path("testdata/clusters/part-00000");
+				path = new Path("testdata/clusters/part-00000");
 			}
 			else {
-				 path = new Path("testdata"+File.separatorChar+"clusters"+File.separatorChar+"part-m-0");
+				path = new Path("testdata"+File.separatorChar+"clusters"+File.separatorChar+"part-m-0");
 			}
 			SequenceFile.Writer writer = null;
 			try {
@@ -544,13 +564,9 @@ public class ClusterBuilder {
 			}
 
 			try {
-
-				/*run(Configuration conf, Path input, Path clustersIn, Path output, DistanceMeasure measure,
-			      double convergenceDelta, int maxIterations, boolean runClustering, double clusterClassificationThreshold,
-			      boolean runSequential)*/
 				if (kmeans || hadoop){
 					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
-					
+
 					//KMeansDriver.run(conf,pointsPath , new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
 					DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
 					//KMeansDriver.run(pointsPath, new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
@@ -565,6 +581,8 @@ public class ClusterBuilder {
 					parametrosKMEANS.add(t1);
 					parametrosKMEANS.add(!hadoop);
 					parametrosKMEANS.add(numero);
+
+
 				}
 				else if (esCanopy){
 					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
@@ -581,6 +599,7 @@ public class ClusterBuilder {
 					parametrosCanopy.add(true);
 					parametrosCanopy.add(t1);
 					parametrosCanopy.add(!hadoop);
+
 					//----------
 				}
 				else {
@@ -590,9 +609,9 @@ public class ClusterBuilder {
 					String s=AlgorithmClusterPanel.getFuzzyFactor().getText();
 					float fuzzyFactor=Float.parseFloat(s);
 					//FuzzyKMeansDriver.run(conf, pointsPath, new Path("testdata/clusters"), output, d, t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);
-					 DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
-					 new DisplayGraphicFuzzy();
-					 //--------
+					DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
+
+					//--------
 					/*FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d,
 					 *  t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);*/
 
@@ -609,8 +628,8 @@ public class ClusterBuilder {
 					parametrosFuzzy.add(t1);
 					parametrosFuzzy.add(!hadoop);
 					parametrosKMEANS.add(numero);
-					
-				     
+
+
 					//--------
 				}
 			} catch (ClassNotFoundException e) {
@@ -624,20 +643,20 @@ public class ClusterBuilder {
 				e.printStackTrace();
 			}
 
-			
+
 			// write result
 			SequenceFile.Reader reader2 = null;
 			if (hadoop){
-			try {
-				reader2 = new SequenceFile.Reader(fs, new Path("output" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-00000"), conf);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+				try {
+					reader2 = new SequenceFile.Reader(fs, new Path("output" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-00000"), conf);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			else {
 				try {
-					
+
 					reader2 = new SequenceFile.Reader(fs, new Path("output" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-0"), conf);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -660,9 +679,9 @@ public class ClusterBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 	}
 
 	public static void writePointsToFile(List<Vector> vectori, String fileName, FileSystem fs, Configuration conf) throws IOException {
@@ -695,6 +714,158 @@ public class ClusterBuilder {
 		ClusterBuilder.testData = testData;
 	}
 
+
+	public static boolean isSequential() {
+		return !hadoop;
+	}
+
+
+	public static void setHadoop(boolean hadoop) {
+		ClusterBuilder.hadoop = hadoop;
+	}
+	public static void getHadoopJob(){
+		
+		int i = 0;
+		String[] args1 = new String[6];
+		args1[i++] = "--input";
+		args1[i++] = DataModelClusterPanel.getInputPath();
+
+		args1[i++] = "--output";
+		args1[i++] = DataModelClusterPanel.getOutputPath();
+
+
+		args1[i++] = "--method";
+		args1[i++] = "sequential";
+
+		try {
+
+			ToolRunner.run(new SequenceFilesFromDirectory(), args1);
+
+			i = 0;
+			String[] args2 = new String[9];
+			args2[i++] = "--input";
+			args2[i++] = DataModelClusterPanel.getOutputPath();
+
+			args2[i++] = "--output";
+			String vec=DataModelClusterPanel.getOutputPath() + System.getProperty("file.separator")+"vectors";
+			args2[i++] = vec;
+
+			args2[i++] = "--overwrite";
+
+			args2[i++] = "--logNormalize";
+			args2[i++] = "--namedVector";
+			args2[i++] = "--weight";
+			args2[i++] = "tfidf";
+
+			ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
+
+			i = 0;
+			String[] args3 = new String[12];
+			args3[i++] = "--input";
+			args3[i++] = vec;
+
+			args3[i++] = "--trainingOutput";
+			args3[i++] = vec + System.getProperty("file.separator")+"trainingOutput";
+
+			args3[i++] = "--testOutput";
+			args3[i++] = vec + System.getProperty("file.separator")+" testOutput";	
+
+			args3[i++] = "--randomSelectionSize";
+			args3[i++] = "20";
+
+
+			args3[i++] = "--overwrite";
+			args3[i++] = "--sequenceFiles";
+
+			args3[i++] = "--method";
+			args3[i++] = "sequential";
+
+			ToolRunner.run(new Configuration(), new SplitInput(), args3);
+			runMapReduce(new Path(vec),new Path(vec+ System.getProperty("file.separator")+"ssss"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private static int runMapReduce(Path input, Path output)
+		    throws IOException, ClassNotFoundException, InterruptedException
+		  {
+		    int chunkSizeInMB = 64;
+		   /* if (hasOption(CHUNK_SIZE_OPTION[0])) {
+		      chunkSizeInMB = Integer.parseInt(getOption(CHUNK_SIZE_OPTION[0]));
+		    }
+		    String keyPrefix = null;
+		    if (hasOption(KEY_PREFIX_OPTION[0])) {
+		      keyPrefix = getOption(KEY_PREFIX_OPTION[0]);
+		    }
+		    Job job = prepareJob(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, SequenceFileOutputFormat.class, "SequenceFilesFromDirectory");
+		   */
+		    Job job=new Job();
+
+		    Configuration jobConfig = job.getConfiguration();
+		    String keyPrefix = null;
+			jobConfig.set(KEY_PREFIX_OPTION[0], keyPrefix);
+		    FileSystem fs = FileSystem.get(jobConfig);
+		    FileStatus fsFileStatus = fs.getFileStatus(input);
+		    String inputDirList = HadoopUtil.buildDirList(fs, fsFileStatus);
+		    jobConfig.set("baseinputpath", input.toString());
+		    
+		    long chunkSizeInBytes = chunkSizeInMB * 1024 * 1024;
+		    
+
+		    jobConfig.set("mapreduce.job.max.split.locations", String.valueOf(1000000));
+		    
+		    FileInputFormat.setInputPaths(job, inputDirList);
+		    
+		    FileInputFormat.setMaxInputSplitSize(job, chunkSizeInBytes);
+		    FileOutputFormat.setCompressOutput(job, true);
+		    
+		    boolean succeeded = job.waitForCompletion(true);
+		    if (!succeeded) {
+		      return -1;
+		    }
+		    return 0;
+		  }
+		
+		/*Usage:                                                                          
+ [--input <input> --output <output> --overwrite --method <method> --chunkSize   
+<chunkSize> --fileFilterClass <fileFilterClass> --keyPrefix <keyPrefix>         
+--charset <charset> --method <method> --overwrite --help --tempDir <tempDir>    
+--startPhase <startPhase> --endPhase <endPhase>]                                
+Job-Specific Options:                                                           
+  --input (-i) input                             Path to job input directory.   
+  --output (-o) output                           The directory pathname for     
+                                                 output.                        
+  --overwrite (-ow)                              If present, overwrite the      
+                                                 output directory before        
+                                                 running job                    
+  --method (-xm) method                          The execution method to use:   
+                                                 sequential or mapreduce.       
+                                                 Default is mapreduce           
+  --chunkSize (-chunk) chunkSize                 The chunkSize in MegaBytes.    
+                                                 Defaults to 64                 
+  --fileFilterClass (-filter) fileFilterClass    The name of the class to use   
+                                                 for file parsing. Default:     
+                                                 org.apache.mahout.text.PrefixAd
+                                                 ditionFilter                   
+  --keyPrefix (-prefix) keyPrefix                The prefix to be prepended to  
+                                                 the key                        
+  --charset (-c) charset                         The name of the character      
+                                                 encoding of the input files.   
+                                                 Default to UTF-8               
+  --method (-xm) method                          The execution method to use:   
+                                                 sequential or mapreduce.       
+                                                 Default is mapreduce           
+  --overwrite (-ow)                              If present, overwrite the      
+                                                 output directory before        
+                                                 running job                    
+  --help (-h)                                    Print out help                 
+  --tempDir tempDir                              Intermediate output directory  
+  --startPhase startPhase                        First phase to run             
+  --endPhase endPhase                            Last phase to run              
+Specify HDFS directories while running on hadoop; else specify local file       
+system directories */
+	
 }
 
 

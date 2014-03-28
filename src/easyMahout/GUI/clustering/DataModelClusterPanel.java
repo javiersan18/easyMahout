@@ -46,6 +46,7 @@ import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
+import org.apache.mahout.text.SequenceFilesFromDirectory;
 
 import com.jidesoft.swing.FolderChooser;
 
@@ -253,24 +254,39 @@ public class DataModelClusterPanel extends JPanel {
 				outputFormatted = output+".csv";
 
 				tfDelimiter.setBackground(Color.WHITE);
+				if (ClusterBuilder.isSequential()) {
+					CreateSequenceFile.convert(filePath, output, delimiter);
+					ReadSequenceFile.readSequenceFile(output, outputFormatted);
+					try {
+						ClusterBuilder.buildCluster();
 
-				CreateSequenceFile.convert(filePath, output, delimiter);
-				ReadSequenceFile.readSequenceFile(output,outputFormatted);
-				try {
-					ClusterBuilder.buildCluster();
-					
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 				}
-
-
+				else {
+					//SequenceFilesFromDirectory.runMapfilePath;
+					try {
+						ClusterBuilder.buildCluster();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 
 			}});
 
