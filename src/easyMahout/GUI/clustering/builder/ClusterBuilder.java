@@ -39,6 +39,8 @@ import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
 import org.apache.mahout.clustering.canopy.CanopyDriver;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
+import org.apache.mahout.clustering.dirichlet.DirichletDriver;
+import org.apache.mahout.clustering.dirichlet.models.DistributionDescription;
 import org.apache.mahout.clustering.display.DisplayCanopy;
 import org.apache.mahout.clustering.display.DisplayFuzzyKMeans;
 import org.apache.mahout.clustering.display.DisplayKMeans;
@@ -68,7 +70,10 @@ import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
 
 import MahoutInAction.Clustering.Clustering72;
 
+import easyMahout.GUI.Display;
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.ProgressBarDemo2;
+import easyMahout.GUI.Punto;
 import easyMahout.GUI.clustering.AlgorithmClusterPanel;
 import easyMahout.GUI.clustering.DataModelClusterPanel;
 import easyMahout.GUI.clustering.DistanceMeasurePanel;
@@ -120,7 +125,7 @@ public class ClusterBuilder {
 
 	private static final Object[] CHUNK_SIZE_OPTION = null;
 
-
+	private static ArrayList<Punto> puntos=new ArrayList<Punto>();
 	public static Cluster buildCluster() throws ClassNotFoundException, InterruptedException, IOException {
 
 		hayError=false;
@@ -392,7 +397,7 @@ public class ClusterBuilder {
 			constructCluster(false);
 		}
 
-		else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.USER_DEFINED)){
+		else if (MainClusterPanel.getAlgorithmClusterPanel().getSelectedType().equals(Constants.ClusterAlg.DIRICHLET)){
 			Double treshold1=0.1;
 			Double treshold2=0.2;
 			CanopyClusterer cluster = new CanopyClusterer(new EuclideanDistanceMeasure(),treshold1,treshold2);
@@ -448,6 +453,7 @@ public class ClusterBuilder {
 		ArrayList<Object> parametrosCanopy= new ArrayList<Object>();
 		ArrayList<Object> parametrosKMEANS= new ArrayList<Object>();
 		List<Vector> vectors;
+		
 		if (isSequential()){
 			vectors =  CreateSequenceFile.getVectors();
 		}
@@ -566,11 +572,9 @@ public class ClusterBuilder {
 			try {
 				if (kmeans || hadoop){
 					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
-
-					//KMeansDriver.run(conf,pointsPath , new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
 					DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
-					//KMeansDriver.run(pointsPath, new Path("testdata/clusters"), output, d, t1, iteraciones, true, t1, !hadoop);
-					parametrosKMEANS.add(conf);
+					
+					/*parametrosKMEANS.add(conf);
 					parametrosKMEANS.add(pointsPath);
 					parametrosKMEANS.add(new Path("testdata/clusters"));
 					parametrosKMEANS.add(output);
@@ -581,16 +585,23 @@ public class ClusterBuilder {
 					parametrosKMEANS.add(t1);
 					parametrosKMEANS.add(!hadoop);
 					parametrosKMEANS.add(numero);
-
-
+					try {
+						DisplayGraphicKMeans.main(parametrosKMEANS);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						MainGUI.writeResult("Impossible drawing", Constants.Log.ERROR);
+					}*/
+					
 				}
+				
 				else if (esCanopy){
 					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
+					
 					CanopyDriver.run(conf,pointsPath , output, d, t1, t2, true, t1, !hadoop);
-
+					
 					//-------------CanopyDriver.run(conf, new Path("testdata/points"), output, d, t1, t2, true, t1, !hadoop);
 
-					parametrosCanopy.add(conf);
+					/*parametrosCanopy.add(conf);
 					parametrosCanopy.add(pointsPath);
 					parametrosCanopy.add(output);
 					parametrosCanopy.add(d);
@@ -599,23 +610,30 @@ public class ClusterBuilder {
 					parametrosCanopy.add(true);
 					parametrosCanopy.add(t1);
 					parametrosCanopy.add(!hadoop);
+					parametrosCanopy.add(iteraciones);
 
 					//----------
+				try {
+					DisplayGraphicCanopy.main(parametrosCanopy);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					MainGUI.writeResult("Impossible drawing", Constants.Log.ERROR);
+				}*/
+				
 				}
-				else {
-					//FuzzyKMeansDriver.run(conf, input, clustersIn, output, measure, convergenceDelta, maxIterations, m, runClustering, emitMostLikely, threshold, runSequential/notHadoop)
+				
+				else  {
+					
 					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
 					boolean emitMostLikely=AlgorithmClusterPanel.getEmitMostLikely().isSelected();
 					String s=AlgorithmClusterPanel.getFuzzyFactor().getText();
 					float fuzzyFactor=Float.parseFloat(s);
-					//FuzzyKMeansDriver.run(conf, pointsPath, new Path("testdata/clusters"), output, d, t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);
+					
 					DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
 
 					//--------
-					/*FuzzyKMeansDriver.run(conf, new Path("testdata/points"), new Path("testdata/clusters"), output, d,
-					 *  t1, iteraciones, fuzzyFactor, true, emitMostLikely, t1, !hadoop);*/
-
-					parametrosFuzzy.add(conf);
+				
+					/*parametrosFuzzy.add(conf);
 					parametrosFuzzy.add(pointsPath);
 					parametrosFuzzy.add(new Path("testdata/clusters"));
 					parametrosFuzzy.add(output);
@@ -627,9 +645,14 @@ public class ClusterBuilder {
 					parametrosFuzzy.add(emitMostLikely);
 					parametrosFuzzy.add(t1);
 					parametrosFuzzy.add(!hadoop);
-					parametrosKMEANS.add(numero);
+					parametrosFuzzy.add(numero);
 
-
+					try {
+						DisplayGraphicFuzzy.main(parametrosFuzzy);
+					} catch (Exception e) {
+						MainGUI.writeResult("Impossible drawing", Constants.Log.ERROR);
+					}*/
+					
 					//--------
 				}
 			} catch (ClassNotFoundException e) {
@@ -666,9 +689,24 @@ public class ClusterBuilder {
 			IntWritable key2 = new IntWritable();
 			WeightedVectorWritable value2 = new WeightedVectorWritable();
 			try {
+				
 				while (reader2.next(key2, value2)) {
-					System.out.println(value2.toString() + " belongs to cluster " + key2.toString());
+					String s=value2.toString() + " belongs to cluster " + key2.toString();
+					System.out.println(s);//canopy
+					MainGUI.writeResult(s, Constants.Log.RESULT);
+					/*IntWritable x= key2;
+					WeightedVectorWritable data=value2;
+					float acum=0;
+					for (int i=0; i<data.getVector().size();i++){
+						acum+=data.getVector().get(i);
+						}
+					float y=acum/data.getVector().size();
+					Punto punto=new Punto(x,y);
+					puntos.add(punto);*/
+					
+					
 				}
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -781,7 +819,7 @@ public class ClusterBuilder {
 			args3[i++] = "sequential";
 
 			ToolRunner.run(new Configuration(), new SplitInput(), args3);
-			runMapReduce(new Path(vec),new Path(vec+ System.getProperty("file.separator")+"ssss"));
+			//runMapReduce(new Path(vec),new Path(vec+ System.getProperty("file.separator")+"ssss"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -826,6 +864,16 @@ public class ClusterBuilder {
 		    }
 		    return 0;
 		  }
+
+
+	public static ArrayList<Punto> getPuntos() {
+		return puntos;
+	}
+
+
+	public static void setPuntos(ArrayList<Punto> puntos) {
+		ClusterBuilder.puntos = puntos;
+	}
 		
 		/*Usage:                                                                          
  [--input <input> --output <output> --overwrite --method <method> --chunkSize   

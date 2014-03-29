@@ -47,12 +47,7 @@ public class DisplayGraphicKMeans extends DisplayCluster {
     double convergenceDelta = (double) parametrosKMEANS.get(5);
     int numClusters = (int) parametrosKMEANS.get(10);;
     int maxIterations = (int) parametrosKMEANS.get(6);
-    runSequentialKMeansClusterer(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
-    /*if (runClusterer) {
-      runSequentialKMeansClusterer(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
-    } else {
-      runSequentialKMeansClassifier(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
-    }*/
+    //runSequentialKMeansClusterer(conf, samples, output, measure, numClusters, maxIterations, convergenceDelta);
     new DisplayGraphicKMeans();
   }
   
@@ -60,7 +55,7 @@ public class DisplayGraphicKMeans extends DisplayCluster {
       DistanceMeasure measure, int numClusters, int maxIterations, double convergenceDelta) throws IOException {
     Collection<Vector> points = Lists.newArrayList();
     for (int i = 0; i < numClusters; i++) {
-      points.add(SAMPLE_DATA.get(i).get());
+      points.add(SAMPLE_DATA.get(i));
     }
     List<Cluster> initialClusters = Lists.newArrayList();
     int id = 0;

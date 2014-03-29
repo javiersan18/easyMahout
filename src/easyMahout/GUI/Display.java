@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,9 @@ import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
 
 import com.google.common.collect.Lists;
+import com.sun.corba.se.impl.orbutil.graph.Graph;
+
+import easyMahout.GUI.clustering.builder.ClusterBuilder;
 public class Display extends Canvas{ 
 	private static final int SIZE = 7;
 	protected static final int DS = 72; // default scale = 72 pixels per inch
@@ -23,43 +27,42 @@ public class Display extends Canvas{
 	static final Color[] COLORES = { Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta,Color.lightGray };
 
 	public Display(){ 
-		setSize(200, 200); 
+		setSize(800, 800); 
 		setBackground(Color.white);
 		} 
-	public static void main( String [] args){
-		//GraphicsProgram class is now a type of canvas 
-		//since it extends the Canvas class 
-		//lets instantiate it 
+	public static void main( ArrayList<Punto> puntos){
 		Display GP = new Display();
 		int res = Toolkit.getDefaultToolkit().getScreenResolution();
-		//create a new frame to which we will add a canvas 
 		Frame aFrame = new Frame();
+		
 		aFrame.setSize(res*SIZE, res*SIZE); 
 		//add the canvas
 		aFrame.add(GP); 
+		
 		aFrame.setVisible(true); 
 		
 		} 
-	public void paint(Graphics g){
-		/*g.setColor(Color.blue); 
-		g.drawLine(30, 30, 80, 80);
-		g.drawRect(20, 150, 100, 100);
-		g.fillRect(20, 150, 100, 100);
-		g.fillOval(150, 20, 100, 100); */
+	
+	public  void paint(Graphics g){
+		ArrayList<Punto> puntos = ClusterBuilder.getPuntos();
+		Graphics2D g2=(Graphics2D) g;
+		int cx=30;
+		for(int i=0;i<puntos.size();i++){
+			
+			Punto p=puntos.get(i);
+			int x=(Integer.parseInt(p.getX().toString()));
+			int y=((int)p.getY())/1000;
+			g.setColor(COLORES[Math.min(COLORES.length - 1, cx)]);
+	        ((Graphics2D) g).setStroke(new BasicStroke(cx == 0 ? 3 : 1));
+			
+			g.drawRect(x,y,10,10);
+			cx--;
+		}
+		g.setColor(Color.blue); 
 		
-		 // plot the axes
-	    g.setColor(Color.BLACK);
-	    Vector dv = new DenseVector(2).assign(SIZE / 2.0);
-	    plotRectangle(g, new DenseVector(2).assign(2), dv);
-	    plotRectangle(g, new DenseVector(2).assign(-2), dv);
-	    
-	    // plot the sample data
-	    g.setColor(Color.DARK_GRAY);
-	    dv.assign(0.03);
-	   
-	   /* for (VectorWritable v : SAMPLE_DATA) {
-	      plotRectangle(g2, v.get(), dv);
-	    }*/
+		
+		
+		
 		} 
 	
 	 protected static void plotRectangle(Graphics g, Vector v, Vector dv) {

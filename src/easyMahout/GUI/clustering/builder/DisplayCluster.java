@@ -1,6 +1,7 @@
 package easyMahout.GUI.clustering.builder;
 
 import java.awt.BasicStroke;
+import easyMahout.utils.Constants;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -12,10 +13,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -46,6 +50,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
+//import com.sun.xml.internal.ws.util.Constants;
+
+import easyMahout.GUI.MainGUI;
 
 public class DisplayCluster extends Frame {
   
@@ -57,9 +64,11 @@ public class DisplayCluster extends Frame {
   
   private static final Collection<Vector> SAMPLE_PARAMS = Lists.newArrayList();
   
-  protected static final List<VectorWritable> SAMPLE_DATA = Lists.newArrayList();
+  protected static List<Vector> SAMPLE_DATA = Lists.newArrayList();
   
   protected static final List<List<Cluster>> CLUSTERS = Lists.newArrayList();
+  
+  protected static final int dimensions=CreateSequenceFile.getVectors().get(0).size();
   
   protected static final Color[] COLORS = { Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta,
     Color.lightGray };
@@ -90,14 +99,22 @@ public class DisplayCluster extends Frame {
     this.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
-        System.exit(0);
+
+
+        if (JOptionPane.showConfirmDialog(null, 
+            "Are you sure to close this window?", "Really Closing?", 
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+            System.exit(0);
+        }
+ 
       }
     });
   }
   
   public static void main(String[] args) throws Exception {
     RandomUtils.useTestSeed();
-    generateSamples();
+    //generateSamples();
     new DisplayCluster();
   }
   
@@ -115,8 +132,8 @@ public class DisplayCluster extends Frame {
     for (List<Cluster> clusters : CLUSTERS) {
       g2.setStroke(new BasicStroke(cx == 0 ? 3 : 1));
       g2.setColor(COLORS[Math.min(COLORS.length - 1, cx--)]);
-      for (Cluster cluster : clusters) {
-        plotEllipse(g2, cluster.getCenter(), cluster.getRadius().times(3));
+      for (Cluster cluster : clusters) {  
+        plotEllipse(g2, cluster.getCenter(), cluster.getCenter());
       }
     }
   }
@@ -140,16 +157,17 @@ public class DisplayCluster extends Frame {
     
     // plot the axes
     g2.setColor(Color.BLACK);
+    Vector dv2 = new DenseVector(dimensions).assign(SIZE / 2.0);
     Vector dv = new DenseVector(2).assign(SIZE / 2.0);
-    plotRectangle(g2, new DenseVector(2).assign(2), dv);
-    plotRectangle(g2, new DenseVector(2).assign(-2), dv);
+    plotAxes(g2, new DenseVector(2).assign(2), dv);
+    plotAxes(g2, new DenseVector(2).assign(-2), dv);
     
     // plot the sample data
     g2.setColor(Color.DARK_GRAY);
-    dv.assign(0.03);
-   
-    for (VectorWritable v : SAMPLE_DATA) {
-      plotRectangle(g2, v.get(), dv);
+    dv2.assign(0.03);
+   SAMPLE_DATA=CreateSequenceFile.getVectors();//new ArrayList<VectorWritable>();
+    for (Vector v : SAMPLE_DATA) {
+      plotRectangle(g2, v, dv2);
     }
   }
   
@@ -190,12 +208,12 @@ public class DisplayCluster extends Frame {
     for (Pair<IntWritable,WeightedVectorWritable> record : new SequenceFileIterable<IntWritable,WeightedVectorWritable>(
         inputPath, new Configuration())) {
       int clusterId = record.getFirst().get();
-      VectorWritable v = SAMPLE_DATA.get(point++);
+      Vector v = SAMPLE_DATA.get(point++);
       Integer key = clusterId;
       if (!colors.containsKey(key)) {
         colors.put(key, COLORS[Math.min(COLORS.length - 1, colors.size())]);
       }
-      plotClusteredRectangle(g2, v.get(), dv, colors.get(key));
+      plotClusteredRectangle(g2, v, dv, colors.get(key));
     }
   }
   
@@ -240,14 +258,24 @@ public class DisplayCluster extends Frame {
    */
   protected static void plotRectangle(Graphics2D g2, Vector v, Vector dv) {
     double[] flip = {1, -1};
-    Vector v2 = v.times(new DenseVector(flip));
-    v2 = v2.minus(dv.divide(2));
+    Vector v2 = v;//.times(new DenseVector(flip));
+    //v2 = v2.minus(dv.divide(2));
     int h = SIZE / 2;
     double x = v2.get(0) + h;
     double y = v2.get(1) + h;
+    if (x>100000) x/=100000;
+    if(y>100000) y/=100000;
     g2.draw(new Rectangle2D.Double(x * DS, y * DS, dv.get(0) * DS, dv.get(1) * DS));
   }
-  
+  protected static void plotAxes(Graphics2D g2, Vector v, Vector dv) {
+	    double[] flip = {1, -1};
+	    Vector v2 = v.times(new DenseVector(flip));
+	    v2 = v2.minus(dv.divide(2));
+	    int h = SIZE / 2;
+	    double x = v2.get(0) + h;
+	    double y = v2.get(1) + h;
+	    g2.draw(new Rectangle2D.Double(x * DS, y * DS, dv.get(0) * DS, dv.get(1) * DS));
+	  }
   /**
    * Draw an ellipse on the graphics context
    * 
@@ -259,27 +287,18 @@ public class DisplayCluster extends Frame {
    *          a Vector of ellipse dimensions
    */
   protected static void plotEllipse(Graphics2D g2, Vector v, Vector dv) {
-    double[] flip = {1, -1};
+    double[] flip = {1, -1,2,2,1};
     Vector v2 = v.times(new DenseVector(flip));
     v2 = v2.minus(dv.divide(2));
     int h = SIZE / 2;
     double x = v2.get(0) + h;
     double y = v2.get(1) + h;
-    g2.draw(new Ellipse2D.Double(x * DS, y * DS, dv.get(0) * DS, dv.get(1) * DS));
+    if (Math.abs(x)>100000) x/=100000;
+    if (Math.abs(y)>100000) y/=100000;
+    g2.draw(new Ellipse2D.Double(x * DS, y * DS, dv.get(0) * DS, dv.get(1)* DS));
   }
   
-  protected static void generateSamples() {
-    generateSamples(500, 1, 1, 3);
-    generateSamples(300, 1, 0, 0.5);
-    generateSamples(300, 0, 2, 0.1);
-  }
-  
-  protected static void generate2dSamples() {
-    generate2dSamples(500, 1, 1, 3, 1);
-    generate2dSamples(300, 1, 0, 0.5, 1);
-    generate2dSamples(300, 0, 2, 0.1, 0.5);
-  }
-  
+
   /**
    * Generate random samples and add them to the sampleData
    * 
@@ -292,17 +311,17 @@ public class DisplayCluster extends Frame {
    * @param sd
    *          double standard deviation of the samples
    */
-  protected static void generateSamples(int num, double mx, double my, double sd) {
+  /*protected static void generateSamples(int num, double mx, double my, double sd) {
     double[] params = {mx, my, sd, sd};
     SAMPLE_PARAMS.add(new DenseVector(params));
     log.info("Generating {} samples m=[{}, {}] sd={}", num, mx, my, sd);
     for (int i = 0; i < num; i++) {
-      SAMPLE_DATA.add(new VectorWritable(new DenseVector(new double[] {UncommonDistributions.rNorm(mx, sd),
+      SAMPLE_DATA.addAll(new VectorWritable(new DenseVector(new double[] {UncommonDistributions.rNorm(mx, sd),
           UncommonDistributions.rNorm(my, sd)})));
     }
-  }
+  }*/
   
-  protected static void writeSampleData(Path output) throws IOException {
+ /* protected static void writeSampleData(Path output) throws IOException {
     Configuration conf = new Configuration();
     FileSystem fs = FileSystem.get(output.toUri(), conf);
     SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, output, Text.class, VectorWritable.class);
@@ -315,7 +334,7 @@ public class DisplayCluster extends Frame {
       Closeables.close(writer, false);
     }
   }
-  
+  */
   protected static List<Cluster> readClustersWritable(Path clustersIn) {
 	 
 	  List<Cluster> clusters = Lists.newArrayList();
@@ -326,6 +345,20 @@ public class DisplayCluster extends Frame {
 		  log.info("Reading Cluster:{} center:{} numPoints:{} radius:{}",
 				  cluster.getId(), AbstractCluster.formatVector(cluster.getCenter(), null),
 				  cluster.getNumObservations(), AbstractCluster.formatVector(cluster.getRadius(), null));
+		  String s="";
+		  s+="Cluster: ";
+		  s+=String.valueOf(cluster.getId());
+		  s+=" ";
+		  s+="Center: ";
+		  s+=String.valueOf(AbstractCluster.formatVector(cluster.getCenter(), null));
+		  s+=" ";
+		  s+="numPoints: ";
+		  s+=String.valueOf(cluster.getNumObservations());
+		  s+=" ";
+		  s+="radius: ";
+		  s+=String.valueOf(AbstractCluster.formatVector(cluster.getRadius(), null));
+		  s+=" ";
+		  MainGUI.writeResult(s, Constants.Log.RESULT);
 		  clusters.add(cluster);
 	  }
 	  return clusters;	  
@@ -363,7 +396,7 @@ public class DisplayCluster extends Frame {
    * @param sdy
    *          double y-value standard deviation of the samples
    */
-  protected static void generate2dSamples(int num, double mx, double my, double sdx, double sdy) {
+  /*protected static void generate2dSamples(int num, double mx, double my, double sdx, double sdy) {
     double[] params = {mx, my, sdx, sdy};
     SAMPLE_PARAMS.add(new DenseVector(params));
     log.info("Generating {} samples m=[{}, {}] sd=[{}, {}]", num, mx, my, sdx, sdy);
@@ -371,7 +404,7 @@ public class DisplayCluster extends Frame {
       SAMPLE_DATA.add(new VectorWritable(new DenseVector(new double[] {UncommonDistributions.rNorm(mx, sdx),
           UncommonDistributions.rNorm(my, sdy)})));
     }
-  }
+  }*/
   
   protected static boolean isSignificant(Cluster cluster) {
     return (double) cluster.getNumObservations() / SAMPLE_DATA.size() > significance;

@@ -64,10 +64,10 @@ public class DisplayGraphicCanopy extends DisplayCluster {
    // HadoopUtil.delete(conf, samples);
    // HadoopUtil.delete(conf, output);
     RandomUtils.useTestSeed();
-    generateSamples();
-    writeSampleData(samples);
+   // generateSamples();
+   // writeSampleData(samples);
     CanopyDriver.buildClusters(conf, samples, output, measure,(double)parametrosCanopy.get(4), (double)parametrosCanopy.get(5),0, (boolean)parametrosCanopy.get(8));
-    loadClustersWritable(output,30);
+    loadClustersWritable(output,(int) parametrosCanopy.get(9));
 
     new DisplayGraphicCanopy();
   }

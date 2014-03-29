@@ -51,6 +51,7 @@ import org.apache.mahout.text.SequenceFilesFromDirectory;
 import com.jidesoft.swing.FolderChooser;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.ProgressBarDemo2;
 import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.clustering.builder.CreateSequenceFile;
 import easyMahout.GUI.clustering.builder.ReadSequenceFile;
@@ -247,7 +248,9 @@ public class DataModelClusterPanel extends JPanel {
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
+				
+				
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
 				String delimiter = tfDelimiter.getText(); //delimiter

@@ -42,21 +42,21 @@ public class DisplayGraphicFuzzy extends DisplayCluster {
   public static void main(ArrayList<Object> parametrosFuzzy) throws Exception {
     DistanceMeasure measure = (DistanceMeasure) parametrosFuzzy.get(4);
     
-    Path samples = new Path("samples");
+    Path samples = (Path) parametrosFuzzy.get(1);
     Path output = new Path("output");
     Configuration conf = (Configuration) parametrosFuzzy.get(0);
     //HadoopUtil.delete(conf, output);
     //HadoopUtil.delete(conf, samples);
     RandomUtils.useTestSeed();
-    DisplayCluster.generateSamples();
-    writeSampleData(samples);
+   // DisplayCluster.generateSamples();
+   // writeSampleData(samples);
     boolean runClusterer = (boolean) parametrosFuzzy.get(8);
     int maxIterations = (int) parametrosFuzzy.get(6);
     double t = (double) parametrosFuzzy.get(5);
     float threshold = (float) t;
     float m = (float) parametrosFuzzy.get(7) ;
     if (runClusterer) {
-      runSequentialFuzzyKClusterer(conf, samples, output, measure, maxIterations, m, threshold);
+//      runSequentialFuzzyKClusterer(conf, samples, output, measure, maxIterations, m, threshold);
     } else {
       int numClusters = (int) parametrosFuzzy.get(12);
       runSequentialFuzzyKClassifier(conf, samples, output, measure, numClusters, maxIterations, m, threshold);
@@ -68,7 +68,7 @@ public class DisplayGraphicFuzzy extends DisplayCluster {
       DistanceMeasure measure, int numClusters, int maxIterations, float m, double threshold) throws IOException {
     Collection<Vector> points = Lists.newArrayList();
     for (int i = 0; i < numClusters; i++) {
-      points.add(SAMPLE_DATA.get(i).get());
+      points.add(SAMPLE_DATA.get(i));
     }
     List<Cluster> initialClusters = Lists.newArrayList();
     int id = 0;
