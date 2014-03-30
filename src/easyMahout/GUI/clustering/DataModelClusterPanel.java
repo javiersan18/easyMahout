@@ -11,9 +11,11 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -140,9 +142,32 @@ public class DataModelClusterPanel extends JPanel {
 		add(textInputPath);
 		textInputPath.setColumns(10);
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
+		textInputPath.setInputVerifier(new InputVerifier() {
+			public boolean verify(JComponent input) {
+				JTextField tf = (JTextField) input;
+				String text = tf.getText();
+				try {
+					
+					if (!text.equals("")) {
+						textInputPath.setBackground(Color.WHITE);
+						return true;
+					} else {
+						log.error(text + " is empty");
+						MainGUI.writeResult("You have to choose an input!", Constants.Log.ERROR);
+						textInputPath.setBackground(new Color(240, 128, 128));
+						return false;
+					}
+				} catch (NumberFormatException e) {
+					log.error(text + " is empty");
+					MainGUI.writeResult("You have to choose an input!", Constants.Log.ERROR);
+					textInputPath.setBackground(new Color(240, 128, 128));
+					return false;
+				}
+			}
+		});
 
 		btnSelectInput = new JButton("Select File...");
-		btnSelectInput.setBounds(130, 165, 107, 23);
+		btnSelectInput.setBounds(182, 165, 107, 23);
 		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
@@ -159,8 +184,8 @@ public class DataModelClusterPanel extends JPanel {
 		tfDelimiter.setEnabled(false);
 		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		btnCreate = new JButton("Create Model");
-		btnCreate.setBounds(241, 165, 107, 23);
+		btnCreate = new JButton("Run Clustering");
+		btnCreate.setBounds(341, 365, 107, 23);
 		add(btnCreate);
 
 		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
@@ -176,7 +201,7 @@ public class DataModelClusterPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
 		add(helpTooltip);
 
-		lblOutputDataSource = new JLabel("Output data source (Optional):");
+		lblOutputDataSource = new JLabel("Output data source :");
 		lblOutputDataSource.setBounds(38, 206, 157, 14);
 		add(lblOutputDataSource);
 
@@ -185,7 +210,29 @@ public class DataModelClusterPanel extends JPanel {
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
-
+		textOutputPath.setInputVerifier(new InputVerifier() {
+			public boolean verify(JComponent input) {
+				JTextField tf = (JTextField) input;
+				String text = tf.getText();
+				try {
+					
+					if (!text.equals("")) {
+						textOutputPath.setBackground(Color.WHITE);
+						return true;
+					} else {
+						log.error(text + " is empty");
+						MainGUI.writeResult("You have to choose an output!", Constants.Log.ERROR);
+						textOutputPath.setBackground(new Color(240, 128, 128));
+						return false;
+					}
+				} catch (NumberFormatException e) {
+					log.error(text + " is empty");
+					MainGUI.writeResult("You have to choose an output!", Constants.Log.ERROR);
+					textOutputPath.setBackground(new Color(240, 128, 128));
+					return false;
+				}
+			}
+		});
 		btnSelectOutput = new JButton("Select File...");
 		btnSelectOutput.setBounds(182, 265, 107, 23);
 		add(btnSelectOutput);
@@ -255,8 +302,9 @@ public class DataModelClusterPanel extends JPanel {
 				String output = textOutputPath.getText();
 				String delimiter = tfDelimiter.getText(); //delimiter
 				outputFormatted = output+".csv";
-
+				
 				tfDelimiter.setBackground(Color.WHITE);
+				if (!filePath.isEmpty() && !output.isEmpty()){
 				if (ClusterBuilder.isSequential()) {
 					CreateSequenceFile.convert(filePath, output, delimiter);
 					ReadSequenceFile.readSequenceFile(output, outputFormatted);
@@ -291,7 +339,11 @@ public class DataModelClusterPanel extends JPanel {
 					}
 				}
 
-			}});
+			}
+				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
+				}
+			});
+		
 
 		chckbxBooleanPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

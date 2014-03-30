@@ -819,10 +819,14 @@ public class ClusterBuilder {
 			args3[i++] = "sequential";
 
 			ToolRunner.run(new Configuration(), new SplitInput(), args3);
+			Path clustersIn = null;
+			KMeansDriver.run(conf, new Path(vec), clustersIn, new Path(args2[1]), d, t1, iteraciones, true, 0.0, MainGUI.isDistributed());
+			
 			//runMapReduce(new Path(vec),new Path(vec+ System.getProperty("file.separator")+"ssss"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			MainGUI.writeResult("Not able to run Hadoop Job", Constants.Log.ERROR);
 		}
 	}
 	private static int runMapReduce(Path input, Path output)
