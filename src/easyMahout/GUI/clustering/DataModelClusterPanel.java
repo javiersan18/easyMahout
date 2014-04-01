@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ProgressMonitor;
 import javax.swing.border.LineBorder;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,9 +52,10 @@ import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
 
 import com.jidesoft.swing.FolderChooser;
+import com.jidesoft.utils.SwingWorker;
 
 import easyMahout.GUI.MainGUI;
-import easyMahout.GUI.ProgressBarDemo2;
+
 import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.clustering.builder.CreateSequenceFile;
 import easyMahout.GUI.clustering.builder.ReadSequenceFile;
@@ -63,6 +65,7 @@ import easyMahout.GUI.recommender.builder.RecommenderBuilder;
 import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.MyThread;
 import easyMahout.utils.help.ClusterTips;
 import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
@@ -72,6 +75,9 @@ import java.awt.ComponentOrientation;
 
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+
+import jcolibri.test.main.SwingProgressBar;
+import junit.awtui.ProgressBar;
 
 public class DataModelClusterPanel extends JPanel {
 
@@ -184,7 +190,7 @@ public class DataModelClusterPanel extends JPanel {
 		tfDelimiter.setEnabled(false);
 		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		btnCreate = new JButton("Run Clustering");
+		btnCreate=new JButton("Run Clustering");
 		btnCreate.setBounds(341, 365, 107, 23);
 		add(btnCreate);
 
@@ -297,12 +303,10 @@ public class DataModelClusterPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				
 				
-				
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
 				String delimiter = tfDelimiter.getText(); //delimiter
 				outputFormatted = output+".csv";
-				
 				tfDelimiter.setBackground(Color.WHITE);
 				if (!filePath.isEmpty() && !output.isEmpty()){
 				if (ClusterBuilder.isSequential()) {
@@ -324,7 +328,6 @@ public class DataModelClusterPanel extends JPanel {
 
 				}
 				else {
-					//SequenceFilesFromDirectory.runMapfilePath;
 					try {
 						ClusterBuilder.buildCluster();
 					} catch (ClassNotFoundException e1) {
@@ -338,7 +341,7 @@ public class DataModelClusterPanel extends JPanel {
 						e1.printStackTrace();
 					}
 				}
-
+				
 			}
 				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
 				}
@@ -470,5 +473,6 @@ public class DataModelClusterPanel extends JPanel {
 	public static void setOutputFormatted(String outputFormatted) {
 		DataModelClusterPanel.outputFormatted = outputFormatted;
 	}
+
 	
 }

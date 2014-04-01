@@ -21,9 +21,11 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.JobContext;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -61,7 +63,9 @@ import org.apache.mahout.math.NamedVector;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
+import org.apache.mahout.text.MultipleTextFileInputFormat;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
+import org.apache.mahout.text.SequenceFilesFromDirectoryMapper;
 import org.apache.mahout.utils.SplitInput;
 import org.apache.mahout.vectorizer.DictionaryVectorizer;
 import org.apache.mahout.vectorizer.DocumentProcessor;
@@ -70,9 +74,9 @@ import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
 
 import MahoutInAction.Clustering.Clustering72;
 
-import easyMahout.GUI.Display;
+
 import easyMahout.GUI.MainGUI;
-import easyMahout.GUI.ProgressBarDemo2;
+
 import easyMahout.GUI.Punto;
 import easyMahout.GUI.clustering.AlgorithmClusterPanel;
 import easyMahout.GUI.clustering.DataModelClusterPanel;
@@ -416,7 +420,7 @@ public class ClusterBuilder {
 		SequenceFile.Reader reader2=null;
 		if (hadoop){
 			try {
-				reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
+				reader2 = new SequenceFile.Reader(fs, new Path("output"+ System.getProperty("file.separator") + Cluster.CLUSTERED_POINTS_DIR +  System.getProperty("file.separator")+"part-m-0"), conf);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -424,7 +428,7 @@ public class ClusterBuilder {
 		}
 		else {
 			try {
-				reader2 = new SequenceFile.Reader(fs, new Path("output/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-0"), conf);
+				reader2 = new SequenceFile.Reader(fs, new Path("output"+ System.getProperty("file.separator") + Cluster.CLUSTERED_POINTS_DIR + System.getProperty("file.separator")+"part-m-0"), conf);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -456,23 +460,14 @@ public class ClusterBuilder {
 		
 		if (isSequential()){
 			vectors =  CreateSequenceFile.getVectors();
-		}
-		else{
-			vectors =null;
-			try {
-				getHadoopJob();
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		
+		
 		testData = new File("testdata");
 		if (!testData.exists()) {
 			testData.mkdir();
 		}
 		System.out.println("hola");
-		testData = new File("testdata/points");
+		testData = new File("testdata"+ System.getProperty("file.separator")+"points");
 
 		if (!testData.exists()) {
 			testData.mkdir();
@@ -485,7 +480,7 @@ public class ClusterBuilder {
 				e.printStackTrace();
 			}
 			try {
-				writePointsToFile(vectors, "testdata/points/file1", fs, conf);
+				writePointsToFile(vectors, "testdata"+ System.getProperty("file.separator")+"points"+ System.getProperty("file.separator")+"file1", fs, conf);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -493,7 +488,7 @@ public class ClusterBuilder {
 			//hadoop?
 			Path path=new Path("help");
 			if (!hadoop){
-				path = new Path("testdata/clusters/part-00000");
+				path = new Path("testdata"+ System.getProperty("file.separator")+"clusters"+ System.getProperty("file.separator")+"part-00000");
 			}
 			else {
 				path = new Path("testdata"+File.separatorChar+"clusters"+File.separatorChar+"part-m-0");
@@ -570,7 +565,7 @@ public class ClusterBuilder {
 			}
 
 			try {
-				if (kmeans || hadoop){
+				if (kmeans /*|| hadoop*/){
 					Path pointsPath=new Path(DataModelClusterPanel.getOutputPath());
 					DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
 					
@@ -719,6 +714,17 @@ public class ClusterBuilder {
 			}
 
 		}
+		}
+		else{
+			vectors =null;
+			try {
+				getHadoopJob();
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -777,7 +783,7 @@ public class ClusterBuilder {
 
 		try {
 
-			ToolRunner.run(new SequenceFilesFromDirectory(), args1);
+//			ToolRunner.run(new SequenceFilesFromDirectory(), args1);
 
 			i = 0;
 			String[] args2 = new String[9];
@@ -795,7 +801,7 @@ public class ClusterBuilder {
 			args2[i++] = "--weight";
 			args2[i++] = "tfidf";
 
-			ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
+			//ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
 
 			i = 0;
 			String[] args3 = new String[12];
@@ -818,13 +824,17 @@ public class ClusterBuilder {
 			args3[i++] = "--method";
 			args3[i++] = "sequential";
 
-			ToolRunner.run(new Configuration(), new SplitInput(), args3);
-			Path clustersIn = null;
-			KMeansDriver.run(conf, new Path(vec), clustersIn, new Path(args2[1]), d, t1, iteraciones, true, 0.0, MainGUI.isDistributed());
+			//ToolRunner.run(new Configuration(), new SplitInput(), args3);
+			Configuration confHadoop=new Configuration();
+			Job job = new Job(confHadoop, "KMeansParallel");
 			
-			//runMapReduce(new Path(vec),new Path(vec+ System.getProperty("file.separator")+"ssss"));
+			
+			FileInputFormat.addInputPath(job, new Path(DataModelClusterPanel.getInputPath()));
+			FileOutputFormat.setOutputPath(job, new Path(DataModelClusterPanel.getOutputPath()+System.getProperty("file.separator")+"prueba2"));
+			job.waitForCompletion(true);
+			//KMeansDriver.run(confHadoop, new Path(vec), new Path(args2[1]), new Path(vec+ System.getProperty("file.separator")+"salida"), d, t1, iteraciones, true, t1, false);
+			MainGUI.writeResult("Hadoop Job OK", Constants.Log.INFO);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			MainGUI.writeResult("Not able to run Hadoop Job", Constants.Log.ERROR);
 		}
@@ -833,16 +843,11 @@ public class ClusterBuilder {
 		    throws IOException, ClassNotFoundException, InterruptedException
 		  {
 		    int chunkSizeInMB = 64;
-		   /* if (hasOption(CHUNK_SIZE_OPTION[0])) {
-		      chunkSizeInMB = Integer.parseInt(getOption(CHUNK_SIZE_OPTION[0]));
-		    }
-		    String keyPrefix = null;
-		    if (hasOption(KEY_PREFIX_OPTION[0])) {
-		      keyPrefix = getOption(KEY_PREFIX_OPTION[0]);
-		    }
-		    Job job = prepareJob(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, SequenceFileOutputFormat.class, "SequenceFilesFromDirectory");
-		   */
-		    Job job=new Job();
+		  
+		   
+		   // Job job = HadoopUtil.prepareJob(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, Text.class, Text.class, Text.class, SequenceFileOutputFormat.class, conf);
+		    		//(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, SequenceFileOutputFormat.class, "SequenceFilesFromDirectory");
+		   Job job=new Job();
 
 		    Configuration jobConfig = job.getConfiguration();
 		    String keyPrefix = null;

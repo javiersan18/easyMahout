@@ -1,18 +1,24 @@
 package easyMahout.GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,6 +28,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.Timer;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import org.apache.commons.lang.StringUtils;
@@ -68,6 +75,8 @@ public class MainGUI extends JFrame {
 	private static JRadioButtonMenuItem distributedMenuItem;
 	
 	private static boolean canopy;
+	
+	private long time;
 
 	/**
 	 * Launch the application.
@@ -83,8 +92,7 @@ public class MainGUI extends JFrame {
 			public void run() {
 				try {
 					MainGUI window = new MainGUI();
-					window.setVisible(true);
-					
+					window.setVisible(true);					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -116,6 +124,7 @@ public class MainGUI extends JFrame {
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
+		
 		this.setBounds(100, 100, 740, 690);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -425,4 +434,7 @@ public class MainGUI extends JFrame {
 	public static void limpiar(){
 		main(null);
 	}
+	
+
+
 }
