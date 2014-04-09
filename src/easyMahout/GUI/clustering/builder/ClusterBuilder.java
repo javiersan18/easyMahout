@@ -38,6 +38,7 @@ import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.apache.mahout.clustering.Cluster;
+import org.apache.mahout.clustering.canopy.Canopy;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
 import org.apache.mahout.clustering.canopy.CanopyDriver;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
@@ -47,6 +48,7 @@ import org.apache.mahout.clustering.display.DisplayCanopy;
 import org.apache.mahout.clustering.display.DisplayFuzzyKMeans;
 import org.apache.mahout.clustering.display.DisplayKMeans;
 import org.apache.mahout.clustering.fuzzykmeans.FuzzyKMeansDriver;
+import org.apache.mahout.clustering.iterator.ClusterWritable;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
 import org.apache.mahout.common.HadoopUtil;
@@ -64,6 +66,7 @@ import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
 import org.apache.mahout.text.MultipleTextFileInputFormat;
+import org.apache.mahout.text.PrefixAdditionFilter;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
 import org.apache.mahout.text.SequenceFilesFromDirectoryMapper;
 import org.apache.mahout.utils.SplitInput;
@@ -123,7 +126,7 @@ public class ClusterBuilder {
 
 	private static File testData;
 
-	public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
+	//public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
 
 	private static final String[] KEY_PREFIX_OPTION = null;
 
@@ -768,6 +771,7 @@ public class ClusterBuilder {
 		ClusterBuilder.hadoop = hadoop;
 	}
 	public static void getHadoopJob(){
+		Configuration confHadoop=new Configuration();
 		
 		int i = 0;
 		String[] args1 = new String[6];
@@ -782,8 +786,8 @@ public class ClusterBuilder {
 		args1[i++] = "sequential";
 
 		try {
-
-//			ToolRunner.run(new SequenceFilesFromDirectory(), args1);
+//crear el chunk
+			ToolRunner.run(new SequenceFilesFromDirectory(), args1);
 
 			i = 0;
 			String[] args2 = new String[9];
@@ -800,39 +804,50 @@ public class ClusterBuilder {
 			args2[i++] = "--namedVector";
 			args2[i++] = "--weight";
 			args2[i++] = "tfidf";
-
-			//ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
-
+//crear los vectores
+			ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
+			
+			String clusterIn=DataModelClusterPanel.getOutputPath() + System.getProperty("file.separator")+"clusters";
+			//runMapReduce(new Path(DataModelClusterPanel.getInputPath()),new Path(DataModelClusterPanel.getOutputPath()));
+//crear los clusters iniciales
+			CanopyDriver.run(confHadoop,new Path(vec+System.getProperty("file.separator")+"tfidf-vectors") , new Path(clusterIn), d, t1, 0.9, true, t1, !hadoop);
+			
 			i = 0;
 			String[] args3 = new String[12];
 			args3[i++] = "--input";
 			args3[i++] = vec;
 
-			args3[i++] = "--trainingOutput";
-			args3[i++] = vec + System.getProperty("file.separator")+"trainingOutput";
 
-			args3[i++] = "--testOutput";
-			args3[i++] = vec + System.getProperty("file.separator")+" testOutput";	
-
-			args3[i++] = "--randomSelectionSize";
+			args3[i++] = "--randomSelectionPct";
 			args3[i++] = "20";
+			
+			args3[i++] = "-c";
+			String clusterIn2=DataModelClusterPanel.getOutputPath() + System.getProperty("file.separator")+"clusters";
+			args3[i++] = clusterIn2;
 
-
+			
 			args3[i++] = "--overwrite";
 			args3[i++] = "--sequenceFiles";
 
 			args3[i++] = "--method";
-			args3[i++] = "sequential";
-
-			//ToolRunner.run(new Configuration(), new SplitInput(), args3);
-			Configuration confHadoop=new Configuration();
-			Job job = new Job(confHadoop, "KMeansParallel");
+			args3[i++] = "mapreduce";
+			
+			args3[i++]="-mro";
+			args3[i++]=clusterIn2+"s";
+			
+			ToolRunner.run(new Configuration(), new SplitInput(), args3);
 			
 			
-			FileInputFormat.addInputPath(job, new Path(DataModelClusterPanel.getInputPath()));
-			FileOutputFormat.setOutputPath(job, new Path(DataModelClusterPanel.getOutputPath()+System.getProperty("file.separator")+"prueba2"));
-			job.waitForCompletion(true);
-			//KMeansDriver.run(confHadoop, new Path(vec), new Path(args2[1]), new Path(vec+ System.getProperty("file.separator")+"salida"), d, t1, iteraciones, true, t1, false);
+			String inputPoints=vec+System.getProperty("file.separator")+"tfidf-vectors";
+			String initialClusters=clusterIn+System.getProperty("file.separator")+"clusters-0-final";
+			
+			String outputK=vec+ System.getProperty("file.separator")+"output";
+			
+			KMeansDriver.run(confHadoop, new Path(inputPoints), new Path(initialClusters), new Path(outputK), d, t1, iteraciones, true, t1, !hadoop);
+			
+			String read=outputK+System.getProperty("file.separator")+"clusteredPoints"/*"clusters-"+(iteraciones-1)+"-final"*/+System.getProperty("file.separator")+"part-m-00000";
+			
+			writeResultHadoop(confHadoop,read);
 			MainGUI.writeResult("Hadoop Job OK", Constants.Log.INFO);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -842,12 +857,22 @@ public class ClusterBuilder {
 	private static int runMapReduce(Path input, Path output)
 		    throws IOException, ClassNotFoundException, InterruptedException
 		  {
+		  final String PREFIX_ADDITION_FILTER = PrefixAdditionFilter.class.getName();
+
+		   final String[] CHUNK_SIZE_OPTION = {"chunkSize", "chunk"};
+		  final String[] FILE_FILTER_CLASS_OPTION = {"fileFilterClass", "filter"};
+		  final String[] CHARSET_OPTION = {"charset", "c"};
+
+		  final int MAX_JOB_SPLIT_LOCATIONS = 1000000;
+
+		   final String[] KEY_PREFIX_OPTION = {"keyPrefix", "prefix"};
+		   final String BASE_INPUT_PATH = "baseinputpath";
 		    int chunkSizeInMB = 64;
-		  
+		    Configuration confHadoop=new Configuration();
 		   
-		   // Job job = HadoopUtil.prepareJob(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, Text.class, Text.class, Text.class, SequenceFileOutputFormat.class, conf);
-		    		//(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, SequenceFileOutputFormat.class, "SequenceFilesFromDirectory");
-		   Job job=new Job();
+		  Job job = null;// = HadoopUtil.prepareJob(input, output, MultipleTextFileInputFormat.class, SequenceFilesFromDirectoryMapper.class, Text.class, Text.class, SequenceFileOutputFormat.class, confHadoop);
+
+		   
 
 		    Configuration jobConfig = job.getConfiguration();
 		    String keyPrefix = null;
@@ -884,44 +909,44 @@ public class ClusterBuilder {
 		ClusterBuilder.puntos = puntos;
 	}
 		
-		/*Usage:                                                                          
- [--input <input> --output <output> --overwrite --method <method> --chunkSize   
-<chunkSize> --fileFilterClass <fileFilterClass> --keyPrefix <keyPrefix>         
---charset <charset> --method <method> --overwrite --help --tempDir <tempDir>    
---startPhase <startPhase> --endPhase <endPhase>]                                
-Job-Specific Options:                                                           
-  --input (-i) input                             Path to job input directory.   
-  --output (-o) output                           The directory pathname for     
-                                                 output.                        
-  --overwrite (-ow)                              If present, overwrite the      
-                                                 output directory before        
-                                                 running job                    
-  --method (-xm) method                          The execution method to use:   
-                                                 sequential or mapreduce.       
-                                                 Default is mapreduce           
-  --chunkSize (-chunk) chunkSize                 The chunkSize in MegaBytes.    
-                                                 Defaults to 64                 
-  --fileFilterClass (-filter) fileFilterClass    The name of the class to use   
-                                                 for file parsing. Default:     
-                                                 org.apache.mahout.text.PrefixAd
-                                                 ditionFilter                   
-  --keyPrefix (-prefix) keyPrefix                The prefix to be prepended to  
-                                                 the key                        
-  --charset (-c) charset                         The name of the character      
-                                                 encoding of the input files.   
-                                                 Default to UTF-8               
-  --method (-xm) method                          The execution method to use:   
-                                                 sequential or mapreduce.       
-                                                 Default is mapreduce           
-  --overwrite (-ow)                              If present, overwrite the      
-                                                 output directory before        
-                                                 running job                    
-  --help (-h)                                    Print out help                 
-  --tempDir tempDir                              Intermediate output directory  
-  --startPhase startPhase                        First phase to run             
-  --endPhase endPhase                            Last phase to run              
-Specify HDFS directories while running on hadoop; else specify local file       
-system directories */
+	public static void writeResultHadoop(Configuration confHadoop,String file){
+		FileSystem fileSystem=null;
+		//confHadoop.set("mapred.textoutputformat.separatorText", ",");
+		try {
+			fileSystem=FileSystem.get(confHadoop);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		SequenceFile.Reader reader3=null;
+		
+			try {
+				reader3 = new SequenceFile.Reader(fileSystem, new Path(file), confHadoop);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		IntWritable key2 = new IntWritable();
+		WeightedVectorWritable value2 = new WeightedVectorWritable();
+		try {
+			while (reader3.next(key2, value2)) {
+				String s=value2.toString() + " belongs to cluster " + key2.toString();
+				System.out.println(s);
+				MainGUI.writeResult(s, Constants.Log.RESULT);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			reader3.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 	
 }
 

@@ -76,8 +76,7 @@ import java.awt.ComponentOrientation;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
-import jcolibri.test.main.SwingProgressBar;
-import junit.awtui.ProgressBar;
+
 
 public class DataModelClusterPanel extends JPanel {
 
