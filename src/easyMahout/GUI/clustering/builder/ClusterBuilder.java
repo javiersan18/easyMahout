@@ -41,6 +41,7 @@ import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.canopy.Canopy;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
 import org.apache.mahout.clustering.canopy.CanopyDriver;
+import org.apache.mahout.clustering.classify.WeightedPropertyVectorWritable;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
 import org.apache.mahout.clustering.dirichlet.DirichletDriver;
 import org.apache.mahout.clustering.dirichlet.models.DistributionDescription;
@@ -691,18 +692,7 @@ public class ClusterBuilder {
 				while (reader2.next(key2, value2)) {
 					String s=value2.toString() + " belongs to cluster " + key2.toString();
 					System.out.println(s);//canopy
-					MainGUI.writeResult(s, Constants.Log.RESULT);
-					/*IntWritable x= key2;
-					WeightedVectorWritable data=value2;
-					float acum=0;
-					for (int i=0; i<data.getVector().size();i++){
-						acum+=data.getVector().get(i);
-						}
-					float y=acum/data.getVector().size();
-					Punto punto=new Punto(x,y);
-					puntos.add(punto);*/
-					
-					
+					MainGUI.writeResult(s, Constants.Log.RESULT);					
 				}
 				
 			} catch (IOException e) {
@@ -813,17 +803,17 @@ public class ClusterBuilder {
 			CanopyDriver.run(confHadoop,new Path(vec+System.getProperty("file.separator")+"tfidf-vectors") , new Path(clusterIn), d, t1, 0.9, true, t1, !hadoop);
 			
 			i = 0;
-			String[] args3 = new String[12];
+			String[] args3 = new String[10];
 			args3[i++] = "--input";
-			args3[i++] = vec;
+			args3[i++] = vec+System.getProperty("file.separator")+"tfidf-vectors";
 
 
 			args3[i++] = "--randomSelectionPct";
 			args3[i++] = "20";
 			
-			args3[i++] = "-c";
+			//args3[i++] = "--clusters";
 			String clusterIn2=DataModelClusterPanel.getOutputPath() + System.getProperty("file.separator")+"clusters";
-			args3[i++] = clusterIn2;
+			//args3[i++] = clusterIn2;
 
 			
 			args3[i++] = "--overwrite";
@@ -838,15 +828,15 @@ public class ClusterBuilder {
 			ToolRunner.run(new Configuration(), new SplitInput(), args3);
 			
 			
-			String inputPoints=vec+System.getProperty("file.separator")+"tfidf-vectors";
+			String inputPoints=vec+System.getProperty("file.separator")+"tfidf-vectors";//clusterIn2+"s";//
 			String initialClusters=clusterIn+System.getProperty("file.separator")+"clusters-0-final";
 			
 			String outputK=vec+ System.getProperty("file.separator")+"output";
 			
 			KMeansDriver.run(confHadoop, new Path(inputPoints), new Path(initialClusters), new Path(outputK), d, t1, iteraciones, true, t1, !hadoop);
 			
-			String read=outputK+System.getProperty("file.separator")+"clusteredPoints"/*"clusters-"+(iteraciones-1)+"-final"*/+System.getProperty("file.separator")+"part-m-00000";
-			
+			String read=outputK+System.getProperty("file.separator")+"clusters-"+(iteraciones-1)+"-final"+System.getProperty("file.separator")+"part-r-00000";
+			//"clusteredPoints"+System.getProperty("file.separator")+"part-m-00000"
 			writeResultHadoop(confHadoop,read);
 			MainGUI.writeResult("Hadoop Job OK", Constants.Log.INFO);
 		} catch (Exception e) {
@@ -854,6 +844,7 @@ public class ClusterBuilder {
 			MainGUI.writeResult("Not able to run Hadoop Job", Constants.Log.ERROR);
 		}
 	}
+	
 	private static int runMapReduce(Path input, Path output)
 		    throws IOException, ClassNotFoundException, InterruptedException
 		  {
@@ -899,16 +890,6 @@ public class ClusterBuilder {
 		    return 0;
 		  }
 
-
-	public static ArrayList<Punto> getPuntos() {
-		return puntos;
-	}
-
-
-	public static void setPuntos(ArrayList<Punto> puntos) {
-		ClusterBuilder.puntos = puntos;
-	}
-		
 	public static void writeResultHadoop(Configuration confHadoop,String file){
 		FileSystem fileSystem=null;
 		//confHadoop.set("mapred.textoutputformat.separatorText", ",");
@@ -918,28 +899,84 @@ public class ClusterBuilder {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		SequenceFile.Reader reader3=null;
+		SequenceFile.Reader reader=null;
 		
 			try {
-				reader3 = new SequenceFile.Reader(fileSystem, new Path(file), confHadoop);
+				reader = new SequenceFile.Reader(fileSystem, new Path(file), confHadoop);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		IntWritable key2 = new IntWritable();
-		WeightedVectorWritable value2 = new WeightedVectorWritable();
+		ClusterWritable value2 = new ClusterWritable();
+		List<Vector> vectors=new ArrayList<Vector>();
 		try {
-			while (reader3.next(key2, value2)) {
-				String s=value2.toString() + " belongs to cluster " + key2.toString();
-				System.out.println(s);
-				MainGUI.writeResult(s, Constants.Log.RESULT);
+			
+			while (reader.next(key2, value2)) {
+				
+				
+				Cluster cluster=value2.getValue();
+				int id=cluster.getId();
+				Vector center=cluster.getCenter();
+				
+				Vector radius=cluster.getRadius();
+				long totalObservations=cluster.getTotalObservations();
+				
+				String salida="Cluster :"+ id + " Center :"+center+ " Radius : "+radius + " Total Observations :" +totalObservations;
+				System.out.println(salida);
+				vectors.add(center);
+				
+				MainGUI.writeResult(salida, Constants.Log.RESULT);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
-			reader3.close();
+			reader.close();
+			writePointsToFile(vectors, file+"SOL", fileSystem, confHadoop);
+			
+			try {
+				CanopyDriver.run(confHadoop, new Path(file+"SOL"), new Path(file+"SALIDA"), d, t1, t2, t1, t2, 0, true, t1, true);
+				//----------------------------------------------------------
+				SequenceFile.Reader reader3=null;
+					try {
+
+						reader3 = new SequenceFile.Reader(fileSystem, new Path(file+"SALIDA" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-0"), confHadoop);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				
+				IntWritable key3 = new IntWritable();
+				WeightedVectorWritable value3 = new WeightedVectorWritable();
+				try {
+					
+					while (reader3.next(key3, value3)) {
+						String s=value3.toString() + " belongs to cluster " + key3.toString();
+						System.out.println(s);//canopy
+						MainGUI.writeResult(s, Constants.Log.RESULT);					
+					}
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					reader3.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
