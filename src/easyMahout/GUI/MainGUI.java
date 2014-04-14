@@ -139,12 +139,12 @@ public class MainGUI extends JFrame {
 		this.getContentPane().add(logScrollPane);
 
 		// Result log textField
-		logTextPane = new JTextPane();
-		logScrollPane.setViewportView(logTextPane);
-		logTextPane.setBackground(Color.WHITE);
-		logTextPane.setBounds(42, 501, 735, 131);
-		logTextPane.setEditable(false);
-		logTextPane.setContentType("text/html");
+		setLogTextPane(new JTextPane());
+		logScrollPane.setViewportView(getLogTextPane());
+		getLogTextPane().setBackground(Color.WHITE);
+		getLogTextPane().setBounds(42, 501, 735, 131);
+		getLogTextPane().setEditable(false);
+		getLogTextPane().setContentType("text/html");
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(2, 0, 732, 463);
@@ -183,7 +183,7 @@ public class MainGUI extends JFrame {
 			textBuilder.append("<font color=green>INFO: ").append(text).append("</font><br>");
 		}
 
-		logTextPane.setText(textBuilder.toString());
+		getLogTextPane().setText(textBuilder.toString());
 
 	}
 
@@ -362,6 +362,7 @@ public class MainGUI extends JFrame {
 				recommenderTab.setDistributed(distributed);
 				clusterTab.setDistributed(distributed);
 				// stop hadoop
+				ClusterBuilder.setHadoop(distributed);
 			}
 
 		});
@@ -376,6 +377,7 @@ public class MainGUI extends JFrame {
 				distributed = true;
 				recommenderTab.setDistributed(distributed);
 				clusterTab.setDistributed(distributed);
+				ClusterBuilder.setHadoop(distributed);
 				// Start Apache Hadoop
 			}
 		});
@@ -434,7 +436,17 @@ public class MainGUI extends JFrame {
 	public static void limpiar(){
 		main(null);
 	}
-	
 
+	public static JTextPane getLogTextPane() {
+		return logTextPane;
+	}
+
+	public static void setLogTextPane(JTextPane logTextPane) {
+		MainGUI.logTextPane = logTextPane;
+	}
+	
+public static void clean(){
+	logTextPane.setText(Constants.Log.EMPTY);
+}
 
 }

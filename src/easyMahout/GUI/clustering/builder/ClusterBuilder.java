@@ -2,12 +2,24 @@ package easyMahout.GUI.clustering.builder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import static java.nio.file.FileVisitResult.*;
 
 import javax.swing.JOptionPane;
 
@@ -127,8 +139,7 @@ public class ClusterBuilder {
 
 	private static File testData;
 
-	//public static final double[][] points= { { 1, 1 }, { 2, 1 }, { 1, 2 }, { 2, 2 }, { 3, 3 }, { 8, 8 }, { 9, 8 }, { 8, 9 }, { 9, 9 } ,{1000,10}} ;
-
+	
 	private static final String[] KEY_PREFIX_OPTION = null;
 
 	private static final Object[] CHUNK_SIZE_OPTION = null;
@@ -470,6 +481,10 @@ public class ClusterBuilder {
 		if (!testData.exists()) {
 			testData.mkdir();
 		}
+		else{ //trying to delete testData every time a mahout job is launched
+           startDeleting("testdata");
+
+        }
 		System.out.println("hola");
 		testData = new File("testdata"+ System.getProperty("file.separator")+"points");
 
@@ -835,7 +850,7 @@ public class ClusterBuilder {
 			
 			KMeansDriver.run(confHadoop, new Path(inputPoints), new Path(initialClusters), new Path(outputK), d, t1, iteraciones, true, t1, !hadoop);
 			
-			String read=outputK+System.getProperty("file.separator")+"clusters-"+(iteraciones-1)+"-final"+System.getProperty("file.separator")+"part-r-00000";
+			String read=outputK+System.getProperty("file.separator")+"clusters-"+/*(iteraciones-1)+*/"1-final"+System.getProperty("file.separator")+"part-r-00000";
 			//"clusteredPoints"+System.getProperty("file.separator")+"part-m-00000"
 			writeResultHadoop(confHadoop,read);
 			MainGUI.writeResult("Hadoop Job OK", Constants.Log.INFO);
@@ -918,7 +933,7 @@ public class ClusterBuilder {
 				Cluster cluster=value2.getValue();
 				int id=cluster.getId();
 				Vector center=cluster.getCenter();
-				
+				int features=center.getNumNonZeroElements();
 				Vector radius=cluster.getRadius();
 				long totalObservations=cluster.getTotalObservations();
 				
@@ -932,59 +947,48 @@ public class ClusterBuilder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
-			reader.close();
-			writePointsToFile(vectors, file+"SOL", fileSystem, confHadoop);
-			
-			try {
-				CanopyDriver.run(confHadoop, new Path(file+"SOL"), new Path(file+"SALIDA"), d, t1, t2, t1, t2, 0, true, t1, true);
-				//----------------------------------------------------------
-				SequenceFile.Reader reader3=null;
-					try {
-
-						reader3 = new SequenceFile.Reader(fileSystem, new Path(file+"SALIDA" +File.separatorChar + Cluster.CLUSTERED_POINTS_DIR +File.separatorChar +"part-m-0"), confHadoop);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				
-				IntWritable key3 = new IntWritable();
-				WeightedVectorWritable value3 = new WeightedVectorWritable();
-				try {
-					
-					while (reader3.next(key3, value3)) {
-						String s=value3.toString() + " belongs to cluster " + key3.toString();
-						System.out.println(s);//canopy
-						MainGUI.writeResult(s, Constants.Log.RESULT);					
-					}
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					reader3.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
 	}
 
-	
-	
+	public static void deleteContent(File index)
+	{
+		String[]entries = index.list();
+		for(String s: entries){
+		    File currentFile = new File(index.getPath(),s);
+		    if (currentFile.isDirectory()){
+		    	deleteContent(currentFile);
+		    }
+		    else currentFile.delete();
+		}
+	}
+	public static void startDeleting(String path) {
+        List<String> filesList = new ArrayList<String>();
+        List<String> folderList = new ArrayList<String>();
+        fetchCompleteList(filesList, folderList, path);
+        for(String filePath : filesList) {
+            File tempFile = new File(filePath);
+            tempFile.delete();
+        }
+        for(String filePath : folderList) {
+            File tempFile = new File(filePath);
+            tempFile.delete();
+        }
+    }
+
+private static void fetchCompleteList(List<String> filesList, List<String> folderList, String path) {
+    File file = new File(path);
+    File[] listOfFile = file.listFiles();
+    for(File tempFile : listOfFile) {
+        if(tempFile.isDirectory()) {
+            folderList.add(tempFile.getAbsolutePath());
+            fetchCompleteList(filesList, folderList, tempFile.getAbsolutePath());
+        } else {
+            filesList.add(tempFile.getAbsolutePath());
+        }
+
+    }
+
+}
 }
 
 

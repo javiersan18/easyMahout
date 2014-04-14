@@ -435,6 +435,7 @@ public class MainClusterPanel extends JPanel {
 		nodeConvergence.setEnabled(distributed);*/
 		nodeNClusters.setEnabled(!distributed);
 		nodeJob.setEnabled(distributed);
+		dataModelClusterPanel.setDistributed(distributed);
 		treeMenu.repaint();
 		this.setConfigPanelEnabled();
 	}

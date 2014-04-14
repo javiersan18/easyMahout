@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.ProgressMonitor;
 import javax.swing.border.LineBorder;
 
@@ -137,6 +138,7 @@ public class DataModelClusterPanel extends JPanel {
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
 		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
+		chckbxBooleanPreferences.setEnabled(false);
 
 		lblInputDataSource = new JLabel("Input data source:");
 		lblInputDataSource.setBounds(38, 105, 107, 14);
@@ -146,6 +148,7 @@ public class DataModelClusterPanel extends JPanel {
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
+		textInputPath.setEditable(false);
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textInputPath.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -171,7 +174,8 @@ public class DataModelClusterPanel extends JPanel {
 			}
 		});
 
-		btnSelectInput = new JButton("Select File...");
+		btnSelectInput=new JButton("Select File...");
+		
 		btnSelectInput.setBounds(182, 165, 107, 23);
 		add(btnSelectInput);
 
@@ -214,6 +218,7 @@ public class DataModelClusterPanel extends JPanel {
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
+		textOutputPath.setEditable(false);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textOutputPath.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -300,7 +305,6 @@ public class DataModelClusterPanel extends JPanel {
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
@@ -410,7 +414,7 @@ public class DataModelClusterPanel extends JPanel {
 		}
 
 		comboBoxDatamodel.setEnabled(!distributed);
-		btnCreate.setEnabled(!distributed);
+		//btnCreate.setEnabled(!distributed);
 	}
 
 	public static String getInputPath() {
