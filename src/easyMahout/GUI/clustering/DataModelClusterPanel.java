@@ -305,7 +305,7 @@ public class DataModelClusterPanel extends JPanel {
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				MainGUI.clean();
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
 				String delimiter = tfDelimiter.getText(); //delimiter
@@ -319,14 +319,11 @@ public class DataModelClusterPanel extends JPanel {
 						ClusterBuilder.buildCluster();
 
 					} catch (ClassNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					}
 
 				}
@@ -334,14 +331,11 @@ public class DataModelClusterPanel extends JPanel {
 					try {
 						ClusterBuilder.buildCluster();
 					} catch (ClassNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					}
 				}
 				
@@ -349,6 +343,8 @@ public class DataModelClusterPanel extends JPanel {
 				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
 				}
 			});
+		
+
 		
 
 		chckbxBooleanPreferences.addActionListener(new ActionListener() {
