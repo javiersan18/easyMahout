@@ -12,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -174,13 +177,13 @@ public class MainGUI extends JFrame {
 		// TODO: poner la hora a los logs, scroll o popup para ver los
 		// resultados comodamente.
 		if (type.equalsIgnoreCase(Constants.Log.ERROR)) {
-			textBuilder.append("<font color=red>ERROR: ").append(text).append("</font><br>");
+			textBuilder.append("<font color=red>ERROR: ").append(getDateTime()).append(text).append("</font><br>");
 		} else if (type.equalsIgnoreCase(Constants.Log.WARNING)) {
-			textBuilder.append("<font color=yellow>WARNING: ").append(text).append("</font><br>");
+			textBuilder.append("<font color=yellow>WARNING: ").append(getDateTime()).append(text).append("</font><br>");
 		} else if (type.equalsIgnoreCase(Constants.Log.RESULT)) {
-			textBuilder.append("<font color=black>RESULT: ").append(text).append("</font><br>");
+			textBuilder.append("<font color=black>RESULT: ").append(getDateTime()).append(text).append("</font><br>");
 		} else if (type.equalsIgnoreCase(Constants.Log.INFO)) {
-			textBuilder.append("<font color=green>INFO: ").append(text).append("</font><br>");
+			textBuilder.append("<font color=green>INFO: ").append(getDateTime()).append(text).append("</font><br>");
 		}
 
 		getLogTextPane().setText(textBuilder.toString());
@@ -446,7 +449,12 @@ public class MainGUI extends JFrame {
 	}
 	
 public static void clean(){
-	logTextPane.setText(Constants.Log.EMPTY);
+	textBuilder=new StringBuilder();
 }
-
+public static String getDateTime(){
+	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	Date date = new Date();
+	String s=dateFormat.format(date)+" ";
+	return s;
+}
 }

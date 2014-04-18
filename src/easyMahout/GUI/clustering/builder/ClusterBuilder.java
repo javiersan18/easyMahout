@@ -841,13 +841,10 @@ public class ClusterBuilder {
 				Vector center = cluster.getCenter();
 				int features = center.getNumNonZeroElements();
 				Vector radius = cluster.getRadius();
-				long totalObservations = cluster.getTotalObservations();
-
-				String salida = "Cluster :" + id + " Center :" + center + " Radius : " + radius + " Total Observations :"
-						+ totalObservations;
-				System.out.println(salida);
+				long numObservations = cluster.getNumObservations();
+				
+				String salida = "Cluster :" + id +" Center :" + center + " Radius : " + radius + " Num Observations :"+ numObservations;
 				vectors.add(center);
-
 				MainGUI.writeResult(salida, Constants.Log.RESULT);
 			}
 		} catch (IOException e) {
