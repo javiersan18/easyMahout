@@ -38,4 +38,9 @@ public class AlgorithmClassifierPanel extends JPanel {
 		add(algorithmComboBox);
 
 	}
+
+	public String getSelectedType() {
+		// TODO Auto-generated method stub
+		return (String) algorithmComboBox.getSelectedItem();
+	}
 }

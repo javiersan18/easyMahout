@@ -1,9 +1,21 @@
 package easyMahout.GUI.classification.builder;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.log4j.Logger;
-import org.apache.mahout.classifier.df.mapreduce.Classifier;
+import org.apache.mahout.math.Vector;
+import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
+import org.apache.mahout.classifier.AbstractVectorClassifier;
+import org.apache.mahout.classifier.naivebayes.*;
+import org.apache.mahout.classifier.sgd.*;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.classification.MainClassifierPanel;
+import easyMahout.GUI.clustering.builder.CreateSequenceFile;
 import easyMahout.utils.Constants;
 
 public class ClassifierBuilder {
@@ -12,62 +24,108 @@ public class ClassifierBuilder {
 
 	private static String algorithm;
 	private static int numCharacteristics;
+	private static FileSystem fs;
+	private static Configuration conf;
+	private static boolean hadoop = MainGUI.isDistributed();
+	private static boolean hayError;
+
+	private static File testData;
 	
-	public static Classifier buildClassifier(){
-		/*if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.USERBASED)) {
-			DataModel model = DataModelRecommenderPanel.getDataModel();
-			if (model != null) {
-				UserSimilarity similarity = SimilarityRecommenderPanel.getUserSimilarity(model);
-				UserNeighborhood neighborhood = NeighborhoodRecommenderPanel.getNeighborhood(similarity, model);
-				return new GenericUserBasedRecommender(model, neighborhood, similarity);
-			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
-				return null;
+	public static AbstractVectorClassifier buildClassifier() throws ClassNotFoundException, InterruptedException, IOException{
+		
+		hayError = false;
+		
+		algorithm = MainClassifierPanel.getAlgorithmClassifierPanel().getSelectedType();
+		
+		//NAIVEBAYES
+		if(algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES)){
+			
+			//Recoger variables necesarias para construccion
+			
+			StandardNaiveBayesClassifier classifier = null;
+			if (!hayError){
+				NaiveBayesModel model = ModelBuilder.createNaiveBayesModel();
+				classifier = new StandardNaiveBayesClassifier(model);
 			}
-
-		} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED)) {
-			DataModel model = DataModelRecommenderPanel.getDataModel();
-			if (model != null) {
-				ItemSimilarity similarity = SimilarityRecommenderPanel.getItemSimilarity(model);
-				return new GenericItemBasedRecommender(model, similarity);
-			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
-				return null;
+			if (classifier != null) {
+				constructClassifier();
+				MainGUI.writeResult("OK building the classifier: Algorithm "+ algorithm, Constants.Log.INFO);
+			} else { 					
+				log.error("Error building the classifier");
+				MainGUI.writeResult("Error building the classifier", Constants.Log.ERROR);
 			}
-
-		} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
-			DataModel model = DataModelRecommenderPanel.getDataModel();
-			if (model != null) {				
-				Factorizer factorizer = FactorizerRecommenderPanel.getFactorizer();
-				if (factorizer != null) {
-					CandidateItemsStrategy candidate = FactorizerRecommenderPanel.getCandidate();
-					if (candidate != null) {
-						try {
-							return new SVDRecommender(model, factorizer, candidate);
-						} catch (TasteException e) {
-							// TODO Auto-generated catch block
-							log.error("Error building the recommender.");
-							MainGUI.writeResult("Error building the recommender.", Constants.Log.ERROR);
-							e.printStackTrace();							
-						}
-					}
-				} else {
-					// TODO change error messages
-					log.error("Factorizer couldn't be built successfully.");
-					MainGUI.writeResult("Factorizer couldn't be built successfully.", Constants.Log.ERROR);
-					return null;
-				}
-			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
-				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
-				return null;
+			
+			return classifier;
+		}
+		//COMPLEMENTARY NAIVE BAYES
+		else if(algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES)){
+			
+			//Recoger variables necesarias para construccion
+			
+			ComplementaryNaiveBayesClassifier classifier = null;
+			if (!hayError){
+				NaiveBayesModel model = ModelBuilder.createNaiveBayesModel();
+				classifier = new ComplementaryNaiveBayesClassifier(model); //Pasarle el modelo
 			}
-
-		} else {
-			return null;
-		}*/
-		return null;		
-	}	
+			if (classifier != null) {
+				constructClassifier();
+				MainGUI.writeResult("OK building the classifier: Algorithm "+ algorithm, Constants.Log.INFO);
+			} else { 					
+				log.error("Error building the classifier");
+				MainGUI.writeResult("Error building the classifier", Constants.Log.ERROR);
+			}
+			
+			return classifier;
+		}
+		//SGD
+		else if(algorithm.equals(Constants.ClassificatorAlg.SGD)){
+			
+			//Recoger variables necesarias para construccion
+			
+			OnlineLogisticRegression classifier = null;
+			if (!hayError){
+				classifier = new OnlineLogisticRegression();
+			}
+			if (classifier != null) {
+				constructClassifier();
+				MainGUI.writeResult("OK building the classifier: Algorithm "+ algorithm, Constants.Log.INFO);
+			} else { 					
+				log.error("Error building the classifier");
+				MainGUI.writeResult("Error building the classifier", Constants.Log.ERROR);
+			}
+			
+			return classifier;
+		}
+		
+		// (1)
+		//seqFile = new SequenceFileFromDirectory() --> /Mahout-distribution/distribution/target/mahout-distribution-0.8-src/mahout-distribution-0.8/integration/src/main/java/org/apache/mahout/text
+		//seqFile.run(args)
+		
+		// (2)
+		//sparseVec = new vectorSparseVectorsFromSequenceFiles()
+		//sparseVec.run(args)
+		
+  		return null;		
+	}
+	
+	public static void constructClassifier(){
+		List<Vector> vectors =  CreateSequenceFile.getVectors();
+		
+		//Pasar a sparseVectors --> SparseVectorsFromSequenceFiles.run()
+		
+		testData = new File("testdata");
+		if (!testData.exists()) {
+			testData.mkdir();
+		}
+		
+		Configuration conf = new Configuration();
+		FileSystem fs = null;
+		try {
+			fs = FileSystem.get(conf);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

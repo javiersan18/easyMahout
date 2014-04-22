@@ -14,6 +14,7 @@ import javax.swing.JTree;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
@@ -44,8 +45,16 @@ public class MainClassifierPanel extends JPanel {
 	private JPanel panelClassifier;
 
 	private JPanel treePanel; 
+	
+	private static DataDefinitionsClassifierPanel dataDefinitionsClassifierPanel;
 
-	private JPanel p1, p2, p3, p4;
+	private static DataModelClassifierPanel dataModelClassifierPanel;
+	
+	private static TrainingDataClassificationPanel trainingDataClassificationPanel;
+	
+	private static AlgorithmClassifierPanel algorithmClassifierPanel;
+	
+	private static EvaluatorClassifierPanel evaluatorClassifierPanel;
 	
 	private static boolean configurationModified;
 
@@ -66,12 +75,14 @@ public class MainClassifierPanel extends JPanel {
 	private DisabledNode nodeTraining;
 
 	private DisabledNode nodeAlgorithm;
+	
+	private DisabledNode nodeDataDefs;
 
 	private DisabledNode nodeEvaluator;
 
 	private DisabledNode nodeSaves;
 
-	private DisabledNode nodeSelected;
+	private DisabledNode nodeSelected;	
 
 	public MainClassifierPanel(){
 		
@@ -109,30 +120,36 @@ public class MainClassifierPanel extends JPanel {
 		this.add(treePanel);
 		
 		// Create different panes
+		
+		dataDefinitionsClassifierPanel = new DataDefinitionsClassifierPanel();
+		dataDefinitionsClassifierPanel.setBounds(238, 11, 481, 410);
+		panelClassifier.add(dataDefinitionsClassifierPanel);
+		dataDefinitionsClassifierPanel.setLayout(null);
+		dataDefinitionsClassifierPanel.setVisible(false);
 
-		p1 = new DataModelClassifierPanel();
-		p1.setBounds(238, 11, 481, 382);
-		panelClassifier.add(p1);
-		p1.setLayout(null);
-		p1.setVisible(false);
+		dataModelClassifierPanel = new DataModelClassifierPanel();
+		dataModelClassifierPanel.setBounds(238, 11, 481, 410);
+		panelClassifier.add(dataModelClassifierPanel);
+		dataModelClassifierPanel.setLayout(null);
+		dataModelClassifierPanel.setVisible(false);
 
-		p2 = new TrainingDataClassificationPanel();
-		p2.setBounds(238, 11, 481, 382);
-		panelClassifier.add(p2);
-		p2.setLayout(null);
-		p2.setVisible(false);
+		trainingDataClassificationPanel = new TrainingDataClassificationPanel();
+		trainingDataClassificationPanel.setBounds(238, 11, 481, 410);
+		panelClassifier.add(trainingDataClassificationPanel);
+		trainingDataClassificationPanel.setLayout(null);
+		trainingDataClassificationPanel.setVisible(false);
 
-		p3 = new AlgorithmClassifierPanel();
-		p3.setBounds(238, 11, 481, 382);
-		panelClassifier.add(p3);
-		p3.setLayout(null);
-		p3.setVisible(false);
+		algorithmClassifierPanel = new AlgorithmClassifierPanel();
+		algorithmClassifierPanel.setBounds(238, 11, 481, 410);
+		panelClassifier.add(algorithmClassifierPanel);
+		algorithmClassifierPanel.setLayout(null);
+		algorithmClassifierPanel.setVisible(false);
 
-		p4 = new EvaluatorClassifierPanel();
-		p4.setBounds(238, 11, 481, 382);
-		panelClassifier.add(p4);
-		p4.setLayout(null);
-		p4.setVisible(false);
+		evaluatorClassifierPanel = new EvaluatorClassifierPanel();
+		evaluatorClassifierPanel.setBounds(238, 11, 481, 410);
+		panelClassifier.add(evaluatorClassifierPanel);
+		evaluatorClassifierPanel.setLayout(null);
+		evaluatorClassifierPanel.setVisible(false);
 	}
 
 	public JPanel getTreePanel() {
@@ -147,11 +164,12 @@ public class MainClassifierPanel extends JPanel {
 
 		String[] categories = { "Root", // 0
 				"Configure", // 1
-				"Data Model", // 2
-				"Training Data", // 3
-				"Algorithm", // 4
-				"Evaluator", // 5
-				"Saves" //6
+				"Algorithm", // 2
+				"Data Definitions", //3
+				"Training Data", // 4
+				"Data Model", // 5				
+				"Evaluator", // 6
+				"Saves" //7
 		};
 		
 		treeNodes = new ArrayList<DisabledNode>();
@@ -164,13 +182,15 @@ public class MainClassifierPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(3));
 		treeNodes.get(1).add(treeNodes.get(4));
 		treeNodes.get(1).add(treeNodes.get(5));
-		treeNodes.get(0).add(treeNodes.get(6));
+		treeNodes.get(1).add(treeNodes.get(6));
+		treeNodes.get(0).add(treeNodes.get(7));
 		
 		nodeConfigure = treeNodes.get(1);
-		nodeTraining = treeNodes.get(3);
-		nodeAlgorithm = treeNodes.get(4);
-		nodeEvaluator = treeNodes.get(5);
-		nodeSaves = treeNodes.get(6);		
+		nodeAlgorithm = treeNodes.get(2);
+		nodeDataDefs = treeNodes.get(3);
+		nodeTraining = treeNodes.get(4);		
+		nodeEvaluator = treeNodes.get(6);
+		nodeSaves = treeNodes.get(7);		
 		
 		ArrayList<DisabledNode> savesNodes = getSavesFiles();
 		if (savesNodes != null) {
@@ -201,33 +221,44 @@ public class MainClassifierPanel extends JPanel {
 
 						String category = (String) nodeSelected.getUserObject();
 						
-						if (category.equals("Data Model")) {
+						if (category.equals("Data Definitions")){
+							log.info("dataDefsB1");
+							dataDefinitionsClassifierPanel.setVisible(true);
+							dataModelClassifierPanel.setVisible(false);
+							trainingDataClassificationPanel.setVisible(false);
+							algorithmClassifierPanel.setVisible(false);
+							evaluatorClassifierPanel.setVisible(false);
+						} else if (category.equals("Data Model")) {
 							log.info("dataB1");
-							p1.setVisible(true);
-							p2.setVisible(false);
-							p3.setVisible(false);
-							p4.setVisible(false);
+							dataDefinitionsClassifierPanel.setVisible(false);
+							dataModelClassifierPanel.setVisible(true);
+							trainingDataClassificationPanel.setVisible(false);
+							algorithmClassifierPanel.setVisible(false);
+							evaluatorClassifierPanel.setVisible(false);
 
 						} else if (category.equals("Training Data")) {
 							log.info("trainingDataB1");
-							p1.setVisible(false);
-							p2.setVisible(true);
-							p3.setVisible(false);
-							p4.setVisible(false);
+							dataDefinitionsClassifierPanel.setVisible(false);
+							dataModelClassifierPanel.setVisible(false);
+							trainingDataClassificationPanel.setVisible(true);
+							algorithmClassifierPanel.setVisible(false);
+							evaluatorClassifierPanel.setVisible(false);
 
 						} else if (category.equals("Algorithm")) {
 							log.info("algorithmB1");
-							p1.setVisible(false);
-							p2.setVisible(false);
-							p3.setVisible(true);
-							p4.setVisible(false);
+							dataDefinitionsClassifierPanel.setVisible(false);
+							dataModelClassifierPanel.setVisible(false);
+							trainingDataClassificationPanel.setVisible(false);
+							algorithmClassifierPanel.setVisible(true);
+							evaluatorClassifierPanel.setVisible(false);
 
 						} else if (category.equals("Evaluator")) {
 							log.info("evalB1");
-							p1.setVisible(false);
-							p2.setVisible(false);
-							p3.setVisible(false);
-							p4.setVisible(true);
+							dataDefinitionsClassifierPanel.setVisible(false);
+							dataModelClassifierPanel.setVisible(false);
+							trainingDataClassificationPanel.setVisible(false);
+							algorithmClassifierPanel.setVisible(false);
+							evaluatorClassifierPanel.setVisible(true);
 						}
 					}
 				}
@@ -438,15 +469,30 @@ public class MainClassifierPanel extends JPanel {
 		MainClassifierPanel.configurationModified = configurationModified;
 	}
 
-	public String getActiveConfigutation() {
+	public String getActiveConfiguration() {
 		return activeConfigutation;
 	}
 
-	public void setActiveConfigutation(String activeConfigutation) {
+	public void setActiveConfiguration(String activeConfigutation) {
 		this.activeConfigutation = activeConfigutation;
 	}
 
 	public static String getFileName() {
 		return fileName;
+	}
+
+	public static AlgorithmClassifierPanel getAlgorithmClassifierPanel() {
+		// TODO Auto-generated method stub
+		return algorithmClassifierPanel;
+	}
+	
+	public static DataDefinitionsClassifierPanel getDataDefinitionsClassifierPanel() {
+		// TODO Auto-generated method stub
+		return dataDefinitionsClassifierPanel;
+	}
+
+	public static TrainingDataClassificationPanel getTrainingDataClassifierPanel() {
+		// TODO Auto-generated method stub
+		return trainingDataClassificationPanel;
 	}
 }

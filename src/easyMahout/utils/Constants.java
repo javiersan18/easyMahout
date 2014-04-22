@@ -331,4 +331,14 @@ public class Constants {
 		public static final String RAMDOMFOREST = "RAMDOM FOREST";
 	}
 	
+	public class ClassificatorPredictorTypes {
+		
+		public static final String WORD = "WORD";
+		
+		public static final String TEXT = "TEXT";
+		
+		public static final String NUMERIC = "NUMERIC";	
+		
+	}
+	
 }
