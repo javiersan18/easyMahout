@@ -286,7 +286,9 @@ public class Constants {
 
 		public static final String DIRICHLET = "DIRICHLET";
 
-		public static final String USER_DEFINED = "USER_DEFINED";
+		public static final String USER_DEFINED = "Please choose an algorithm";
+		
+		public static final int NUMBER_ALG = 3;
 
 	}
 

@@ -91,7 +91,7 @@ import MahoutInAction.Clustering.Clustering72;
 
 import easyMahout.GUI.MainGUI;
 
-import easyMahout.GUI.Punto;
+
 import easyMahout.GUI.clustering.AlgorithmClusterPanel;
 import easyMahout.GUI.clustering.DataModelClusterPanel;
 import easyMahout.GUI.clustering.DistanceMeasurePanel;
@@ -141,7 +141,7 @@ public class ClusterBuilder {
 
 	private static final Object[] CHUNK_SIZE_OPTION = null;
 
-	private static ArrayList<Punto> puntos = new ArrayList<Punto>();
+
 
 	public static Cluster buildCluster() throws ClassNotFoundException, InterruptedException, IOException {
 
@@ -244,13 +244,13 @@ public class ClusterBuilder {
 
 			if (cluster != null) {
 				constructCluster(false);
-				MainGUI.writeResult("OK building the clusters :Algorithm " + algoritmo + " Distance  " + d + " Treshold " + treshold1
+				/*MainGUI.writeResult("OK building the clusters :Algorithm " + algoritmo + " Distance  " + d + " Treshold " + treshold1
 						+ " Iterations " + it, Constants.Log.INFO);
-				// TODO escribir los datos del cluster en un doc
-			}
+				*/
+				}
 
 			else
-				MainGUI.writeResult("error building the clusters", Constants.Log.ERROR);
+				MainGUI.writeResult("Error building the clusters", Constants.Log.ERROR);
 		}
 		// fin CANOPY
 		// --------------------------------------------------------------------------------------------
@@ -568,11 +568,13 @@ public class ClusterBuilder {
 					if (kmeans) {
 						Path pointsPath = new Path(DataModelClusterPanel.getOutputPath());
 						DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
+						//MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 					}
 
 					else if (esCanopy) {
 						Path pointsPath = new Path(DataModelClusterPanel.getOutputPath());
 						CanopyDriver.run(conf, pointsPath, output, d, t1, t2, true, t1, !hadoop);
+						//MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 					}
 
 					else {
@@ -583,12 +585,7 @@ public class ClusterBuilder {
 						float fuzzyFactor = Float.parseFloat(s);
 
 						DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
-
-						try {
-							DisplayFuzzyKMeans.main(null);
-						} catch (Exception e) {
-							MainGUI.writeResult("Not able to draw the clusters and points", Constants.Log.WARNING);
-						}
+						//MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 					}
 				} catch (ClassNotFoundException e) {
 					MainGUI.writeResult("Not able to build the clusters", Constants.Log.ERROR);
@@ -634,7 +631,7 @@ public class ClusterBuilder {
 				} catch (IOException e) {
 					MainGUI.writeResult("Not able to close the reader", Constants.Log.ERROR);
 				}
-
+				MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 			}
 		} else {
 			vectors = null;

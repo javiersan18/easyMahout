@@ -409,6 +409,9 @@ public class MainGUI extends JFrame {
 	public static boolean isDistributed() {
 		return distributed;
 	}
+	public static boolean isSequential() {
+		return !distributed;
+	}
 
 	public static void setDistributed(boolean distributed) {
 		MainGUI.distributed = distributed;

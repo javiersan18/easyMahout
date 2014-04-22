@@ -1,6 +1,7 @@
 package easyMahout.GUI.clustering;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -103,7 +104,7 @@ public class DataModelClusterPanel extends JPanel {
 
 	private JButton btnSelectOutput;
 
-	private JButton btnCreate;
+	private static JButton btnCreate;
 
 	private final JButton btnHelp;
 
@@ -305,6 +306,11 @@ public class DataModelClusterPanel extends JPanel {
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			//mouse loading
+				
+				btnCreate.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				 
+				  
 				MainGUI.clean();
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
@@ -341,7 +347,11 @@ public class DataModelClusterPanel extends JPanel {
 				
 			}
 				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
-				}
+				
+			//mouse finished loading
+				btnCreate.setCursor(Cursor.getDefaultCursor());
+				
+			}
 			});
 		
 
@@ -396,13 +406,14 @@ public class DataModelClusterPanel extends JPanel {
 	public void setDistributed(boolean distributed) {
 
 		if (distributed) {
-			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
+			helpTooltip.setText(ClusterTips.CLUSTER_DATAMODEL_DIST);
 			lblOutputDataSource.setText("Output directory:");
 			lblInputDataSource.setText("Input directory:");
 			btnSelectOutput.setText("Select Folder...");
 			btnSelectInput.setText("Select Folder...");
+			
 		} else {
-			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);
+			helpTooltip.setText(ClusterTips.CLUSTER_DATAMODEL);
 			lblOutputDataSource.setText("Output data file (Optional):");
 			lblInputDataSource.setText("Input data source:");
 			btnSelectOutput.setText("Select File...");
@@ -410,7 +421,8 @@ public class DataModelClusterPanel extends JPanel {
 		}
 
 		comboBoxDatamodel.setEnabled(!distributed);
-		//btnCreate.setEnabled(!distributed);
+		tfDelimiter.setEnabled(!distributed);
+		
 	}
 
 	public static String getInputPath() {
@@ -472,6 +484,8 @@ public class DataModelClusterPanel extends JPanel {
 	public static void setOutputFormatted(String outputFormatted) {
 		DataModelClusterPanel.outputFormatted = outputFormatted;
 	}
-
+public static void push(){
+	btnCreate.doClick();
+}
 	
 }

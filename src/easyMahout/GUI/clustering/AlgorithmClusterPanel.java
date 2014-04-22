@@ -4,8 +4,11 @@ package easyMahout.GUI.clustering;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 	import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -35,6 +38,8 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
 
+import sun.java2d.pipe.DrawImage;
+
 	public class AlgorithmClusterPanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
@@ -49,9 +54,8 @@ import org.apache.log4j.Logger;
 		private final static Logger log = Logger.getLogger(MaxIterationsPanel.class);
 		
 		private final static String ayuda = "[2..9999]";
-
+	
 		public AlgorithmClusterPanel() {
-			// super();
 			setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Algorithm of the cluster", TitledBorder.CENTER,
 					TitledBorder.TOP, null, null));
 			setForeground(Color.BLACK);
@@ -60,10 +64,35 @@ import org.apache.log4j.Logger;
 
 			comboBoxAlg = new JComboBox();
 			comboBoxAlg.setModel(new DefaultComboBoxModel(new String[] { Constants.ClusterAlg.USER_DEFINED, Constants.ClusterAlg.CANOPY, Constants.ClusterAlg.KMEANS,
-					Constants.ClusterAlg.FUZZYKMEANS, Constants.ClusterAlg.DIRICHLET }));
+					Constants.ClusterAlg.FUZZYKMEANS/*,Constants.ClusterAlg.DIRICHLET*/ }));
 			comboBoxAlg.setBounds(38, 36, 141, 20);
 			
 			add(comboBoxAlg);
+			
+			comboBoxAlg.setInputVerifier(new InputVerifier() {
+				public boolean verify(JComponent input) {
+					JComboBox tf = (JComboBox) input;
+					int text = tf.getSelectedIndex();
+					String name=(String) tf.getSelectedItem();
+					try {
+						int i = text;
+						if (i >= 1 && i <= Constants.ClusterAlg.NUMBER_ALG) {
+							comboBoxAlg.setBackground(Color.WHITE);
+							return true;
+						} else {
+							log.error(name + " is not a valid algorithm");
+							MainGUI.writeResult("You have to choose a valid algorithm from the list", Constants.Log.ERROR);
+							comboBoxAlg.setBackground(new Color(240, 128, 128));
+							return false;
+						}
+					} catch (NumberFormatException e) {
+						log.error(name + " is not a valid algorithm, focus not lost");
+						MainGUI.writeResult("You have to choose a valid algorithm from the list", Constants.Log.ERROR);
+						comboBoxAlg.setBackground(new Color(240, 128, 128));
+						return false;
+					}
+				}
+			});
 			
 			emitMostLikely = new JCheckBox("Emit Most Likely");
 			emitMostLikely.setBounds(256, 35, 157, 23);
@@ -79,7 +108,7 @@ import org.apache.log4j.Logger;
 			
 			campoFuzzyFactor = new JTextField();
 			campoFuzzyFactor.setBounds(256, 95, 157, 23);
-			
+			campoFuzzyFactor.setText("0");
 			campoFuzzyFactor.setToolTipText(ayuda);
 			add(campoFuzzyFactor);
 			
@@ -153,6 +182,7 @@ import org.apache.log4j.Logger;
 						emitMostLikely.setEnabled(true);
 						fuzzyFactor.setEnabled(true);
 						campoFuzzyFactor.setEnabled(true);
+						
 					}
 					else if (alg.equals(Constants.ClusterAlg.DIRICHLET)) {
 						MainClusterPanel.setCanopy(false);

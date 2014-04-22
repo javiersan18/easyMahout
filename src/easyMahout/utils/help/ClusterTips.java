@@ -30,8 +30,8 @@ public class ClusterTips {
 
 	public static final String CLUSTER_CONFIG = "<html>"
 			+ "<h4>Steps to build clusters</h4>"
-			+ "<br><p><u><b>1.</b></u> The system generates clusters using only information</p>"
-			+ "<br><p><u><b>2.</b></u> about rating profiles for different users.</p><p>User based clusters locate peer users with a rating history similar to the </p>"
+			+ "<br><p><u><b>1.</b></u> The system generates clusters using </p>"
+			+ "<br><p><u><b>2.</b></u> An algorithm : K-Means,Canopy,Fuzzy K-Means</p><p>Distance Measure in order to calculate the items' similarity </p>"
 			+ "<br><p><u><b>3.</b></u> current user and generate clusters using this neighborhood.</p>" + "<br>"
 			+ "<p><u><b>4.</b></u></p>" + "</html>";
 

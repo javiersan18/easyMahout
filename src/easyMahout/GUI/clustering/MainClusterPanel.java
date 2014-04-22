@@ -430,9 +430,6 @@ public class MainClusterPanel extends JPanel {
 
 	public void setDistributed(boolean distributed) {
 		nodeAlgorithm.setEnabled(!distributed);
-		/*nodeDistanceMeasure.setEnabled(distributed);
-		nodeDataModel.setEnabled(distributed);
-		nodeConvergence.setEnabled(distributed);*/
 		nodeNClusters.setEnabled(!distributed);
 		nodeJob.setEnabled(distributed);
 		dataModelClusterPanel.setDistributed(distributed);
