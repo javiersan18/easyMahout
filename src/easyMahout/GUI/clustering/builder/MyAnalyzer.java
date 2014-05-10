@@ -1,19 +1,18 @@
 package easyMahout.GUI.clustering.builder;
 
-import java.io.Reader;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import easyMahout.GUI.clustering.DataModelClusterPanel;
+import org.math.plot.Plot2DPanel;
+import org.math.plot.plotObjects.BaseDependant;
 
-public class MyAnalyzer extends Analyzer {
 
-	@Override
-	protected TokenStreamComponents createComponents(String arg0, Reader arg1) {
-		// TODO Auto-generated method stub
-	
-		return new TokenStreamComponents((Tokenizer) DataModelClusterPanel.getDataModel());
-	}
+public abstract class MyAnalyzer extends JPanel implements MouseListener, MouseMotionListener, ComponentListener, BaseDependant, MouseWheelListener {
 
+	 
 }

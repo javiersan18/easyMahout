@@ -7,8 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -18,6 +20,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -52,6 +55,8 @@ import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
+import org.math.plot.Plot2DPanel;
+import org.math.plot.Plot3DPanel;
 
 import com.jidesoft.swing.FolderChooser;
 import com.jidesoft.utils.SwingWorker;
@@ -323,7 +328,8 @@ public class DataModelClusterPanel extends JPanel {
 					ReadSequenceFile.readSequenceFile(output, outputFormatted);
 					try {
 						ClusterBuilder.buildCluster();
-
+						
+						//dibuja();
 					} catch (ClassNotFoundException e1) {
 						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
 					} catch (InterruptedException e1) {
@@ -484,8 +490,29 @@ public class DataModelClusterPanel extends JPanel {
 	public static void setOutputFormatted(String outputFormatted) {
 		DataModelClusterPanel.outputFormatted = outputFormatted;
 	}
-public static void push(){
-	btnCreate.doClick();
-}
-	
+	public static void push(){
+		btnCreate.doClick();
+	}
+	public static void dibuja(){
+	/*	double[] x = {0.5,0.9,7};
+		double[] y = {30,9,8};
+		double[] z= {2,4,8};*/
+		double [][] matriz = null;
+		HashMap<IntWritable,WeightedVectorWritable> dots= ClusterBuilder.getPuntos();
+		// create your PlotPanel (you can use it as a JPanel)
+		Plot3DPanel plot = new Plot3DPanel();
+		Set<IntWritable> points = dots.keySet();
+		for (int i=0;i<points.size();i++){
+		// add a line plot to the PlotPanel
+			
+		plot.addGridPlot("", Color.black, matriz);	
+		//plot.addLinePlot("my plot", x, y,z);
+		
+		}
+		// put the PlotPanel in a JFrame, as a JPanel
+		JFrame frame = new JFrame("Clusters");
+		frame.setSize(500, 500);
+		frame.setContentPane(plot);
+		frame.setVisible(true);
+	}
 }

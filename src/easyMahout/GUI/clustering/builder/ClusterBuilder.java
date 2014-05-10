@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -140,6 +141,8 @@ public class ClusterBuilder {
 	private static final String[] KEY_PREFIX_OPTION = null;
 
 	private static final Object[] CHUNK_SIZE_OPTION = null;
+	
+	private static HashMap<IntWritable,WeightedVectorWritable> puntos = new HashMap<IntWritable,WeightedVectorWritable>();
 
 
 
@@ -585,6 +588,12 @@ public class ClusterBuilder {
 						float fuzzyFactor = Float.parseFloat(s);
 
 						DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
+						try {
+							DisplayFuzzyKMeans.main(null);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						//MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 					}
 				} catch (ClassNotFoundException e) {
@@ -619,6 +628,7 @@ public class ClusterBuilder {
 
 					while (reader2.next(key2, value2)) {
 						String s = value2.toString() + " belongs to cluster " + key2.toString();
+						puntos.put(key2, value2);
 						System.out.println(s);// canopy
 						MainGUI.writeResult(s, Constants.Log.RESULT);
 					}
@@ -889,4 +899,13 @@ public class ClusterBuilder {
 		}
 
 	}
+
+	public static HashMap<IntWritable, WeightedVectorWritable> getPuntos() {
+		return puntos;
+	}
+
+	public static void setPuntos(HashMap<IntWritable, WeightedVectorWritable> puntos) {
+		ClusterBuilder.puntos = puntos;
+	}
+	
 }

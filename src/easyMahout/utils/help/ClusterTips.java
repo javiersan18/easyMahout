@@ -30,10 +30,13 @@ public class ClusterTips {
 
 	public static final String CLUSTER_CONFIG = "<html>"
 			+ "<h4>Steps to build clusters</h4>"
-			+ "<br><p><u><b>1.</b></u> The system generates clusters using </p>"
-			+ "<br><p><u><b>2.</b></u> An algorithm : K-Means,Canopy,Fuzzy K-Means</p><p>Distance Measure in order to calculate the items' similarity </p>"
-			+ "<br><p><u><b>3.</b></u> current user and generate clusters using this neighborhood.</p>" + "<br>"
-			+ "<p><u><b>4.</b></u></p>" + "</html>";
+			+ "<br><p><u><b>1.</b></u> Choose the algorithm : K-Means,Canopy,Fuzzy K-Means </p>"
+			+ "<br><p><u><b>2.</b></u> Select the distance measure:  Euclidean,Manhattan,Tanimoto, etc. </p>"
+			+ "<br><p><u><b>3.</b></u> Insert the convergence threshold : between 0 and 1.</p>"
+			+ "<br><p><u><b>4.</b></u> Write the number of clusters : you wish the algorithm structure your data"+"<br>(only available in some algorithms).</p>"
+			+ "<br><p><u><b>5.</b></u> Write the number of iterations you wish the algorithm to give. </p>" 
+			+ "<br><p><u><b>6.</b></u> Choose the data file you wish to cluster on </p>"
+			+ "</html>";
 
 	public static final String CLUSTER_TYPE_DIST = "<html>"
 			+ "<h4>Cluster Types Distributed</h4>"
