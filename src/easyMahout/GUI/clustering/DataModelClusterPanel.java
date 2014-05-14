@@ -213,7 +213,7 @@ public class DataModelClusterPanel extends JPanel {
 		add(btnHelp);
 
 		// Help Tip
-		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
+		helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_DATAMODEL);
 		add(helpTooltip);
 
 		lblOutputDataSource = new JLabel("Output data source :");

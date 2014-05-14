@@ -161,7 +161,7 @@ import org.apache.log4j.Logger;
 				add(btnHelp);
 
 				// Help Tip
-				helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_NITERATIONS);
+				helpTooltip = new HelpTooltip(btnHelp, ClusterTips.CLUSTER_THRESHOLD);
 				add(helpTooltip);
 
 			}

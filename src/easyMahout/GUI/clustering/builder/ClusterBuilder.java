@@ -571,12 +571,19 @@ public class ClusterBuilder {
 					if (kmeans) {
 						Path pointsPath = new Path(DataModelClusterPanel.getOutputPath());
 						DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
+						try {
+							DisplayKMeans.main(null);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						//MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 					}
 
 					else if (esCanopy) {
 						Path pointsPath = new Path(DataModelClusterPanel.getOutputPath());
 						CanopyDriver.run(conf, pointsPath, output, d, t1, t2, true, t1, !hadoop);
+						
 						//MainGUI.writeResult("OK executing the task", Constants.Log.INFO);
 					}
 
