@@ -5,6 +5,8 @@ package easyMahout.GUI;
 
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -17,6 +19,9 @@ import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
+
+import MahoutInAction.Classification.sgd.TrainLogistic;
 import easyMahout.utils.Environment;
 
 
@@ -51,7 +56,7 @@ public class NaiveBayesClassifier {
 
 		
 		int i = 0;
-		String[] args1 = new String[6];
+		/*String[] args1 = new String[6];
 		args1[i++] = "--input";
 		args1[i++] = "C:/Mahout/test1/data";
 
@@ -60,11 +65,11 @@ public class NaiveBayesClassifier {
 
 		
 		args1[i++] = "--method";
-		args1[i++] = "sequential";
+		args1[i++] = "sequential";*/
 
 		try {
 			
-			ToolRunner.run(new SequenceFilesFromDirectory(), args1);
+			/*ToolRunner.run(new SequenceFilesFromDirectory(), args1);
 			
 			i = 0;
 			String[] args2 = new String[9];
@@ -104,7 +109,7 @@ public class NaiveBayesClassifier {
 			args3[i++] = "--method";
 			args3[i++] = "sequential";			
 			
-			ToolRunner.run(new Configuration(), new SplitInput(), args3);
+			ToolRunner.run(new Configuration(), new SplitInput(), args3);*/
 			
 			i = 0;
 			String[] args4 = new String[8];
@@ -122,6 +127,7 @@ public class NaiveBayesClassifier {
 			args4[i++] = "--overwrite";
 			
 			ToolRunner.run(new Configuration(), new TrainNaiveBayesJob(), args4);
+			//TrainLogistic.mainToOutput(args4, new PrintWriter(new OutputStreamWriter(System.out, Charsets.UTF_8), true));
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

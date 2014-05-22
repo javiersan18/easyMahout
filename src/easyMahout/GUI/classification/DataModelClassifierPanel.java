@@ -1,6 +1,7 @@
 package easyMahout.GUI.classification;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +10,11 @@ import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,17 +33,10 @@ import com.jidesoft.swing.FolderChooser;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.classification.builder.ClassifierBuilder;
-import easyMahout.GUI.clustering.DataModelClusterPanel;
-import easyMahout.GUI.clustering.builder.ClusterBuilder;
-import easyMahout.GUI.clustering.builder.CreateSequenceFile;
-import easyMahout.GUI.clustering.builder.ReadSequenceFile;
 import easyMahout.GUI.recommender.EvaluatorRecommenderPanel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
-import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
-import easyMahout.utils.help.ClusterTips;
-import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
@@ -68,7 +64,7 @@ public class DataModelClassifierPanel extends JPanel {
 
 	private JButton btnSelectOutput;
 
-	private JButton btnCreate;
+	private static JButton btnCreate;
 
 	private final JButton btnHelp;
 
@@ -80,7 +76,7 @@ public class DataModelClassifierPanel extends JPanel {
 
 	private HelpTooltip helpTooltip;
 
-	private final static Logger log = Logger.getLogger(DataModelClusterPanel.class);
+	private final static Logger log = Logger.getLogger(DataModelClassifierPanel.class);
 
 	public DataModelClassifierPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Data Model", TitledBorder.CENTER, TitledBorder.TOP, null,
@@ -103,6 +99,7 @@ public class DataModelClassifierPanel extends JPanel {
 		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
 		add(chckbxBooleanPreferences);
 		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
+		chckbxBooleanPreferences.setEnabled(false);
 
 		lblInputDataSource = new JLabel("Input data source:");
 		lblInputDataSource.setBounds(38, 105, 107, 14);
@@ -112,10 +109,35 @@ public class DataModelClassifierPanel extends JPanel {
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
+		textInputPath.setEditable(false);
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
+		textInputPath.setInputVerifier(new InputVerifier() {
+			public boolean verify(JComponent input) {
+				JTextField tf = (JTextField) input;
+				String text = tf.getText();
+				try {
+					
+					if (!text.equals("")) {
+						textInputPath.setBackground(Color.WHITE);
+						return true;
+					} else {
+						log.error(text + " is empty");
+						MainGUI.writeResult("You have to choose an input!", Constants.Log.ERROR);
+						textInputPath.setBackground(new Color(240, 128, 128));
+						return false;
+					}
+				} catch (NumberFormatException e) {
+					log.error(text + " is empty");
+					MainGUI.writeResult("You have to choose an input!", Constants.Log.ERROR);
+					textInputPath.setBackground(new Color(240, 128, 128));
+					return false;
+				}
+			}
+		});
 
-		btnSelectInput = new JButton("Select File...");
-		btnSelectInput.setBounds(130, 165, 107, 23);
+		btnSelectInput=new JButton("Select File...");
+		
+		btnSelectInput.setBounds(182, 165, 107, 23);
 		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
@@ -132,8 +154,8 @@ public class DataModelClassifierPanel extends JPanel {
 		tfDelimiter.setEnabled(false);
 		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		btnCreate = new JButton("Create Model");
-		btnCreate.setBounds(241, 165, 107, 23);
+		btnCreate=new JButton("Run Classifier");
+		btnCreate.setBounds(341, 365, 107, 23);
 		add(btnCreate);
 
 		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
@@ -146,10 +168,10 @@ public class DataModelClassifierPanel extends JPanel {
 		add(btnHelp);
 
 		// Help Tip
-		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
-		add(helpTooltip);
+		//helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.RECOMM_DATAMODEL);
+		//add(helpTooltip);
 
-		lblOutputDataSource = new JLabel("Output data source (Optional):");
+		lblOutputDataSource = new JLabel("Output data source :");
 		lblOutputDataSource.setBounds(38, 206, 157, 14);
 		add(lblOutputDataSource);
 
@@ -157,8 +179,31 @@ public class DataModelClassifierPanel extends JPanel {
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
+		textOutputPath.setEditable(false);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
-
+		textOutputPath.setInputVerifier(new InputVerifier() {
+			public boolean verify(JComponent input) {
+				JTextField tf = (JTextField) input;
+				String text = tf.getText();
+				try {
+					
+					if (!text.equals("")) {
+						textOutputPath.setBackground(Color.WHITE);
+						return true;
+					} else {
+						log.error(text + " is empty");
+						MainGUI.writeResult("You have to choose an output!", Constants.Log.ERROR);
+						textOutputPath.setBackground(new Color(240, 128, 128));
+						return false;
+					}
+				} catch (NumberFormatException e) {
+					log.error(text + " is empty");
+					MainGUI.writeResult("You have to choose an output!", Constants.Log.ERROR);
+					textOutputPath.setBackground(new Color(240, 128, 128));
+					return false;
+				}
+			}
+		});
 		btnSelectOutput = new JButton("Select File...");
 		btnSelectOutput.setBounds(182, 265, 107, 23);
 		add(btnSelectOutput);
@@ -221,32 +266,42 @@ public class DataModelClassifierPanel extends JPanel {
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+			
+				//mouse loading				
+				btnCreate.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				 
+				MainGUI.clean();
+				
 				String filePath = textInputPath.getText();//input
 				String output = textOutputPath.getText();
 				String delimiter = tfDelimiter.getText(); //delimiter
 				outputFormatted = output+".csv";
-
 				tfDelimiter.setBackground(Color.WHITE);
-
-				CreateSequenceFile.convert(filePath, output, delimiter);
-				ReadSequenceFile.readSequenceFile(output,outputFormatted);
 				
-				//Hacer excepciones
-				/*try {
-					ClassifierBuilder.buildClassifier();
-					
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
-			}});
+				/*CreateSequenceFile.convert(filePath, output, delimiter);
+				ReadSequenceFile.readSequenceFile(output,outputFormatted);*/
+				
+				if (!filePath.isEmpty() && !output.isEmpty()){
+					try {
+						MainGUI.writeResult("Starting to build the classifier", Constants.Log.INFO);
+						ClassifierBuilder.buildClassifier();
+					} catch (ClassNotFoundException e1) {
+						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+					} catch (InterruptedException e1) {
+						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+					} catch (IOException e1) {
+						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+					}
+				}
+				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
+				
+				//mouse finished loading
+				btnCreate.setCursor(Cursor.getDefaultCursor());				
+			}
+		});		
 
 		chckbxBooleanPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -255,10 +310,10 @@ public class DataModelClassifierPanel extends JPanel {
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
 					log.info("boolean");
-					EvaluatorClassifierPanel.setBooleanPreferences(true);
+					EvaluatorRecommenderPanel.setBooleanPreferences(true);
 				} else {
 					comboBoxDatamodel.setModel(restModels);
-					EvaluatorClassifierPanel.setBooleanPreferences(false);
+					EvaluatorRecommenderPanel.setBooleanPreferences(false);
 					log.info("rest");
 				}
 
@@ -279,7 +334,6 @@ public class DataModelClassifierPanel extends JPanel {
 
 			}
 		});
-
 	}
 
 	public HelpTooltip getHelpTooltip() {
@@ -297,13 +351,14 @@ public class DataModelClassifierPanel extends JPanel {
 	public void setDistributed(boolean distributed) {
 
 		if (distributed) {
-			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
+			//helpTooltip.setText(ClassifierTips.);
 			lblOutputDataSource.setText("Output directory:");
 			lblInputDataSource.setText("Input directory:");
 			btnSelectOutput.setText("Select Folder...");
 			btnSelectInput.setText("Select Folder...");
+			
 		} else {
-			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);
+			//helpTooltip.setText(ClassifierTips.);
 			lblOutputDataSource.setText("Output data file (Optional):");
 			lblInputDataSource.setText("Input data source:");
 			btnSelectOutput.setText("Select File...");
@@ -311,7 +366,8 @@ public class DataModelClassifierPanel extends JPanel {
 		}
 
 		comboBoxDatamodel.setEnabled(!distributed);
-		btnCreate.setEnabled(!distributed);
+		tfDelimiter.setEnabled(!distributed);
+		
 	}
 
 	public static String getInputPath() {
@@ -374,4 +430,9 @@ public class DataModelClassifierPanel extends JPanel {
 		DataModelClassifierPanel.outputFormatted = outputFormatted;
 	}
 	
+	public static void push(){
+		btnCreate.doClick();
+	}	
 }
+
+		

@@ -6,11 +6,16 @@ import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.apache.mahout.math.Vector;
+import org.apache.mahout.text.SequenceFilesFromDirectory;
+import org.apache.mahout.utils.SplitInput;
 import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.apache.mahout.classifier.AbstractVectorClassifier;
 import org.apache.mahout.classifier.naivebayes.*;
+import org.apache.mahout.classifier.naivebayes.test.TestNaiveBayesDriver;
+import org.apache.mahout.classifier.naivebayes.training.TrainNaiveBayesJob;
 import org.apache.mahout.classifier.sgd.*;
 
 import easyMahout.GUI.MainGUI;
@@ -31,14 +36,34 @@ public class ClassifierBuilder {
 
 	private static File testData;
 	
-	public static AbstractVectorClassifier buildClassifier() throws ClassNotFoundException, InterruptedException, IOException{
+	private static String[][] argsClassifier;
+	
+	public static AbstractVectorClassifier buildClassifier() throws Exception{
 		
 		hayError = false;
 		
 		algorithm = MainClassifierPanel.getAlgorithmClassifierPanel().getSelectedType();
 		
+		boolean naiveBayes, complementaryNaiveBayes, sgd;
+		
+		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
+		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
+		sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
+		
+		argsClassifier = JobClassifierBuilder.buildClassifierJob();
+			
+		if (naiveBayes || complementaryNaiveBayes){
+			buildBayesClassifier();
+		}
+		
+		if (sgd){
+			buildSGDClassifier();			
+		}
+		
+		return null;
+		
 		//NAIVEBAYES
-		if(algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES)){
+		/*if(algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES)){
 			
 			//Recoger variables necesarias para construccion
 			
@@ -97,17 +122,42 @@ public class ClassifierBuilder {
 			return classifier;
 		}
 		
-		// (1)
-		//seqFile = new SequenceFileFromDirectory() --> /Mahout-distribution/distribution/target/mahout-distribution-0.8-src/mahout-distribution-0.8/integration/src/main/java/org/apache/mahout/text
-		//seqFile.run(args)
-		
-		// (2)
-		//sparseVec = new vectorSparseVectorsFromSequenceFiles()
-		//sparseVec.run(args)
-		
-  		return null;		
+  		return null;*/		
 	}
 	
+	private static void buildBayesClassifier() throws Exception {
+		
+		//Sequence files from directory
+		
+		MainGUI.writeResult("SeqDirectory",Constants.Log.INFO);
+		
+		ToolRunner.run(new SequenceFilesFromDirectory(), argsClassifier[0]);
+		
+		//Sequence files to Sparse Vectors		
+		
+		MainGUI.writeResult("SparseVectors",Constants.Log.INFO);
+		
+		ToolRunner.run(new SparseVectorsFromSequenceFiles(), argsClassifier[1]);
+		
+		//Split input
+		
+		ToolRunner.run(new Configuration(), new SplitInput(), argsClassifier[2]);
+		
+		//Train Bayes
+		
+		ToolRunner.run(new Configuration(), new TrainNaiveBayesJob(), argsClassifier[3]);
+		
+		//Test Bayes
+		
+		ToolRunner.run(new Configuration(), new TestNaiveBayesDriver(), argsClassifier[4]);
+		
+	}
+	
+	private static void buildSGDClassifier() {
+		
+	}
+
+
 	public static void constructClassifier(){
 		List<Vector> vectors =  CreateSequenceFile.getVectors();
 		
