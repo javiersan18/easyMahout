@@ -16,13 +16,13 @@ public class JobClassifierBuilder {
 	
 	private static final int ARGS_SEQDIRECTORY = 7;
 
-	private static final int ARGS_SEQ2SPARSE = 17;
+	private static final int ARGS_SEQ2SPARSE = 9;
 	
-	private static final int ARGS_SPLIT = 17;
+	private static final int ARGS_SPLIT = 12;
 	
-	private static final int ARGS_TRAIN_NB = 10;
+	private static final int ARGS_TRAIN_NB = 8; //9 si complementary
 	
-	private static final int ARGS_TEST_NB = 10;
+	private static final int ARGS_TEST_NB = 9;//+1 si complementary +1 si sequential
 
 	private static final int ARGS_TRAIN_SGD = 10;
 	
@@ -123,12 +123,12 @@ public class JobClassifierBuilder {
 		argsSplit[++i] = "--testOutput";
 		argsSplit[++i] = testPath;
 		argsSplit[++i] = "-ow";
-		//También se puede apartir de un porcentaje de la entrada(50 = mitad hacia arriba test) o porcentaje o tam. fijo de cada categoría
+		//Tambiï¿½n se puede apartir de un porcentaje de la entrada(50 = mitad hacia arriba test) o porcentaje o tam. fijo de cada categorï¿½a
 		/*if(testPercent){
 			argsSplit[++i] = "--randomSelectionPct"; 	//porcentaje
 			argsSplit[++i] = "20";
 		} else {*/
-			argsSplit[++i] = "--randomSelectionSize"; 	//tamaño de items fijo 
+			argsSplit[++i] = "--randomSelectionSize"; 	//tamaï¿½o de items fijo 
 			argsSplit[++i] = "100";
 		//}
 		argsSplit[++i] = "--sequenceFiles";			//Optional: If the input data are seqFiles	

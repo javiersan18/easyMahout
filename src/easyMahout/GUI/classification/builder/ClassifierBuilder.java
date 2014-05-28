@@ -60,6 +60,8 @@ public class ClassifierBuilder {
 			buildSGDClassifier();			
 		}
 		
+		MainGUI.writeResult("OK building the classifier: Algorithm "+ algorithm, Constants.Log.INFO);
+		
 		return null;
 		
 		//NAIVEBAYES
@@ -141,13 +143,19 @@ public class ClassifierBuilder {
 		
 		//Split input
 		
+		MainGUI.writeResult("SplitInput",Constants.Log.INFO);
+		
 		ToolRunner.run(new Configuration(), new SplitInput(), argsClassifier[2]);
 		
 		//Train Bayes
 		
+		MainGUI.writeResult("TrainNaiveBayes",Constants.Log.INFO);
+		
 		ToolRunner.run(new Configuration(), new TrainNaiveBayesJob(), argsClassifier[3]);
 		
 		//Test Bayes
+		
+		MainGUI.writeResult("TestNaiveBayes",Constants.Log.INFO);
 		
 		ToolRunner.run(new Configuration(), new TestNaiveBayesDriver(), argsClassifier[4]);
 		
