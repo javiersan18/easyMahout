@@ -49,10 +49,12 @@ public class JobBuilder {
 				int p = 0;
 				args[p] = "--input";
 				args[++p] = inputPath;
-				args[++p] = "--output";
-				args[++p] = outputPath;
+				
 				args[++p] = "--numRecommendations";
 				args[++p] = StringUtils.isBlank(numRecommendations) ? "10" : numRecommendations;
+				args[++p] = "--output";
+				args[++p] = outputPath;
+				
 				args[++p] = "--similarityClassname";
 				args[++p] = similarityClassname;
 				args[++p] = "--maxSimilaritiesPerItem";
@@ -61,7 +63,7 @@ public class JobBuilder {
 				args[++p] = StringUtils.isBlank(maxPrefsPerUser) ? "500" : maxPrefsPerUser;
 				args[++p] = "--minPrefsPerUser";
 				args[++p] = StringUtils.isBlank(minPrefsPerUser) ? "1" : minPrefsPerUser;
-				args[++p] = "--maxPrefPerUserInItemSimilarity";
+				args[++p] = "--maxPrefsPerUserInItemSimilarity";
 				args[++p] = StringUtils.isBlank(maxPrefPerUserInItemSimilarity) ? "1000" : maxPrefPerUserInItemSimilarity;
 				args[++p] = "--booleanData";
 				args[++p] = StringUtils.isBlank(booleanData) ? String.valueOf(Boolean.FALSE) : booleanData;
