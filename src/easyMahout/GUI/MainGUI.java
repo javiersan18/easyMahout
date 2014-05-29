@@ -87,7 +87,7 @@ public class MainGUI extends JFrame {
 	public static void main(String[] args) {
 		try {
 			// Set System(Windows, Mac, linux) Look and fell
-			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName()); 
+			//javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName()); 
 			
 		} catch (Exception e) {
 		}
@@ -426,7 +426,7 @@ public class MainGUI extends JFrame {
 	}
 
 	public static void setDistributedRecommPanel(boolean distributed) {
-		recommenderTab.setDistributed(distributed);
+		recommenderTab.setDistributed(distributed);		
 		distributedMenuItem.setSelected(distributed);
 		nonDistributedMenuItem.setSelected(!distributed);
 	}

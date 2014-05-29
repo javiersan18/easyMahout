@@ -4,9 +4,9 @@ public class Constants {
 
 	public class EasyMahout {
 
-		public static final String VERSION = "0.2a";
+		public static final String VERSION = "0.9b";
 
-		public static final String VERSION_DATE = "December 2013";
+		public static final String VERSION_DATE = "May 2014";
 
 		public static final String WEBSITE = "www.easymahout.coomingsoon.xxx";
 
@@ -21,8 +21,8 @@ public class Constants {
 		public static final String WARNING = "warning";
 
 		public static final String INFO = "info";
-		
-		public static final String EMPTY="";
+
+		public static final String EMPTY = "";
 	}
 
 	public class RecommType {
@@ -38,34 +38,34 @@ public class Constants {
 		public static final String ITEMBASED_DISTRIBUTED = "Item Based Collaborative Filtering";
 
 	}
-	
-	public class RecommFactorizer{
-		
+
+	public class RecommFactorizer {
+
 		public static final String ALSWR = "Alternating Least Squares with Weighted-lambda-Regulations";
-		
+
 		public static final String ALSWR_SHORT = "Alternating Least Squares WR (ALSWR)";
-		
+
 		public static final String PARALLEL_SGD = "Parallel Stochastic Gradient Descent";
-		
+
 		public static final String RATING_SGD = "Rating Stochastic Gradient Descent";
-		
+
 		public static final String SVD_PLUS_PLUS = "Singular Value Decomposition ++ (SVD++)";
-		
+
 		public static final String SVD = "Singular Value Decomposition (SVD)";
 	}
-	
-	public class RecommCandidate{
-		
+
+	public class RecommCandidate {
+
 		public static final String ALL_SIMILAR_ITEMS = "All Similar Items";
-		
+
 		public static final String ALL_UKNOWN_ITEMS = "All Uknown Items";
-		
+
 		public static final String PREFERRED_ITEMS = "Preferred Items";
 
 		public static final String SAMPLING_ITEMS = "Sampling Items";
-		
+
 	}
-	
+
 	public class DataModel {
 
 		public static final String FILE = "File";
@@ -90,28 +90,11 @@ public class Constants {
 
 	public class Similarity {
 
-		// public static final String ABSTRACT_ITEM = "Abstract Item";
-
-		// public static final String ABSTRACT = "Abstract";
-
-		// public static final String AVERAGING =
-		// "Averaging Preference Inferrer";
-
-		// public static final String CACHING_ITEM = "Caching Item";
-
-		// public static final String CACHING_USER = "Caching User";
-
 		public static final String CITYBLOCK = "City Block (Manhattan Distance)";
 
 		public static final String EUCLIDEAN = "Euclidean Distance";
 
-		// public static final String GENERIC_ITEM = "Generic Item";
-
-		// public static final String GENERIC_USER = "Generic User";
-
 		public static final String LOGARITHMIC = "Logarithmic Likelihood";
-
-		// public static final String LONGPAIR = "Long Pair Match Predicate";
 
 		public static final String PEARSON = "Pearson Correlation";
 
@@ -161,10 +144,6 @@ public class Constants {
 
 	public class Neighborhood {
 
-		// public static final String ABSTRACT = "Abstract";
-
-		// public static final String CACHING = "Caching";
-
 		public static final String NEAREST = "Nearest N";
 
 		public static final String THRESHOLD = "Threshold";
@@ -172,15 +151,9 @@ public class Constants {
 
 	public class Evaluator {
 
-		//public static final String ABSTRACT_DIFFERENCE = "Abstract Difference";
-
 		public static final String AVERAGE_ABSOLUTE_DIFFERENCE = "Average Absolute Difference";
 
 		public static final String GENERIC_IRSTATS = "IR Statistics";
-
-		//public static final String GENERIC_RELEVANT_ITEMS_DATA_SPLITTER = "Generic Relevant Items Data Splitter";
-
-		//public static final String ORDER_BASED_RECOMMENDER = "Order Based Recommender";
 
 		public static final String RMS_RECOMMENDER = "Root Mean Square";
 
@@ -241,13 +214,13 @@ public class Constants {
 		public static final String RECOMM_NEIGHBORHOOD_THRESHOLD = "threshold";
 
 		public static final String RECOMM_EVALUATOR = "evaluator";
-		
+
 		public static final String RECOMM_EVALUATOR_TYPE = "type";
-		
+
 		public static final String RECOMM_EVALUATOR_TRAINING = "training";
-		
+
 		public static final String RECOMM_EVALUATOR_EVALUATION = "evaluation";
-		
+
 		public static final String RECOMM_EVALUATOR_AT = "topN";
 
 		public static final String RECOMM_QUERY = "query";
@@ -278,44 +251,44 @@ public class Constants {
 
 	public class ClusterAlg {
 
-		public static final String CANOPY = "CANOPY";
+		public static final String CANOPY = "Canopy";
 
-		public static final String KMEANS = "K-MEANS";
+		public static final String KMEANS = "K-Means";
 
-		public static final String FUZZYKMEANS = "Fuzzy K-MEANS";
+		public static final String FUZZYKMEANS = "Fuzzy K-Means";
 
 		public static final String DIRICHLET = "DIRICHLET";
 
 		public static final String USER_DEFINED = "Please choose an algorithm";
-		
+
 		public static final int NUMBER_ALG = 3;
 
 	}
 
 	public class ClusterDist {
 
-		public static final String EUCLIDEAN = "EUCLIDEAN";
+		public static final String EUCLIDEAN = "Euclidean";
 
-		public static final String SQUAREDEUCLIDEAN = "SQUARED EUCLIDEAN";
+		public static final String SQUAREDEUCLIDEAN = "Squared Euclidean";
 
-		public static final String MANHATTAN = "MANHATTAN";
+		public static final String MANHATTAN = "Manhattan";
 
-		public static final String COSINE = "COSINE";
+		public static final String COSINE = "Cosine";
 
-		public static final String TANIMOTO = "TANIMOTO";
+		public static final String TANIMOTO = "Tanimoto";
 
-		public static final String WEIGHTED = "WEIGHTED";
+		public static final String WEIGHTED = "Weighted";
 	}
-	
+
 	public class ClusterKmeans {
-		
-		public static final String distance= ClusterDist.EUCLIDEAN;
-		
-		public static final String treshold= "0.01";
-		
-		public static final String clusters="3";
-		
-		public static final String iterations="10";
+
+		public static final String DISTANCE = ClusterDist.EUCLIDEAN;
+
+		public static final String THRESHOLD = "0.01";
+
+		public static final String CLUSTERS = "3";
+
+		public static final String ITERATIONS = "10";
 	}
 
 	public class ClassificatorAlg {
@@ -330,15 +303,15 @@ public class Constants {
 
 		public static final String RAMDOMFOREST = "RAMDOM FOREST";
 	}
-	
+
 	public class ClassificatorPredictorTypes {
-		
+
 		public static final String WORD = "WORD";
-		
+
 		public static final String TEXT = "TEXT";
-		
-		public static final String NUMERIC = "NUMERIC";	
-		
+
+		public static final String NUMERIC = "NUMERIC";
+
 	}
-	
+
 }

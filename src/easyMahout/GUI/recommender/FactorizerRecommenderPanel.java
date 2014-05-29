@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -33,6 +34,8 @@ import javax.swing.JLabel;
 public class FactorizerRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final char slash = File.separatorChar;
 
 	private static JComboBox<String> comboBoxFactorizer;
 
@@ -119,12 +122,12 @@ public class FactorizerRecommenderPanel extends JPanel {
 					} else
 						inputDialog.setVisible(true);
 
-				} else if (getSelectedFunction().equals(Constants.RecommFactorizer.SVD_PLUS_PLUS)) {
-
-				} else if (getSelectedFunction().equals(Constants.RecommFactorizer.PARALLEL_SGD)) {
-
-				} else if (getSelectedFunction().equals(Constants.RecommFactorizer.RATING_SGD)) {
-
+//				} else if (getSelectedFunction().equals(Constants.RecommFactorizer.SVD_PLUS_PLUS)) {
+//
+//				} else if (getSelectedFunction().equals(Constants.RecommFactorizer.PARALLEL_SGD)) {
+//
+//				} else if (getSelectedFunction().equals(Constants.RecommFactorizer.RATING_SGD)) {
+//
 				}
 
 			}

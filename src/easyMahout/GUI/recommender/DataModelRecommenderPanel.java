@@ -40,6 +40,8 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final char slash = File.separatorChar;
+
 	private DefaultComboBoxModel booleanModels, restModels;
 
 	private static JComboBox comboBoxDatamodel;
@@ -68,6 +70,8 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	private static DataModel dataModel;
 
+	private static JCheckBox chckbxRemoveIfExist;
+
 	private HelpTooltip helpTooltip;
 
 	private final static Logger log = Logger.getLogger(DataModelRecommenderPanel.class);
@@ -82,9 +86,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		comboBoxDatamodel = new JComboBox();
 		comboBoxDatamodel.addItemListener(new ItemChangeListener());
 		booleanModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC_BOOLEAN });
-		restModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.FILE, Constants.DataModel.GENERIC,
-				Constants.DataModel.EXTENDED, Constants.DataModel.CASSANDRA, Constants.DataModel.HBASE, Constants.DataModel.KDDCUP,
-				Constants.DataModel.MONGOL_DB, Constants.DataModel.PLUS_ANONYMOUS });
+		restModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC, Constants.DataModel.EXTENDED });
 		comboBoxDatamodel.setModel(restModels);
 		comboBoxDatamodel.setBounds(38, 68, 216, 20);
 		add(comboBoxDatamodel);
@@ -150,8 +152,13 @@ public class DataModelRecommenderPanel extends JPanel {
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnSelectOutput = new JButton("Select File...");
-		btnSelectOutput.setBounds(182, 265, 107, 23);
+		btnSelectOutput.setBounds(130, 267, 107, 23);
 		add(btnSelectOutput);
+
+		chckbxRemoveIfExist = new JCheckBox("Remove if exist");
+		chckbxRemoveIfExist.setBounds(241, 267, 134, 23);
+		add(chckbxRemoveIfExist);
+		chckbxRemoveIfExist.setEnabled(false);
 
 		btnSelectInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -217,14 +224,10 @@ public class DataModelRecommenderPanel extends JPanel {
 					// TODO: distintos tipos de modelos...
 					switch (selected) {
 						case 0:
-							setDataModel(new FileDataModel(new File(filePath)));
-							MainGUI.writeResult("Data Model successfully created from file.", Constants.Log.INFO);
-							break;
-						case 1:
 							setDataModel(new GenericDataModel(GenericDataModel.toDataMap(new FileDataModel(new File(filePath)))));
 							MainGUI.writeResult("Data Model successfully created from file.", Constants.Log.INFO);
 							break;
-						case 2:
+						case 1:
 							String delimiter = tfDelimiter.getText();
 							if (StringUtils.isBlank(delimiter)) {
 								tfDelimiter.setBackground(new Color(240, 128, 128));
@@ -235,22 +238,6 @@ public class DataModelRecommenderPanel extends JPanel {
 								setDataModel(new ExtendedDataModel(new File(filePath), tfDelimiter.getText()));
 								MainGUI.writeResult("Data Model successfully created from file.", Constants.Log.INFO);
 							}
-							break;
-						case 3:
-							// dataModel = new CassandraDataModel(new
-							// File(absPath));
-							break;
-						case 4:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						case 5:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						case 6:
-							setDataModel(new FileDataModel(new File(filePath)));
-							break;
-						case 7:
-							setDataModel(new FileDataModel(new File(filePath)));
 							break;
 						default:
 							setDataModel(new FileDataModel(new File(filePath)));
@@ -274,19 +261,16 @@ public class DataModelRecommenderPanel extends JPanel {
 					comboBoxDatamodel.setModel(booleanModels);
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
-					log.info("boolean");
 					EvaluatorRecommenderPanel.setBooleanPreferences(true);
 				} else {
 					comboBoxDatamodel.setModel(restModels);
 					EvaluatorRecommenderPanel.setBooleanPreferences(false);
-					log.info("rest");
 				}
 
 			}
 		});
 
 		comboBoxDatamodel.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
 				String model = (String) ((JComboBox) e.getSource()).getSelectedItem();
 				if (model.equals(Constants.DataModel.EXTENDED)) {
@@ -296,7 +280,6 @@ public class DataModelRecommenderPanel extends JPanel {
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
 				}
-
 			}
 		});
 
@@ -315,7 +298,6 @@ public class DataModelRecommenderPanel extends JPanel {
 	}
 
 	public void setDistributed(boolean distributed) {
-
 		if (distributed) {
 			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
 			lblOutputDataSource.setText("Output directory:");
@@ -332,6 +314,7 @@ public class DataModelRecommenderPanel extends JPanel {
 
 		comboBoxDatamodel.setEnabled(!distributed);
 		btnCreate.setEnabled(!distributed);
+		chckbxRemoveIfExist.setEnabled(distributed);
 	}
 
 	public static String getInputPath() {
@@ -368,6 +351,14 @@ public class DataModelRecommenderPanel extends JPanel {
 
 	public static void setBooleanPrefs(boolean selected) {
 		chckbxBooleanPreferences.setSelected(selected);
+	}
+
+	public static boolean removeUfExist() {
+		return chckbxRemoveIfExist.isSelected();
+	}
+
+	public static void setRemoveUfExist(boolean selected) {
+		chckbxRemoveIfExist.setSelected(selected);
 	}
 
 	public static void setSelectedModel(String model) {

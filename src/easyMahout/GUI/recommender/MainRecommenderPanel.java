@@ -32,6 +32,8 @@ import java.util.ArrayList;
 public class MainRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final char slash = File.separatorChar;
 
 	private JPanel panelRecommender;
 
@@ -337,7 +339,7 @@ public class MainRecommenderPanel extends JPanel {
 
 						} else if (category.equals("Factorization")) {
 							if (matrixBased) {
-								log.info("neighB1");
+								log.info("factB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
 								dataModelPanel.setVisible(false);
@@ -544,17 +546,18 @@ public class MainRecommenderPanel extends JPanel {
 	}
 
 	public void setDistributed(boolean distributed) {
+		TypeRecommenderPanel.returnToNonDistributed();
 		nodeNeighborhood.setEnabled(!distributed);
 		nodeFactorization.setEnabled(!distributed);
 		nodeEvaluator.setEnabled(!distributed);
 		nodeQueries.setEnabled(!distributed);
-		nodeJob.setEnabled(distributed);
-		treeMenu.repaint();
+		nodeJob.setEnabled(distributed);		
 		typePanel.setDistributed(distributed);
 		factorizerPanel.setDistributed(distributed);
 		dataModelPanel.setDistributed(distributed);
 		similarityPanel.setDistributed(distributed);
 		configPanel.setDistributed(distributed);
+		treeMenu.repaint();
 		this.setConfigPanelEnabled();
 	}
 

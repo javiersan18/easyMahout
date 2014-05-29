@@ -1,22 +1,16 @@
 package easyMahout.GUI.clustering;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
@@ -25,7 +19,6 @@ import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClusterTips;
-//import easyMahout.utils.IconHelpPanel;
 
 import javax.swing.border.TitledBorder;
 
@@ -35,11 +28,9 @@ public class NumberClusterPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private JLabel numero;
+	private JLabel number;
 	
 	private JTextField campoNum;
-	
-	private JButton boton;
 	
 	private int numeroClusters;
 
@@ -47,23 +38,22 @@ public class NumberClusterPanel extends JPanel {
 	
 	private final static Logger log = Logger.getLogger(NumberClusterPanel.class);
 	
-	private final static String ayuda = "[1..9999]";
+	private final static String HELP = "[1..9999]";
 	
 	public NumberClusterPanel() {
-		// super();
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Number of clusters", TitledBorder.CENTER,
 				TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 		
-		numero = new JLabel("Number of clusters:");
-		numero.setBounds(38,65, 189, 14);
-		add(numero);
+		number = new JLabel("Number of clusters:");
+		number.setBounds(38,36, 189, 14);
+		add(number);
 
 		campoNum = new JTextField();
-		campoNum.setBounds(38, 91, 157, 23);
-		campoNum.setToolTipText(ayuda);
+		campoNum.setBounds(38, 61, 157, 23);
+		campoNum.setToolTipText(HELP);
 		add(campoNum);
 		campoNum.setColumns(10);
 		campoNum.setText("5");  //quitar al acabar

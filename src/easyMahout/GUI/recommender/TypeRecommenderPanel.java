@@ -34,6 +34,8 @@ import javax.swing.JLabel;
 public class TypeRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final char slash = File.separatorChar;
 
 	private static JComboBox<String> comboBoxType;
 
@@ -45,21 +47,7 @@ public class TypeRecommenderPanel extends JPanel {
 
 	private HelpTooltip helpTooltip;
 
-	private JRadioButton rdbtnConfFactAndRecomm;
-
-	private JRadioButton rdbtnConfFact;
-
-	private JRadioButton rdbtnConfRecomm;
-
-	private static JTextField tfUserFeaturesMatrix;
-
-	private static JTextField tfItemFeaturesMatrix;
-
 	private final static Logger log = Logger.getLogger(TypeRecommenderPanel.class);
-	private JLabel lblUserFeaturesMatrix;
-	private JLabel lblItemFeaturesMatrix;
-	private JButton btnSelectUserFeaturesMatrix;
-	private JButton btnSelectItemFeaturesMatrix;
 
 	public TypeRecommenderPanel() {
 		super();
@@ -70,8 +58,7 @@ public class TypeRecommenderPanel extends JPanel {
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 
-		distributedModel = new DefaultComboBoxModel<String>(new String[] { // Constants.RecommType.ITEMSIMILARITY,
-				Constants.RecommType.ITEMBASED_DISTRIBUTED, Constants.RecommType.FACTORIZED_RECOMMENDER });
+		distributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommType.ITEMBASED_DISTRIBUTED, Constants.RecommType.FACTORIZED_RECOMMENDER });
 		nonDistributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommType.USERBASED,
 				Constants.RecommType.ITEMBASED, Constants.RecommType.FACTORIZED_RECOMMENDER });
 
@@ -95,8 +82,6 @@ public class TypeRecommenderPanel extends JPanel {
 					MainRecommenderPanel.setEnableEvaluator(true);
 					MainRecommenderPanel.setEnableSimilarity(true);
 				} else if (type.equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
-					// TODO desactivar casi todo, activar menu de factorizacion
-					// setFactoricerOptions(true);
 					MainRecommenderPanel.setEnableFactorization(true);
 					MainRecommenderPanel.setEnableNeighborhood(false);
 					MainRecommenderPanel.setEnableEvaluator(false);
@@ -109,9 +94,6 @@ public class TypeRecommenderPanel extends JPanel {
 					MainRecommenderPanel.setEnableFactorization(false);
 					MainRecommenderPanel.setEnableSimilarity(true);
 				}
-				// else if (type.equals(Constants.RecommType.ITEMSIMILARITY)) {
-				// //setFactoricerOptions(false);
-				// }
 			}
 		});
 		comboBoxType.addItemListener(new ItemChangeListener());
@@ -127,91 +109,9 @@ public class TypeRecommenderPanel extends JPanel {
 
 		// Help Tip
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_TYPE);
-		
+
 		// Radio Buttons for choose the different steps before run recommender
 		ButtonGroup factorizedButtonGroup = new ButtonGroup();
-
-		rdbtnConfFactAndRecomm = new JRadioButton("Configure Factorizer and Recommender");
-		rdbtnConfFactAndRecomm.setBounds(38, 80, 404, 23);
-		add(rdbtnConfFactAndRecomm);
-		factorizedButtonGroup.add(rdbtnConfFactAndRecomm);
-
-		rdbtnConfFact = new JRadioButton("Configure only the Factorizer");
-		rdbtnConfFact.setBounds(38, 110, 404, 23);
-		add(rdbtnConfFact);
-		factorizedButtonGroup.add(rdbtnConfFact);
-
-		rdbtnConfRecomm = new JRadioButton("Configure only the Recommender");
-		rdbtnConfRecomm.setBounds(38, 140, 404, 23);
-		add(rdbtnConfRecomm);
-		factorizedButtonGroup.add(rdbtnConfRecomm);
-		rdbtnConfRecomm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				boolean selected = ((JRadioButton) e.getSource()).isSelected();
-				if(selected){
-					log.debug("radio button only recomm selected");
-					feature();
-				}else{
-					log.debug("radio button only recomm deselected");
-				}
-				
-			}
-		});
-
-		// U and M matrix folder chooser
-		lblUserFeaturesMatrix = new JLabel("User Features Matrix (U)");
-		lblUserFeaturesMatrix.setBounds(38, 180, 157, 14);
-		add(lblUserFeaturesMatrix);
-
-		tfUserFeaturesMatrix = new JTextField();
-		tfUserFeaturesMatrix.setColumns(10);
-		tfUserFeaturesMatrix.setBounds(38, 210, 298, 20);
-		add(tfUserFeaturesMatrix);
-
-		btnSelectUserFeaturesMatrix = new JButton("Select Folder...");
-		btnSelectUserFeaturesMatrix.setBounds(346, 206, 107, 23);
-		add(btnSelectUserFeaturesMatrix);
-		btnSelectUserFeaturesMatrix.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FolderChooser chooser = new FolderChooser();
-				int returnVal = chooser.showOpenDialog(TypeRecommenderPanel.this);
-				if (returnVal == FolderChooser.APPROVE_OPTION) {
-					File data = chooser.getSelectedFile();
-					String absPath = data.getAbsolutePath();
-					tfUserFeaturesMatrix.setText(absPath);
-				} else if (returnVal == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error searching the userFeatures directory.", Constants.Log.ERROR);
-					log.error("Error searching userFeatures directory");
-				}
-			}
-		});
-
-		lblItemFeaturesMatrix = new JLabel("Item Features Matrix (M)");
-		lblItemFeaturesMatrix.setBounds(38, 250, 157, 14);
-		add(lblItemFeaturesMatrix);
-
-		tfItemFeaturesMatrix = new JTextField();
-		tfItemFeaturesMatrix.setColumns(10);
-		tfItemFeaturesMatrix.setBounds(38, 280, 298, 20);
-		add(tfItemFeaturesMatrix);
-
-		btnSelectItemFeaturesMatrix = new JButton("Select Folder...");
-		btnSelectItemFeaturesMatrix.setBounds(346, 279, 107, 23);
-		add(btnSelectItemFeaturesMatrix);
-		btnSelectItemFeaturesMatrix.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FolderChooser chooser = new FolderChooser();
-				int returnVal = chooser.showOpenDialog(TypeRecommenderPanel.this);
-				if (returnVal == FolderChooser.APPROVE_OPTION) {
-					File data = chooser.getSelectedFile();
-					String absPath = data.getAbsolutePath();
-					tfItemFeaturesMatrix.setText(absPath);
-				} else if (returnVal == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error searching the itemFeatures directory.", Constants.Log.ERROR);
-					log.error("Error searching itemFeatures directory");
-				}
-			}
-		});
 
 	}
 
@@ -226,22 +126,15 @@ public class TypeRecommenderPanel extends JPanel {
 	public static void setSelectedType(String type) {
 		comboBoxType.setSelectedItem(type);
 	}
-
-	public static String getUserFeaturesPath() {
-		if (StringUtils.isNotBlank(tfUserFeaturesMatrix.getText())) {
-			return tfUserFeaturesMatrix.getText();
-		} else {
-			return "  ";
-		}
+	
+	public static void returnToNonDistributed(){
+		comboBoxType.setSelectedItem(Constants.RecommType.USERBASED);
+		MainRecommenderPanel.setEnableNeighborhood(true);
+		MainRecommenderPanel.setEnableFactorization(false);
+		MainRecommenderPanel.setEnableEvaluator(true);
+		MainRecommenderPanel.setEnableSimilarity(true);
 	}
-
-	public static String getInputFeaturesPath() {
-		if (StringUtils.isNotBlank(tfItemFeaturesMatrix.getText())) {
-			return tfItemFeaturesMatrix.getText();
-		} else {
-			return "  ";
-		}
-	}
+	
 
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
@@ -259,12 +152,4 @@ public class TypeRecommenderPanel extends JPanel {
 		}
 	}
 
-	private void feature() {
-		lblItemFeaturesMatrix.setVisible(true);
-		lblUserFeaturesMatrix.setVisible(true);
-		tfItemFeaturesMatrix.setVisible(true);
-		tfUserFeaturesMatrix.setVisible(true);
-		btnSelectItemFeaturesMatrix.setVisible(true);
-		btnSelectUserFeaturesMatrix.setVisible(true);
-	}
 }

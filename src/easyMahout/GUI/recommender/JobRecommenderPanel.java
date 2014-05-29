@@ -6,6 +6,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -13,17 +17,26 @@ import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.mapred.FileAlreadyExistsException;
+import org.apache.hadoop.util.Shell;
+import org.apache.hadoop.util.Shell.ShellCommandExecutor;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob;
-import org.apache.mahout.cf.taste.hadoop.als.RecommenderJob;
+import org.apache.mahout.math.VectorWritable;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.builder.JobBuilder;
+import easyMahout.GUI.recommender.builder.ShowCommandlineBuilder;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
@@ -36,7 +49,10 @@ import javax.swing.SwingConstants;
 public class JobRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final char slash = File.separatorChar;
+	
+	
 	private HelpTooltip helpTooltip;
 
 	private static JTextPane shellTextPane;
@@ -49,7 +65,8 @@ public class JobRecommenderPanel extends JPanel {
 
 	public JobRecommenderPanel() {
 		setVisible(false);
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Run Hadoop Job", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Run Hadoop Job", TitledBorder.CENTER, TitledBorder.TOP,
+				null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
@@ -83,42 +100,106 @@ public class JobRecommenderPanel extends JPanel {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				// String[] args = { "a", "b" };
+				Configuration conf = new Configuration();
+				FileSystem fs;
+				try {
+					fs = FileSystem.get(conf);
+					Path path = new Path(fs.getWorkingDirectory() + "/temp");
+					if (fs.exists(path)) {
+						System.out.println("existe");
+						fs.delete(path, true);
+					}
+					path = new Path(DataModelRecommenderPanel.getOutputPath());
+					if (fs.exists(path) && DataModelRecommenderPanel.removeUfExist()) {
+						System.out.println("existe");
+						fs.delete(path, true);
+					}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
-				// try {
-				// ToolRunner.run(new RecommenderJob(), args);
-				//
-				// ToolRunner.run(new
-				// org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(),
-				// args);
-				// ToolRunner.run(new
-				// org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob(),
-				// args);
-				//
-				// } catch (Exception e1) {
-				// // TODO Auto-generated catch block
-				// e1.printStackTrace();
-				// }
-				log.info("run");
-				// args = JobBuilder.buildRecommenderJob();
-				String[] args = JobBuilder.buildRecommenderJob();
-				if (args != null) {
-					if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
+				if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
+					String[] args = JobBuilder.buildRecommenderJob();
+					if (args != null) {
 						try {
-							// cause exception (not hadoop started yet)
-							ToolRunner.run(new ItemSimilarityJob(), args);
+							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(), args);
 
+							fs = FileSystem.get(conf);
+							SequenceFile.Reader reader;
+							Path outputPath = new Path(args[5]+"/part-r-00000");
+
+							reader = new SequenceFile.Reader(fs, outputPath, conf);
+							LongWritable key = new LongWritable();
+							VectorWritable value = new VectorWritable();
+
+							while (reader.next(key, value)) {
+								System.out.println("reading key:" + key.toString() + " with value " + value.toString());
+
+							}
+
+							reader.close();
+
+						} catch (FileAlreadyExistsException e1) {
+							MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
+							e1.printStackTrace();
+						} catch (IOException e2) {
+							MainGUI.writeResult(e2.getMessage(), Constants.Log.ERROR);
+							e2.printStackTrace();
 						} catch (Exception e2) {
 							// TODO Auto-generated catch block
 							e2.printStackTrace();
 						}
-					} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
-						// TODO
-					} else {
-						// TODO
 					}
-				} else {
-					log.error("args ==  null");
+				} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
+					String[] argsSplit = JobBuilder.buildSplitDatasetJob();
+					if (argsSplit != null) {
+
+						
+						
+						try {
+							System.out.println("split");
+							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.DatasetSplitter(), argsSplit);
+
+							System.out.println("factorizer");
+							String[] argsFactorizer = JobBuilder.buildFactorizerJob();
+							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.ParallelALSFactorizationJob(), argsFactorizer);
+
+							System.out.println("evaluator");
+							String[] argsEvaluator = JobBuilder.buildEvaluatorJob();
+							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.FactorizationEvaluator(), argsEvaluator);
+
+							String[] argsRecommender = JobBuilder.buildRecommenderJob();
+
+							System.out.println("recommender");
+							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.RecommenderJob(), argsRecommender);
+							System.out.println("fin");
+							// TODO: mostrar resultado y error
+
+//							fs = FileSystem.get(conf);
+//							SequenceFile.Reader reader;
+//							Path outputPath = new Path(argsRecommender[3]);
+//
+//							reader = new SequenceFile.Reader(fs, outputPath, conf);
+//							LongWritable key = new LongWritable();
+//							VectorWritable value = new VectorWritable();
+//
+//							while (reader.next(key, value)) {
+//								System.out.println("reading key:" + key.toString() + " with value " + value.toString());
+//							}
+//							reader.close();
+
+						} catch (FileAlreadyExistsException e1) {
+							MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
+							e1.printStackTrace();
+						} catch (IOException e2) {
+							MainGUI.writeResult(e2.getMessage(), Constants.Log.ERROR);
+							e2.printStackTrace();
+						} catch (Exception e2) {
+							MainGUI.writeResult(e2.getMessage(), Constants.Log.ERROR);
+							e2.printStackTrace();
+						}
+					}
 				}
 			}
 		});
@@ -130,10 +211,49 @@ public class JobRecommenderPanel extends JPanel {
 		});
 		btnExport.setBounds(268, 358, 89, 23);
 		add(btnExport);
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser selectedFile = new JFileChooser();
+				int i = selectedFile.showOpenDialog(JobRecommenderPanel.this);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File prefs = selectedFile.getSelectedFile();
+					String absPath = prefs.getAbsolutePath() + ".sh";
+
+					FileWriter fileW = null;
+					PrintWriter pw = null;
+					try {
+						fileW = new FileWriter(absPath);
+						pw = new PrintWriter(fileW);
+						pw.print(ShowCommandlineBuilder.buildCommandline().toString());
+
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					} finally {
+						try {
+							if (null != fileW)
+								fileW.close();
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
+					}
+
+					MainGUI.writeResult("Shell script created as: " + prefs.getName() + ".sh", Constants.Log.INFO);
+				} else if (i == JFileChooser.ERROR_OPTION) {
+					MainGUI.writeResult("Error generating shell script", Constants.Log.ERROR);
+					log.error("Error generating shell script");
+				}
+				shellTextPane.setText(ShowCommandlineBuilder.buildCommandline().toString());
+			}
+		});
 
 		JButton btnShow = new JButton("Show");
 		btnShow.setBounds(169, 358, 89, 23);
 		add(btnShow);
+		btnShow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {				
+				shellTextPane.setText(ShowCommandlineBuilder.buildCommandline().toString());
+			}
+		});
 
 		JLabel lblNumRecommendations = new JLabel("Num. Recommendations");
 		lblNumRecommendations.setBounds(25, 50, 126, 14);
@@ -156,59 +276,21 @@ public class JobRecommenderPanel extends JPanel {
 						return true;
 					} else {
 						log.error(text + " is out of range");
-						MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).", Constants.Log.ERROR);
+						MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).",
+								Constants.Log.ERROR);
 						tfNumRecommendations.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
 					log.error(text + " is not a number, focus not lost.");
-					MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).", Constants.Log.ERROR);
+					MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).",
+							Constants.Log.ERROR);
 					tfNumRecommendations.setBackground(new Color(240, 128, 128));
 					return false;
 				}
 			}
 		});
 		tfNumRecommendations.getDocument().addDocumentListener(new TextFieldChangeListener());
-
-		btnShow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				log.info("show");
-				String[] args = JobBuilder.buildRecommenderJob();
-				if (args != null) {
-					if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.ITEMBASED_DISTRIBUTED)) {
-						try {
-							StringBuilder textBuilder = new StringBuilder();
-							textBuilder.append("#!/bin/bash").append("\n\n").append("MAHOUT=\"../../bin/mahout\"").append("\n\n")
-									.append("$MAHOUT recommenditembased").append("\n\t").append(args[0] + " " + args[1]).append("\n\t")
-									.append(args[2] + " " + args[3]).append("\n\t").append(args[4] + " " + args[5]).append("\n\t")
-									.append(args[6] + " " + args[7]).append("\n\t").append(args[8] + " " + args[9]).append("\n\t")
-									.append(args[10] + " " + args[11]).append("\n\t").append(args[12] + " " + args[13]).append("\n\t")
-									.append(args[14] + " " + args[15]);
-
-							shellTextPane.setText(textBuilder.toString());
-
-						} catch (Exception e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
-						}
-					}
-
-					else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
-						StringBuilder textBuilder = new StringBuilder();
-						textBuilder.append("#!/bin/bash").append("\n\n").append("MAHOUT=\"../../bin/mahout\"").append("\n\n")
-								.append("$MAHOUT FACTORIZERRRRRRRRRR").append("\n\t").append(args[0] + " " + args[1]).append("\n\t")
-								.append(args[2] + " " + args[3]).append("\n\t").append(args[4] + " " + args[5]).append("\n\t")
-								.append(args[6] + " " + args[7]).append("\n\t").append(args[8] + " " + args[9]).append("\n\t")
-								.append(args[10] + " " + args[11]).append("\n\t").append(args[12] + " " + args[13]).append("\n\t")
-								.append(args[14] + " " + args[15]);
-
-						shellTextPane.setText(textBuilder.toString());
-					} else {
-						// TODO
-					}
-				}
-			}
-		});
 
 	}
 
