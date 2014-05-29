@@ -18,6 +18,8 @@ public class JobClassifierBuilder {
 
 	private static final int ARGS_SEQ2SPARSE = 9;
 	
+	private static final int ARGS_SPLIT_MAPRED = 14;
+	
 	private static final int ARGS_SPLIT = 12;
 	
 	private static final int ARGS_TRAIN_NB = 8; //9 si complementary
@@ -32,7 +34,7 @@ public class JobClassifierBuilder {
 	
 	private static String inputPath, outputPath, modelPath, modelSGDPath;
 	
-	private static String auxPath1, auxPath2, trainPath, testPath, labelIndexPath;
+	private static String auxPath1, auxPath2, trainPath, testPath, labelIndexPath, mapRedOutPath;
 	
 	public static final String[][] buildClassifierJob() {
 		
@@ -110,10 +112,17 @@ public class JobClassifierBuilder {
 		
 		//Args Split
 		
-		String[] argsSplit = args[2] = new String[ARGS_SPLIT];
+		String[] argsSplit;
+		
+		if(!hadoop){
+			argsSplit = args[2] = new String[ARGS_SPLIT_MAPRED];
+		} else{
+			argsSplit = args[2] = new String[ARGS_SPLIT];
+		}
 		
 		trainPath = "classifier/NaiveBayes/train";
 		testPath =  "classifier/NaiveBayes/test";
+		mapRedOutPath = "classifier/NaiveBayes/mapReduce";
 		
 		i = 0;
 		argsSplit[i] = "--input";
@@ -123,21 +132,20 @@ public class JobClassifierBuilder {
 		argsSplit[++i] = "--testOutput";
 		argsSplit[++i] = testPath;
 		argsSplit[++i] = "-ow";
-		//Tambi�n se puede apartir de un porcentaje de la entrada(50 = mitad hacia arriba test) o porcentaje o tam. fijo de cada categor�a
-		/*if(testPercent){
+		argsSplit[++i] = "--sequenceFiles";			//Optional: If the input data are seqFiles	
+		argsSplit[++i] = "--method";
+		if(!hadoop){
+			argsSplit[++i] = "mapreduce";
 			argsSplit[++i] = "--randomSelectionPct"; 	//porcentaje
 			argsSplit[++i] = "20";
-		} else {*/
-			argsSplit[++i] = "--randomSelectionSize"; 	//tama�o de items fijo 
-			argsSplit[++i] = "100";
-		//}
-		argsSplit[++i] = "--sequenceFiles";			//Optional: If the input data are seqFiles	
-		argsSplit[i++] = "--method";
-		if(hadoop){
-			argsSplit[++i] = "mapreduce";
+			argsSplit[++i] = "--mapRedOutputDir";
+			argsSplit[++i] = mapRedOutPath;
 		} else {
 			argsSplit[++i] = "sequential";
+			argsSplit[++i] = "--randomSelectionSize"; 	//tamaño de items fijo 
+			argsSplit[++i] = "100";
 		}
+		//Tambien se puede apartir de un porcentaje de la entrada(50 = mitad hacia arriba test) o porcentaje o tam. fijo de cada categor�a
 		
 		//Args train
 		

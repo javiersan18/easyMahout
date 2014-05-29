@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
 import org.apache.mahout.utils.SplitInput;
+import org.apache.mahout.utils.SplitInputJob;
+//import org.apache.mahout.utils.SplitInput;
 import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.apache.mahout.classifier.AbstractVectorClassifier;
 import org.apache.mahout.classifier.naivebayes.*;

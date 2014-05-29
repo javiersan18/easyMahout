@@ -106,6 +106,11 @@ public class DataModelClassifierPanel extends JPanel {
 		add(lblInputDataSource);
 
 		textInputPath = new JTextField();
+		
+		//Entrada predefinida
+		
+		textInputPath.setText("/home/daniel/Desktop/Data");
+		
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
@@ -176,6 +181,11 @@ public class DataModelClassifierPanel extends JPanel {
 		add(lblOutputDataSource);
 
 		textOutputPath = new JTextField();
+		
+		//Salida predefinida
+		
+		textOutputPath.setText("/home/daniel/Desktop/Classifier");
+		
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
@@ -286,14 +296,17 @@ public class DataModelClassifierPanel extends JPanel {
 						MainGUI.writeResult("Starting to build the classifier", Constants.Log.INFO);
 						ClassifierBuilder.buildClassifier();
 					} catch (ClassNotFoundException e1) {
-						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+						e1.printStackTrace();    
+						MainGUI.writeResult("Not able to build the classifier, CLASSNOTFOUND", Constants.Log.ERROR);
 					} catch (InterruptedException e1) {
-						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the classifier, INTERRUPT", Constants.Log.ERROR);
 					} catch (IOException e1) {
-						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+						e1.printStackTrace();
+						MainGUI.writeResult("Not able to build the classifier, IO", Constants.Log.ERROR);
 					} catch (Exception e1) {
 						e1.printStackTrace();
-						MainGUI.writeResult("Not able to build the classifier", Constants.Log.ERROR);
+						MainGUI.writeResult("Not able to build the classifier, GENERIC", Constants.Log.ERROR);
 					}
 				}
 				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
