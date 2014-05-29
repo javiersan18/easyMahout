@@ -3,17 +3,21 @@ package easyMahout.GUI.recommender;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.io.File;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
 
 import easyMahout.utils.help.RecommenderTips;
+
 import javax.swing.SwingConstants;
 
 public class ConfigureRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final char slash = File.separatorChar;
 
 	private JLabel lblGuide;
 

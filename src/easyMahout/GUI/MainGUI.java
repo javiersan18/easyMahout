@@ -426,7 +426,7 @@ public class MainGUI extends JFrame {
 	}
 
 	public static void setDistributedRecommPanel(boolean distributed) {
-		recommenderTab.setDistributed(distributed);
+		recommenderTab.setDistributed(distributed);		
 		distributedMenuItem.setSelected(distributed);
 		nonDistributedMenuItem.setSelected(!distributed);
 	}

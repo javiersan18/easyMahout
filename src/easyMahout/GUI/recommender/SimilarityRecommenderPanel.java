@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.border.LineBorder;
 
@@ -44,6 +45,8 @@ import javax.swing.JTextField;
 public class SimilarityRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final char slash = File.separatorChar;
 
 	private DefaultComboBoxModel<String> userSimilarity;
 
@@ -127,7 +130,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		add(helpTooltip);
 
 		lblMaxsimilaritiesperitem = new JLabel("Max similarities per item");
-		lblMaxsimilaritiesperitem.setBounds(38, 80, 135, 14);
+		lblMaxsimilaritiesperitem.setBounds(38, 80, 208, 14);
 		add(lblMaxsimilaritiesperitem);
 		lblMaxsimilaritiesperitem.setVisible(false);
 
@@ -139,7 +142,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		tfMaxSimilarities.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblMaxPreferencesPer = new JLabel("Max preferences per user");
-		lblMaxPreferencesPer.setBounds(38, 115, 135, 14);
+		lblMaxPreferencesPer.setBounds(38, 115, 197, 14);
 		add(lblMaxPreferencesPer);
 		lblMaxPreferencesPer.setVisible(false);
 
@@ -151,7 +154,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		tfMaxPreferences.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblMinPreferencesPer = new JLabel("Min preferences per user");
-		lblMinPreferencesPer.setBounds(38, 150, 135, 14);
+		lblMinPreferencesPer.setBounds(38, 150, 197, 14);
 		add(lblMinPreferencesPer);
 		lblMinPreferencesPer.setVisible(false);
 
@@ -163,7 +166,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		tfMinPreferences.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblThreshold = new JLabel("Threshold");
-		lblThreshold.setBounds(38, 220, 128, 14);
+		lblThreshold.setBounds(38, 220, 197, 14);
 		add(lblThreshold);
 		lblThreshold.setVisible(false);
 		
@@ -176,7 +179,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		tfThreshold.getDocument().addDocumentListener(new TextFieldChangeListener());
 		
 		lblMaxPrefsItemSimilarity = new JLabel("Max prefs. per user in Item Similarity");
-		lblMaxPrefsItemSimilarity.setBounds(38, 185, 197, 14);
+		lblMaxPrefsItemSimilarity.setBounds(38, 185, 310, 14);
 		add(lblMaxPrefsItemSimilarity);
 		lblMaxPrefsItemSimilarity.setVisible(false);
 		

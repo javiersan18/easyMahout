@@ -64,8 +64,8 @@ import sun.java2d.pipe.DrawImage;
 
 			comboBoxAlg = new JComboBox();
 			comboBoxAlg.setModel(new DefaultComboBoxModel(new String[] { Constants.ClusterAlg.USER_DEFINED, Constants.ClusterAlg.CANOPY, Constants.ClusterAlg.KMEANS,
-					Constants.ClusterAlg.FUZZYKMEANS/*,Constants.ClusterAlg.DIRICHLET*/ }));
-			comboBoxAlg.setBounds(38, 36, 141, 20);
+					Constants.ClusterAlg.FUZZYKMEANS }));
+			comboBoxAlg.setBounds(38, 36, 167, 20);
 			
 			add(comboBoxAlg);
 			
@@ -101,13 +101,13 @@ import sun.java2d.pipe.DrawImage;
 			emitMostLikely.setEnabled(false);
 			
 			fuzzyFactor = new JLabel("Fuzzyfication Factor");
-			fuzzyFactor.setBounds(286, 65, 157, 23);
+			fuzzyFactor.setBounds(256, 65, 157, 23);
 			add(fuzzyFactor);
 			
 			fuzzyFactor.setEnabled(false);
 			
 			campoFuzzyFactor = new JTextField();
-			campoFuzzyFactor.setBounds(256, 95, 157, 23);
+			campoFuzzyFactor.setBounds(256, 99, 157, 23);
 			campoFuzzyFactor.setText("0");
 			campoFuzzyFactor.setToolTipText(ayuda);
 			add(campoFuzzyFactor);
