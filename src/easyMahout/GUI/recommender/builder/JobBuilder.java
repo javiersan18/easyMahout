@@ -86,11 +86,10 @@ public class JobBuilder {
 				return args;
 			}
 		} else {
-			String inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "userRatings" + slash
-					+ "";
-			String outputPath = DataModelRecommenderPanel.getOutputPath() + slash + "recommendations" + slash + "";
-			String userFeatures = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "U" + slash + "";
-			String itemFeatures = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "M" + slash + "";
+			String inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "userRatings" + slash;
+			String outputPath = DataModelRecommenderPanel.getOutputPath() + slash + "recommendations" + slash;
+			String userFeatures = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "U" + slash;
+			String itemFeatures = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "M" + slash;
 			String numRecommendations = JobRecommenderPanel.getNumRecommendations();
 
 			String[] args = new String[ARGS_FACTORIZEDBASED_SIZE];
@@ -151,7 +150,8 @@ public class JobBuilder {
 	}
 
 	public static String[] buildFactorizerJob() {
-		String inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "dataset" + slash + "trainingSet" + slash + "";
+		//String inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "dataset" + slash + "trainingSet" + slash + "";
+		String inputPath = DataModelRecommenderPanel.getInputPath();
 		String outputPath = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "";
 		String numFeatures = ALSWRFactorizerInputDialog.getNoFeaturesArg();
 		String numIterations = ALSWRFactorizerInputDialog.getNoIterationsArg();

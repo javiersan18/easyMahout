@@ -28,6 +28,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.mapred.FileAlreadyExistsException;
+import org.apache.hadoop.util.Shell;
+import org.apache.hadoop.util.Shell.ShellCommandExecutor;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.apache.mahout.math.VectorWritable;
@@ -49,7 +51,8 @@ public class JobRecommenderPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private static final char slash = File.separatorChar;
-
+	
+	
 	private HelpTooltip helpTooltip;
 
 	private static JTextPane shellTextPane;
@@ -124,7 +127,7 @@ public class JobRecommenderPanel extends JPanel {
 
 							fs = FileSystem.get(conf);
 							SequenceFile.Reader reader;
-							Path outputPath = new Path(args[3]);
+							Path outputPath = new Path(args[5]+"/part-r-00000");
 
 							reader = new SequenceFile.Reader(fs, outputPath, conf);
 							LongWritable key = new LongWritable();
@@ -152,34 +155,39 @@ public class JobRecommenderPanel extends JPanel {
 					String[] argsSplit = JobBuilder.buildSplitDatasetJob();
 					if (argsSplit != null) {
 
+						
+						
 						try {
-
+							System.out.println("split");
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.DatasetSplitter(), argsSplit);
 
+							System.out.println("factorizer");
 							String[] argsFactorizer = JobBuilder.buildFactorizerJob();
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.ParallelALSFactorizationJob(), argsFactorizer);
 
+							System.out.println("evaluator");
 							String[] argsEvaluator = JobBuilder.buildEvaluatorJob();
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.FactorizationEvaluator(), argsEvaluator);
 
 							String[] argsRecommender = JobBuilder.buildRecommenderJob();
 
+							System.out.println("recommender");
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.RecommenderJob(), argsRecommender);
-
+							System.out.println("fin");
 							// TODO: mostrar resultado y error
 
-							fs = FileSystem.get(conf);
-							SequenceFile.Reader reader;
-							Path outputPath = new Path(argsRecommender[3]);
-
-							reader = new SequenceFile.Reader(fs, outputPath, conf);
-							LongWritable key = new LongWritable();
-							VectorWritable value = new VectorWritable();
-
-							while (reader.next(key, value)) {
-								System.out.println("reading key:" + key.toString() + " with value " + value.toString());
-							}
-							reader.close();
+//							fs = FileSystem.get(conf);
+//							SequenceFile.Reader reader;
+//							Path outputPath = new Path(argsRecommender[3]);
+//
+//							reader = new SequenceFile.Reader(fs, outputPath, conf);
+//							LongWritable key = new LongWritable();
+//							VectorWritable value = new VectorWritable();
+//
+//							while (reader.next(key, value)) {
+//								System.out.println("reading key:" + key.toString() + " with value " + value.toString());
+//							}
+//							reader.close();
 
 						} catch (FileAlreadyExistsException e1) {
 							MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
