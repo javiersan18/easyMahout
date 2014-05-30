@@ -87,7 +87,7 @@ public class JobBuilder {
 			}
 		} else {
 			String inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "userRatings" + slash;
-			String outputPath = DataModelRecommenderPanel.getOutputPath() + slash + "recommendations" + slash;
+			String outputPath = DataModelRecommenderPanel.getOutputPath() + slash + "recommendations";
 			String userFeatures = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "U" + slash;
 			String itemFeatures = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "M" + slash;
 			String numRecommendations = JobRecommenderPanel.getNumRecommendations();

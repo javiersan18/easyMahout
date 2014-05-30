@@ -101,7 +101,22 @@ public class JobRecommenderPanel extends JPanel {
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-//				String[] cmd =    {"env"};
+				try {
+					Process proc = Runtime.getRuntime().exec(new String[] {"pwd"});
+					System.out.println(proc.getOutputStream().toString());
+					//System.out.println(proc.exitValue());
+					proc = Runtime.getRuntime().exec(new String[] {"cd",".."});
+					System.out.println(proc.getOutputStream().toString());
+					//System.out.println(proc.exitValue());
+					proc = Runtime.getRuntime().exec(new String[] {"pwd"});
+					System.out.println(proc.getOutputStream().toString());
+					//System.out.println(proc.exitValue());
+					}
+					catch (Exception e1) {
+					e1.printStackTrace();
+					}
+				
+//				String[] cmd =    {"pwd"};
 //				shell = new ShellCommandExecutor(cmd);
 //				try {
 //					shell.execute();
@@ -111,6 +126,7 @@ public class JobRecommenderPanel extends JPanel {
 //				}
 //				System.out.println("* shell exit code : " + shell.getExitCode());
 //				System.out.println("* shell output: \n" + shell.getOutput());
+
 //				
 //				String[] cmd3 =    {"ls"};
 //				shell = new ShellCommandExecutor(cmd3);
@@ -166,7 +182,8 @@ public class JobRecommenderPanel extends JPanel {
 					String[] args = JobBuilder.buildRecommenderJob();
 					if (args != null) {
 						try {
-							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(), args);
+							MainGUI.writeResult("Recommending... please wait...", Constants.Log.INFO);
+							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(), args);							
 							writeResultRecommender(args[5] + "/part-r-00000");
 
 						} catch (FileAlreadyExistsException e1) {
@@ -203,13 +220,21 @@ public class JobRecommenderPanel extends JPanel {
 
 							String[] argsRecommender = JobBuilder.buildRecommenderJob();
 							MainGUI.writeResult("Initializing recommender...", Constants.Log.INFO);
-							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.RecommenderJob(), argsRecommender);
-
+							//ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.RecommenderJob(), argsRecommender);
+							
+							org.apache.mahout.cf.taste.hadoop.als.RecommenderJob rec = new org.apache.mahout.cf.taste.hadoop.als.RecommenderJob();
+							rec.setConf(conf);
+							
+							int i = rec.run(argsRecommender);
+							
+							MainGUI.writeResult("success = "+i, Constants.Log.INFO);
+							
+							
 							if (FactorizerRecommenderPanel.getEvaluateFactorizer()) {
-								writeFactorizerError(argsEvaluator[3]);
+								writeFactorizerError(argsEvaluator[3]+"/rmse.txt");
 							}
 
-							writeResultRecommender(argsRecommender[5] + "/part-r-00000");
+							writeResultRecommender(argsRecommender[3] + "/part-r-00000");
 
 						} catch (FileAlreadyExistsException e1) {
 							MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
@@ -321,6 +346,7 @@ public class JobRecommenderPanel extends JPanel {
 			String line = br.readLine();
 			while (line != null) {
 				MainGUI.writeResult("Recommendation: " + line, Constants.Log.RESULT);
+				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
@@ -337,6 +363,7 @@ public class JobRecommenderPanel extends JPanel {
 			String line = br.readLine();
 			if (line != null) {
 				MainGUI.writeResult("Factorizer RMSE: " + line, Constants.Log.RESULT);
+				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);

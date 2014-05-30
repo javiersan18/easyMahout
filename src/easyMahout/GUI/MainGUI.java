@@ -187,7 +187,7 @@ public class MainGUI extends JFrame {
 		}
 
 		getLogTextPane().setText(textBuilder.toString());
-
+		main.update(main.getGraphics());
 	}
 
 	private void onClose() {
