@@ -97,7 +97,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
 
 		lblInputDataSource = new JLabel("Input data source:");
-		lblInputDataSource.setBounds(38, 105, 107, 14);
+		lblInputDataSource.setBounds(38, 105, 157, 14);
 		add(lblInputDataSource);
 
 		textInputPath = new JTextField();
@@ -117,7 +117,7 @@ public class DataModelRecommenderPanel extends JPanel {
 
 		tfDelimiter = new JTextField();
 		tfDelimiter.setHorizontalAlignment(SwingConstants.CENTER);
-		tfDelimiter.setBounds(329, 68, 46, 20);
+		tfDelimiter.setBounds(352, 68, 46, 20);
 		add(tfDelimiter);
 		tfDelimiter.setColumns(10);
 		tfDelimiter.setText(",");
@@ -125,7 +125,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnCreate = new JButton("Create Model");
-		btnCreate.setBounds(241, 165, 107, 23);
+		btnCreate.setBounds(241, 165, 134, 23);
 		add(btnCreate);
 
 		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
@@ -142,7 +142,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		add(helpTooltip);
 
 		lblOutputDataSource = new JLabel("Output data source (Optional):");
-		lblOutputDataSource.setBounds(38, 206, 157, 14);
+		lblOutputDataSource.setBounds(38, 206, 216, 14);
 		add(lblOutputDataSource);
 
 		textOutputPath = new JTextField();
@@ -156,7 +156,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		add(btnSelectOutput);
 
 		chckbxRemoveIfExist = new JCheckBox("Remove if exist");
-		chckbxRemoveIfExist.setBounds(241, 267, 134, 23);
+		chckbxRemoveIfExist.setBounds(241, 267, 157, 23);
 		add(chckbxRemoveIfExist);
 		chckbxRemoveIfExist.setEnabled(false);
 

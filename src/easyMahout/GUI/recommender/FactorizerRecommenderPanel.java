@@ -30,6 +30,7 @@ import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 
 import javax.swing.JLabel;
+import javax.swing.JCheckBox;
 
 public class FactorizerRecommenderPanel extends JPanel {
 
@@ -48,10 +49,12 @@ public class FactorizerRecommenderPanel extends JPanel {
 	private static FactorizerInputDialog inputDialog;
 
 	private static JComboBox<String> comboBoxCandidate;
-
-	private final static Logger log = Logger.getLogger(FactorizerRecommenderPanel.class);
-
+	
 	private JLabel lblCandidateItemStrategy;
+	
+	private static JCheckBox chckbxEvaluateFactorizer;
+
+	private final static Logger log = Logger.getLogger(FactorizerRecommenderPanel.class);	
 
 	public FactorizerRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Rating Matrix Factorization ", TitledBorder.CENTER,
@@ -92,11 +95,11 @@ public class FactorizerRecommenderPanel extends JPanel {
 		add(btnConfigure);
 
 		JLabel lblFactorizer = new JLabel("Factorizer");
-		lblFactorizer.setBounds(38, 40, 77, 14);
+		lblFactorizer.setBounds(38, 40, 249, 14);
 		add(lblFactorizer);
 
 		lblCandidateItemStrategy = new JLabel("Candidate Item Strategy");
-		lblCandidateItemStrategy.setBounds(38, 110, 176, 14);
+		lblCandidateItemStrategy.setBounds(38, 110, 249, 14);
 		add(lblCandidateItemStrategy);
 
 		comboBoxCandidate = new JComboBox<String>();
@@ -105,6 +108,11 @@ public class FactorizerRecommenderPanel extends JPanel {
 				Constants.RecommCandidate.ALL_SIMILAR_ITEMS, Constants.RecommCandidate.ALL_UKNOWN_ITEMS,
 				Constants.RecommCandidate.SAMPLING_ITEMS }));
 		add(comboBoxCandidate);
+		
+		chckbxEvaluateFactorizer = new JCheckBox("Evaluate Factorizer");
+		chckbxEvaluateFactorizer.setBounds(38, 106, 249, 23);
+		add(chckbxEvaluateFactorizer);
+		chckbxEvaluateFactorizer.setVisible(false);
 
 		btnConfigure.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -185,18 +193,21 @@ public class FactorizerRecommenderPanel extends JPanel {
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
 			comboBoxFactorizer.setModel(distributedModel);
-			helpTooltip.setText(RecommenderTips.RECOMM_FACTORIZER_DIST);
-			lblCandidateItemStrategy.setVisible(!distributed);
-			comboBoxCandidate.setVisible(!distributed);
+			helpTooltip.setText(RecommenderTips.RECOMM_FACTORIZER_DIST);			
 		} else {
 			comboBoxFactorizer.setModel(nonDistributedModel);
-			helpTooltip.setText(RecommenderTips.RECOMM_FACTORIZER);
-			lblCandidateItemStrategy.setVisible(distributed);
-			comboBoxCandidate.setVisible(distributed);
+			helpTooltip.setText(RecommenderTips.RECOMM_FACTORIZER);			
 		}
+		lblCandidateItemStrategy.setVisible(!distributed);
+		comboBoxCandidate.setVisible(!distributed);
+		chckbxEvaluateFactorizer.setVisible(distributed);
 	}
 	
 	public static FactorizerInputDialog getFactorizerInput(){
 		return inputDialog;
+	}
+	
+	public static boolean getEvaluateFactorizer(){
+		return chckbxEvaluateFactorizer.isSelected();
 	}
 }

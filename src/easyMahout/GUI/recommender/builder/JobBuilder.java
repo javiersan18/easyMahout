@@ -150,15 +150,19 @@ public class JobBuilder {
 	}
 
 	public static String[] buildFactorizerJob() {
-		//String inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "dataset" + slash + "trainingSet" + slash + "";
-		String inputPath = DataModelRecommenderPanel.getInputPath();
+		String inputPath = null;
+		if (FactorizerRecommenderPanel.getEvaluateFactorizer()) {
+			inputPath = DataModelRecommenderPanel.getOutputPath() + slash + "dataset" + slash + "trainingSet" + slash + "";
+		} else {
+			inputPath = DataModelRecommenderPanel.getInputPath();
+		}
 		String outputPath = DataModelRecommenderPanel.getOutputPath() + slash + "als" + slash + "out" + slash + "";
 		String numFeatures = ALSWRFactorizerInputDialog.getNoFeaturesArg();
 		String numIterations = ALSWRFactorizerInputDialog.getNoIterationsArg();
 		String lambda = ALSWRFactorizerInputDialog.getLambdaArg();
 		String numThreadsPerSolver = ALSWRFactorizerInputDialog.getNoTrainingThreadsArg();
-		
-		if(FactorizerRecommenderPanel.getSelectedFunction().equals(Constants.RecommFactorizer.ALSWR_SHORT)){
+
+		if (FactorizerRecommenderPanel.getSelectedFunction().equals(Constants.RecommFactorizer.ALSWR_SHORT)) {
 			String[] args = new String[ARGS_ALSFACTORIZATION_SIZE];
 
 			int p = 0;
@@ -181,9 +185,9 @@ public class JobBuilder {
 				log.info(args[i].toString());
 			}
 			return args;
-		} else{ //SVD
+		} else { // SVD
 			String[] args = new String[ARGS_SVDFACTORIZATION_SIZE];
-			
+
 			String alpha = SVDFactorizerInputDialog.getAlphaArg();
 
 			int p = 0;

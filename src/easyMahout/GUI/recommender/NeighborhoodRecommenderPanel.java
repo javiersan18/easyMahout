@@ -154,11 +154,11 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 		tfMinimun.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		labelMinimun = new JLabel("Minimun similarity");
-		labelMinimun.setBounds(38, 101, 115, 14);
+		labelMinimun.setBounds(38, 101, 137, 14);
 		add(labelMinimun);
 
 		labelSamplingRate = new JLabel("Sampling rate");
-		labelSamplingRate.setBounds(38, 132, 98, 14);
+		labelSamplingRate.setBounds(38, 132, 137, 14);
 		add(labelSamplingRate);
 
 		tfSamplingRate = new JTextField();

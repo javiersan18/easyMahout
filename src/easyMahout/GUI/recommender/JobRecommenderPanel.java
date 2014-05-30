@@ -6,7 +6,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,14 +28,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.mapred.FileAlreadyExistsException;
-import org.apache.hadoop.util.Shell;
 import org.apache.hadoop.util.Shell.ShellCommandExecutor;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-import org.apache.mahout.math.VectorWritable;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.builder.JobBuilder;
@@ -49,15 +48,17 @@ import javax.swing.SwingConstants;
 public class JobRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
+
+	@SuppressWarnings("unused")
 	private static final char slash = File.separatorChar;
-	
-	
+
 	private HelpTooltip helpTooltip;
 
 	private static JTextPane shellTextPane;
 
 	private JScrollPane shellScrollPane;
+
+	private ShellCommandExecutor shell;
 
 	private final static Logger log = Logger.getLogger(JobRecommenderPanel.class);
 
@@ -99,6 +100,48 @@ public class JobRecommenderPanel extends JPanel {
 		add(btnRun);
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+//				String[] cmd =    {"env"};
+//				shell = new ShellCommandExecutor(cmd);
+//				try {
+//					shell.execute();
+//				} catch (IOException e3) {
+//					// TODO Auto-generated catch block
+//					e3.printStackTrace();
+//				}
+//				System.out.println("* shell exit code : " + shell.getExitCode());
+//				System.out.println("* shell output: \n" + shell.getOutput());
+//				
+//				String[] cmd3 =    {"ls"};
+//				shell = new ShellCommandExecutor(cmd3);
+//				try {
+//					shell.execute();
+//				} catch (IOException e3) {
+//					// TODO Auto-generated catch block
+//					e3.printStackTrace();
+//				}
+//				System.out.println("* shell exit code : " + shell.getExitCode());
+//				System.out.println("* shell output: \n" + shell.getOutput());
+
+				
+//				String[] cmd2 =    {"$MAHOUT parallelALS",
+//						"--input",
+//						"C:\\Users\\j.gonzalez.sanchez\\Desktop\\input",		
+//						"--output"," C:\\\\Users\\j.gonzalez.sanchez\\Desktop\\output\\als\\out\\",
+//						"--tempDir"," C:\\Users\\j.gonzalez.sanchez\\Desktop\\output\\als\\tmp",
+//						"--numFeatures"," 20",
+//						"--numIterations"," 5",
+//						"--lambda"," 0.065",
+//						"--numThreadsPerSolver"," 1"};
+//				shell = new ShellCommandExecutor(cmd2);
+//				try {
+//					shell.execute();
+//				} catch (IOException e3) {
+//					// TODO Auto-generated catch block
+//					e3.printStackTrace();
+//				}
+//				System.out.println("* shell exit code : " + shell.getExitCode());
+//				System.out.println("* shell output: \n" + shell.getOutput());
 
 				Configuration conf = new Configuration();
 				FileSystem fs;
@@ -124,21 +167,7 @@ public class JobRecommenderPanel extends JPanel {
 					if (args != null) {
 						try {
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(), args);
-
-							fs = FileSystem.get(conf);
-							SequenceFile.Reader reader;
-							Path outputPath = new Path(args[5]+"/part-r-00000");
-
-							reader = new SequenceFile.Reader(fs, outputPath, conf);
-							LongWritable key = new LongWritable();
-							VectorWritable value = new VectorWritable();
-
-							while (reader.next(key, value)) {
-								System.out.println("reading key:" + key.toString() + " with value " + value.toString());
-
-							}
-
-							reader.close();
+							writeResultRecommender(args[5] + "/part-r-00000");
 
 						} catch (FileAlreadyExistsException e1) {
 							MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
@@ -154,40 +183,33 @@ public class JobRecommenderPanel extends JPanel {
 				} else if (TypeRecommenderPanel.getSelectedType().equals(Constants.RecommType.FACTORIZED_RECOMMENDER)) {
 					String[] argsSplit = JobBuilder.buildSplitDatasetJob();
 					if (argsSplit != null) {
-
-						
-						
 						try {
-							System.out.println("split");
-							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.DatasetSplitter(), argsSplit);
 
-							System.out.println("factorizer");
+							if (FactorizerRecommenderPanel.getEvaluateFactorizer()) {
+								MainGUI.writeResult("Splitting data into test and training sets...", Constants.Log.INFO);
+								ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.DatasetSplitter(), argsSplit);
+							}
+
+							MainGUI.writeResult("Factoring data into matrix U and M...", Constants.Log.INFO);
 							String[] argsFactorizer = JobBuilder.buildFactorizerJob();
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.ParallelALSFactorizationJob(), argsFactorizer);
 
-							System.out.println("evaluator");
-							String[] argsEvaluator = JobBuilder.buildEvaluatorJob();
-							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.FactorizationEvaluator(), argsEvaluator);
+							String[] argsEvaluator = null;
+							if (FactorizerRecommenderPanel.getEvaluateFactorizer()) {
+								MainGUI.writeResult("Evaluating factorization...", Constants.Log.INFO);
+								argsEvaluator = JobBuilder.buildEvaluatorJob();
+								ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.FactorizationEvaluator(), argsEvaluator);
+							}
 
 							String[] argsRecommender = JobBuilder.buildRecommenderJob();
-
-							System.out.println("recommender");
+							MainGUI.writeResult("Initializing recommender...", Constants.Log.INFO);
 							ToolRunner.run(new org.apache.mahout.cf.taste.hadoop.als.RecommenderJob(), argsRecommender);
-							System.out.println("fin");
-							// TODO: mostrar resultado y error
 
-//							fs = FileSystem.get(conf);
-//							SequenceFile.Reader reader;
-//							Path outputPath = new Path(argsRecommender[3]);
-//
-//							reader = new SequenceFile.Reader(fs, outputPath, conf);
-//							LongWritable key = new LongWritable();
-//							VectorWritable value = new VectorWritable();
-//
-//							while (reader.next(key, value)) {
-//								System.out.println("reading key:" + key.toString() + " with value " + value.toString());
-//							}
-//							reader.close();
+							if (FactorizerRecommenderPanel.getEvaluateFactorizer()) {
+								writeFactorizerError(argsEvaluator[3]);
+							}
+
+							writeResultRecommender(argsRecommender[5] + "/part-r-00000");
 
 						} catch (FileAlreadyExistsException e1) {
 							MainGUI.writeResult(e1.getMessage(), Constants.Log.ERROR);
@@ -250,7 +272,7 @@ public class JobRecommenderPanel extends JPanel {
 		btnShow.setBounds(169, 358, 89, 23);
 		add(btnShow);
 		btnShow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				shellTextPane.setText(ShowCommandlineBuilder.buildCommandline().toString());
 			}
 		});
@@ -292,6 +314,37 @@ public class JobRecommenderPanel extends JPanel {
 		});
 		tfNumRecommendations.getDocument().addDocumentListener(new TextFieldChangeListener());
 
+	}
+
+	protected void writeResultRecommender(String path) {
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+			String line = br.readLine();
+			while (line != null) {
+				MainGUI.writeResult("Recommendation: " + line, Constants.Log.RESULT);
+			}
+		} catch (FileNotFoundException e) {
+			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
+			e.printStackTrace();
+		} catch (IOException e) {
+			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
+			e.printStackTrace();
+		}
+
+	}
+
+	protected void writeFactorizerError(String path) {
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+			String line = br.readLine();
+			if (line != null) {
+				MainGUI.writeResult("Factorizer RMSE: " + line, Constants.Log.RESULT);
+			}
+		} catch (FileNotFoundException e) {
+			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
+			e.printStackTrace();
+		} catch (IOException e) {
+			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
+			e.printStackTrace();
+		}
 	}
 
 	public HelpTooltip getHelpTooltip() {

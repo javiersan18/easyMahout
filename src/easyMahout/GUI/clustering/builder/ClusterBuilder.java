@@ -2,29 +2,11 @@ package easyMahout.GUI.clustering.builder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import static java.nio.file.FileVisitResult.*;
-
 import javax.swing.JOptionPane;
 
-import org.apache.avro.mapred.Pair;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -33,39 +15,21 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.JobContext;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
-import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
-import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
-import org.apache.mahout.cf.taste.recommender.Recommender;
-import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
-import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.apache.mahout.clustering.Cluster;
-import org.apache.mahout.clustering.canopy.Canopy;
 import org.apache.mahout.clustering.canopy.CanopyClusterer;
 import org.apache.mahout.clustering.canopy.CanopyDriver;
-import org.apache.mahout.clustering.classify.WeightedPropertyVectorWritable;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
-import org.apache.mahout.clustering.dirichlet.DirichletDriver;
-import org.apache.mahout.clustering.dirichlet.models.DistributionDescription;
-import org.apache.mahout.clustering.display.DisplayCanopy;
 import org.apache.mahout.clustering.display.DisplayFuzzyKMeans;
 import org.apache.mahout.clustering.display.DisplayKMeans;
-import org.apache.mahout.clustering.fuzzykmeans.FuzzyKMeansDriver;
 import org.apache.mahout.clustering.iterator.ClusterWritable;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
 import org.apache.mahout.common.HadoopUtil;
-import org.apache.mahout.common.RandomUtils;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
 import org.apache.mahout.common.distance.DistanceMeasure;
 import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
@@ -74,22 +38,12 @@ import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
-import org.apache.mahout.math.NamedVector;
-import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
-import org.apache.mahout.text.MultipleTextFileInputFormat;
 import org.apache.mahout.text.PrefixAdditionFilter;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
-import org.apache.mahout.text.SequenceFilesFromDirectoryMapper;
 import org.apache.mahout.utils.SplitInput;
-import org.apache.mahout.vectorizer.DictionaryVectorizer;
-import org.apache.mahout.vectorizer.DocumentProcessor;
 import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
-import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
-
-import MahoutInAction.Clustering.Clustering72;
-
 import easyMahout.GUI.MainGUI;
 
 
@@ -97,10 +51,6 @@ import easyMahout.GUI.clustering.AlgorithmClusterPanel;
 import easyMahout.GUI.clustering.DataModelClusterPanel;
 import easyMahout.GUI.clustering.DistanceMeasurePanel;
 import easyMahout.GUI.clustering.MainClusterPanel;
-import easyMahout.GUI.recommender.DataModelRecommenderPanel;
-import easyMahout.GUI.recommender.NeighborhoodRecommenderPanel;
-import easyMahout.GUI.recommender.SimilarityRecommenderPanel;
-import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 
 public class ClusterBuilder {

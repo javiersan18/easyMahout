@@ -82,11 +82,11 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		ButtonGroup optionsButtonGroup = new ButtonGroup();
 
 		JLabel lblParameters = new JLabel("Parameters options");
-		lblParameters.setBounds(37, 22, 103, 14);
+		lblParameters.setBounds(37, 22, 123, 14);
 		getContentPane().add(lblParameters);
 
 		rdbtnOption1 = new JRadioButton("Option 1");
-		rdbtnOption1.setBounds(166, 18, 72, 23);
+		rdbtnOption1.setBounds(166, 18, 77, 23);
 		getContentPane().add(rdbtnOption1);
 		optionsButtonGroup.add(rdbtnOption1);
 		rdbtnOption1.setSelected(true);
@@ -98,7 +98,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		});
 
 		rdbtnOption2 = new JRadioButton("Option 2");
-		rdbtnOption2.setBounds(240, 18, 72, 23);
+		rdbtnOption2.setBounds(245, 18, 94, 23);
 		getContentPane().add(rdbtnOption2);
 		optionsButtonGroup.add(rdbtnOption2);
 		rdbtnOption2.addActionListener(new ActionListener() {
@@ -113,12 +113,12 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		getContentPane().add(separator);
 
 		lblNoFeatures = new JLabel("No. Features");
-		lblNoFeatures.setBounds(37, 70, 63, 14);
+		lblNoFeatures.setBounds(37, 70, 153, 14);
 		getContentPane().add(lblNoFeatures);
 
 		tfNoFeatures = new JTextField();
 		tfNoFeatures.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfNoFeatures.setBounds(166, 67, 62, 20);
+		tfNoFeatures.setBounds(200, 67, 62, 20);
 		getContentPane().add(tfNoFeatures);
 		tfNoFeatures.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -146,13 +146,14 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		tfNoFeatures.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblNoIterations = new JLabel("No. Iterations");
-		lblNoIterations.setBounds(37, 100, 67, 14);
+		lblNoIterations.setBounds(37, 100, 153, 14);
 		getContentPane().add(lblNoIterations);
 
 		tfNoIterations = new JTextField();
+		tfNoIterations.setText("5");
 		tfNoIterations.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfNoIterations.setColumns(5);
-		tfNoIterations.setBounds(166, 97, 62, 20);
+		tfNoIterations.setBounds(200, 97, 62, 20);
 		getContentPane().add(tfNoIterations);
 		tfNoIterations.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -180,13 +181,14 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		tfNoIterations.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblLambda = new JLabel("Lambda");
-		lblLambda.setBounds(37, 130, 37, 14);
+		lblLambda.setBounds(37, 130, 153, 14);
 		getContentPane().add(lblLambda);
 
 		tfLambda = new JTextField();
+		tfLambda.setText("0.065");
 		tfLambda.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfLambda.setColumns(5);
-		tfLambda.setBounds(166, 127, 62, 20);
+		tfLambda.setBounds(200, 127, 62, 20);
 		getContentPane().add(tfLambda);
 		tfLambda.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -214,14 +216,15 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		tfLambda.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblNoTrainingThreads = new JLabel("No. Training Threads");
-		lblNoTrainingThreads.setBounds(37, 160, 100, 14);
+		lblNoTrainingThreads.setBounds(37, 160, 153, 14);
 		getContentPane().add(lblNoTrainingThreads);
 		lblNoTrainingThreads.setEnabled(false);
 
 		tfNoTrainingThreads = new JTextField();
+		tfNoTrainingThreads.setText("1");
 		tfNoTrainingThreads.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfNoTrainingThreads.setColumns(5);
-		tfNoTrainingThreads.setBounds(166, 157, 62, 20);
+		tfNoTrainingThreads.setBounds(200, 157, 62, 20);
 		getContentPane().add(tfNoTrainingThreads);
 		tfNoTrainingThreads.setEnabled(false);
 		tfNoTrainingThreads.setInputVerifier(new InputVerifier() {
