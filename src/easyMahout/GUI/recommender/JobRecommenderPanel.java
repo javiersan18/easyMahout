@@ -282,8 +282,7 @@ public class JobRecommenderPanel extends JPanel {
 				} else if (i == JFileChooser.ERROR_OPTION) {
 					MainGUI.writeResult("Error generating shell script", Constants.Log.ERROR);
 					log.error("Error generating shell script");
-				}
-				shellTextPane.setText(ShowCommandlineBuilder.buildCommandline().toString());
+				}				
 			}
 		});
 

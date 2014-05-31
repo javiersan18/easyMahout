@@ -30,7 +30,7 @@ public class DistanceMeasurePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JComboBox comboBoxDistance;
+	private static JComboBox comboBoxDistance;
 	private HelpTooltip helpTooltip;
 	private static JCheckBox chckbxWeighted;
 
@@ -103,7 +103,7 @@ public class DistanceMeasurePanel extends JPanel {
 	}
 
 
-	public String getSelectedType() {
+	public static String getSelectedType() {
 		return (String) comboBoxDistance.getSelectedItem();
 	}
 	
@@ -119,7 +119,7 @@ public class DistanceMeasurePanel extends JPanel {
 	public JComboBox getComboBoxDistance() {
 		return comboBoxDistance;
 	}
-
+	
 
 	public void setComboBoxDistance(JComboBox comboBoxDistance) {
 		this.comboBoxDistance = comboBoxDistance;

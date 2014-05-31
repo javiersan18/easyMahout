@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
@@ -22,68 +20,35 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.ProgressMonitor;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.SequenceFile;
 import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
-import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.recommender.RecommendedItem;
-import org.apache.mahout.cf.taste.recommender.Recommender;
-import org.apache.mahout.clustering.Cluster;
-import org.apache.mahout.clustering.canopy.CanopyClusterer;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
-import org.apache.mahout.clustering.kmeans.KMeansDriver;
-import org.apache.mahout.clustering.kmeans.Kluster;
-import org.apache.mahout.common.distance.CosineDistanceMeasure;
-import org.apache.mahout.common.distance.DistanceMeasure;
-import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
-import org.apache.mahout.common.distance.ManhattanDistanceMeasure;
-import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
-import org.apache.mahout.common.distance.TanimotoDistanceMeasure;
-import org.apache.mahout.common.distance.WeightedEuclideanDistanceMeasure;
-import org.apache.mahout.common.distance.WeightedManhattanDistanceMeasure;
-import org.apache.mahout.text.SequenceFilesFromDirectory;
-import org.math.plot.Plot2DPanel;
 import org.math.plot.Plot3DPanel;
 
 import com.jidesoft.swing.FolderChooser;
-import com.jidesoft.utils.SwingWorker;
 
 import easyMahout.GUI.MainGUI;
-
 import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.clustering.builder.CreateSequenceFile;
 import easyMahout.GUI.clustering.builder.ReadSequenceFile;
 import easyMahout.GUI.recommender.EvaluatorRecommenderPanel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
-import easyMahout.GUI.recommender.builder.RecommenderBuilder;
-import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
-import easyMahout.utils.MyThread;
 import easyMahout.utils.help.ClusterTips;
-import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 import easyMahout.utils.listeners.TextFieldChangeListener;
-
-import java.awt.ComponentOrientation;
-
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
-
-
 
 public class DataModelClusterPanel extends JPanel {
 
@@ -116,16 +81,17 @@ public class DataModelClusterPanel extends JPanel {
 	private static JCheckBox chckbxBooleanPreferences;
 
 	private static DataModel dataModel;
-	
+
 	private static String outputFormatted;
 
 	private HelpTooltip helpTooltip;
 
+	private static JCheckBox chckbxRemoveIfExist;
+
 	private final static Logger log = Logger.getLogger(DataModelClusterPanel.class);
 
 	public DataModelClusterPanel() {
-		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Data Model", TitledBorder.CENTER, TitledBorder.TOP, null,
-				null));
+		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Data Model", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
@@ -133,21 +99,21 @@ public class DataModelClusterPanel extends JPanel {
 		comboBoxDatamodel = new JComboBox();
 		comboBoxDatamodel.addItemListener(new ItemChangeListener());
 		booleanModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.GENERIC_BOOLEAN });
-		restModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.FILE, Constants.DataModel.GENERIC,
-				Constants.DataModel.EXTENDED, Constants.DataModel.CASSANDRA, Constants.DataModel.HBASE, Constants.DataModel.KDDCUP,
-				Constants.DataModel.MONGOL_DB, Constants.DataModel.PLUS_ANONYMOUS });
+		restModels = new DefaultComboBoxModel(new String[] { Constants.DataModel.FILE, Constants.DataModel.GENERIC, Constants.DataModel.EXTENDED,
+				Constants.DataModel.CASSANDRA, Constants.DataModel.HBASE, Constants.DataModel.KDDCUP, Constants.DataModel.MONGOL_DB,
+				Constants.DataModel.PLUS_ANONYMOUS });
 		comboBoxDatamodel.setModel(restModels);
 		comboBoxDatamodel.setBounds(38, 68, 216, 20);
 		add(comboBoxDatamodel);
 
 		chckbxBooleanPreferences = new JCheckBox("Boolean Preferences ");
-		chckbxBooleanPreferences.setBounds(38, 27, 199, 23);
+		chckbxBooleanPreferences.setBounds(38, 27, 337, 23);
 		add(chckbxBooleanPreferences);
 		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
 		chckbxBooleanPreferences.setEnabled(false);
 
 		lblInputDataSource = new JLabel("Input data source:");
-		lblInputDataSource.setBounds(38, 105, 107, 14);
+		lblInputDataSource.setBounds(38, 105, 401, 14);
 		add(lblInputDataSource);
 
 		textInputPath = new JTextField();
@@ -161,7 +127,7 @@ public class DataModelClusterPanel extends JPanel {
 				JTextField tf = (JTextField) input;
 				String text = tf.getText();
 				try {
-					
+
 					if (!text.equals("")) {
 						textInputPath.setBackground(Color.WHITE);
 						return true;
@@ -180,28 +146,33 @@ public class DataModelClusterPanel extends JPanel {
 			}
 		});
 
-		btnSelectInput=new JButton("Select File...");
-		
-		btnSelectInput.setBounds(182, 165, 107, 23);
+		btnSelectInput = new JButton("Select File...");
+
+		btnSelectInput.setBounds(161, 165, 142, 23);
 		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
-		lblDelimiter.setBounds(274, 71, 68, 14);
+		lblDelimiter.setBounds(274, 71, 78, 14);
 		add(lblDelimiter);
 		lblDelimiter.setEnabled(false);
 
 		tfDelimiter = new JTextField();
 		tfDelimiter.setHorizontalAlignment(SwingConstants.CENTER);
-		tfDelimiter.setBounds(329, 68, 46, 20);
+		tfDelimiter.setBounds(352, 68, 46, 20);
 		add(tfDelimiter);
 		tfDelimiter.setColumns(10);
 		tfDelimiter.setText(",");
 		tfDelimiter.setEnabled(false);
 		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		btnCreate=new JButton("Run Clustering");
-		btnCreate.setBounds(341, 365, 107, 23);
+		btnCreate = new JButton("Run Clustering");
+		btnCreate.setBounds(315, 365, 133, 23);
 		add(btnCreate);
+
+		chckbxRemoveIfExist = new JCheckBox("Remove if exist");
+		chckbxRemoveIfExist.setBounds(274, 266, 157, 23);
+		add(chckbxRemoveIfExist);
+		chckbxRemoveIfExist.setEnabled(false);
 
 		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -231,7 +202,7 @@ public class DataModelClusterPanel extends JPanel {
 				JTextField tf = (JTextField) input;
 				String text = tf.getText();
 				try {
-					
+
 					if (!text.equals("")) {
 						textOutputPath.setBackground(Color.WHITE);
 						return true;
@@ -250,7 +221,7 @@ public class DataModelClusterPanel extends JPanel {
 			}
 		});
 		btnSelectOutput = new JButton("Select File...");
-		btnSelectOutput.setBounds(182, 265, 107, 23);
+		btnSelectOutput.setBounds(119, 266, 142, 23);
 		add(btnSelectOutput);
 
 		btnSelectInput.addActionListener(new ActionListener() {
@@ -311,57 +282,65 @@ public class DataModelClusterPanel extends JPanel {
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			//mouse loading
-				
+				// mouse loading
+
 				btnCreate.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				 
-				  
+
 				MainGUI.clean();
-				String filePath = textInputPath.getText();//input
+				String filePath = textInputPath.getText();// input
 				String output = textOutputPath.getText();
-				String delimiter = tfDelimiter.getText(); //delimiter
-				outputFormatted = output+".csv";
+
+				Configuration conf = new Configuration();
+				FileSystem fs;
+				try {
+					fs = FileSystem.get(conf);
+					Path path = new Path(output);
+					if (fs.exists(path) && DataModelClusterPanel.removeUfExist()) {
+						fs.delete(path, true);
+					}
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+				String delimiter = tfDelimiter.getText(); // delimiter
+				outputFormatted = output + ".csv";
 				tfDelimiter.setBackground(Color.WHITE);
-				if (!filePath.isEmpty() && !output.isEmpty()){
-				if (ClusterBuilder.isSequential()) {
-					CreateSequenceFile.convert(filePath, output, delimiter);
-					ReadSequenceFile.readSequenceFile(output, outputFormatted);
-					try {
-						ClusterBuilder.buildCluster();
-						
-						//dibuja();
-					} catch (ClassNotFoundException e1) {
-						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
-					} catch (InterruptedException e1) {
-						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
-					} catch (IOException e1) {
-						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+				if (!filePath.isEmpty() && !output.isEmpty()) {
+					if (ClusterBuilder.isSequential()) {
+						CreateSequenceFile.convert(filePath, output, delimiter);
+						ReadSequenceFile.readSequenceFile(output, outputFormatted);
+						try {
+							ClusterBuilder.buildCluster();
+
+							// dibuja();
+						} catch (ClassNotFoundException e1) {
+							MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+						} catch (InterruptedException e1) {
+							MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+						} catch (IOException e1) {
+							MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+						}
+
+					} else {
+						try {
+							ClusterBuilder.buildCluster();
+						} catch (ClassNotFoundException e1) {
+							MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+						} catch (InterruptedException e1) {
+							MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+						} catch (IOException e1) {
+							MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
+						}
 					}
 
-				}
-				else {
-					try {
-						ClusterBuilder.buildCluster();
-					} catch (ClassNotFoundException e1) {
-						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
-					} catch (InterruptedException e1) {
-						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
-					} catch (IOException e1) {
-						MainGUI.writeResult("Not able to build the cluster", Constants.Log.ERROR);
-					}
-				}
-				
-			}
-				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
-				
-			//mouse finished loading
+				} else
+					MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);
+
+				// mouse finished loading
 				btnCreate.setCursor(Cursor.getDefaultCursor());
-				
-			}
-			});
-		
 
-		
+			}
+		});
 
 		chckbxBooleanPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -397,6 +376,11 @@ public class DataModelClusterPanel extends JPanel {
 
 	}
 
+	protected static boolean removeUfExist() {
+		chckbxRemoveIfExist.isSelected();
+		return chckbxRemoveIfExist.isSelected();
+	}
+
 	public HelpTooltip getHelpTooltip() {
 		return helpTooltip;
 	}
@@ -417,7 +401,7 @@ public class DataModelClusterPanel extends JPanel {
 			lblInputDataSource.setText("Input directory:");
 			btnSelectOutput.setText("Select Folder...");
 			btnSelectInput.setText("Select Folder...");
-			
+
 		} else {
 			helpTooltip.setText(ClusterTips.CLUSTER_DATAMODEL);
 			lblOutputDataSource.setText("Output data file (Optional):");
@@ -428,7 +412,8 @@ public class DataModelClusterPanel extends JPanel {
 
 		comboBoxDatamodel.setEnabled(!distributed);
 		tfDelimiter.setEnabled(!distributed);
-		
+		chckbxRemoveIfExist.setEnabled(distributed);
+		btnCreate.setVisible(!distributed);
 	}
 
 	public static String getInputPath() {
@@ -490,24 +475,26 @@ public class DataModelClusterPanel extends JPanel {
 	public static void setOutputFormatted(String outputFormatted) {
 		DataModelClusterPanel.outputFormatted = outputFormatted;
 	}
-	public static void push(){
+
+	public static void push() {
 		btnCreate.doClick();
 	}
-	public static void dibuja(){
-	/*	double[] x = {0.5,0.9,7};
-		double[] y = {30,9,8};
-		double[] z= {2,4,8};*/
-		double [][] matriz = null;
-		HashMap<IntWritable,WeightedVectorWritable> dots= ClusterBuilder.getPuntos();
+
+	public static void dibuja() {
+		/*
+		 * double[] x = {0.5,0.9,7}; double[] y = {30,9,8}; double[] z= {2,4,8};
+		 */
+		double[][] matriz = null;
+		HashMap<IntWritable, WeightedVectorWritable> dots = ClusterBuilder.getPuntos();
 		// create your PlotPanel (you can use it as a JPanel)
 		Plot3DPanel plot = new Plot3DPanel();
 		Set<IntWritable> points = dots.keySet();
-		for (int i=0;i<points.size();i++){
-		// add a line plot to the PlotPanel
-			
-		plot.addGridPlot("", Color.black, matriz);	
-		//plot.addLinePlot("my plot", x, y,z);
-		
+		for (int i = 0; i < points.size(); i++) {
+			// add a line plot to the PlotPanel
+
+			plot.addGridPlot("", Color.black, matriz);
+			// plot.addLinePlot("my plot", x, y,z);
+
 		}
 		// put the PlotPanel in a JFrame, as a JPanel
 		JFrame frame = new JFrame("Clusters");

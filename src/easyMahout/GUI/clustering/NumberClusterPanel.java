@@ -52,7 +52,7 @@ public class NumberClusterPanel extends JPanel {
 		add(number);
 
 		campoNum = new JTextField();
-		campoNum.setBounds(38, 61, 157, 23);
+		campoNum.setBounds(38, 61, 93, 23);
 		campoNum.setToolTipText(HELP);
 		add(campoNum);
 		campoNum.setColumns(10);

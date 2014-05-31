@@ -36,7 +36,7 @@ public class ConvergenceTresholdPanel extends JPanel {
 
 	private JTextField fieldNum2;
 
-	private double convergenceTreshold;
+	private static double convergenceTreshold;
 
 	private double convergenceTreshold2;
 
@@ -58,7 +58,7 @@ public class ConvergenceTresholdPanel extends JPanel {
 		add(number);
 
 		fieldNum = new JTextField();
-		fieldNum.setBounds(38, 61, 157, 23);
+		fieldNum.setBounds(38, 61, 86, 23);
 		fieldNum.setToolTipText(HELP);
 		add(fieldNum);
 		fieldNum.setColumns(10);
@@ -92,7 +92,7 @@ public class ConvergenceTresholdPanel extends JPanel {
 		number2.setBounds(38, 106, 189, 14);
 
 		fieldNum2 = new JTextField();
-		fieldNum2.setBounds(38, 131, 157, 23);
+		fieldNum2.setBounds(38, 131, 86, 23);
 
 		fieldNum2.setColumns(10);
 		fieldNum2.setToolTipText(HELP);
@@ -165,7 +165,7 @@ public class ConvergenceTresholdPanel extends JPanel {
 		return helpTooltip;
 	}
 
-	public double getConvergenceTreshold() {
+	public static double  getConvergenceTreshold() {
 		return convergenceTreshold;
 	}
 
