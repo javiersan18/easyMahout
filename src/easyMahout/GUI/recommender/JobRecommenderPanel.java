@@ -60,8 +60,6 @@ public class JobRecommenderPanel extends JPanel {
 
 	private JScrollPane shellScrollPane;
 
-	private ShellCommandExecutor shell;
-
 	private final static Logger log = Logger
 			.getLogger(JobRecommenderPanel.class);
 
