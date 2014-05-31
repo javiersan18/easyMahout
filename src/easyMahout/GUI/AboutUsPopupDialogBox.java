@@ -32,7 +32,7 @@ public class AboutUsPopupDialogBox extends JFrame {
 		setResizable(false);
 		frmAboutEasymahout = this;
 		this.setAlwaysOnTop(true);
-		this.setType(Type.POPUP);
+		//this.setType(Type.POPUP);
 		this.setSize(510, 340);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

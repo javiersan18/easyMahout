@@ -44,22 +44,21 @@ public class PreferencesPanel extends JFrame {
 		setAlwaysOnTop(true);
 		setTitle("EasyMahout Preferences");
 		frmPreferences = this;
-		this.setType(Type.POPUP);
+		//this.setType(Type.POPUP);
 		this.setSize(510, 340);
 		this.setVisible(false);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.setIconImage(Toolkit.getDefaultToolkit().getImage(PreferencesPanel.class.getResource("/easyMahout/GUI/images/mahoutIcon.png")));
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				PreferencesPanel.class
+						.getResource("/easyMahout/GUI/images/mahoutIcon.png")));
 		this.setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		apply = false;
 
 		this.addWindowListener(new WindowAdapter() {
-
 			@Override
 			public void windowActivated(WindowEvent e) {
-				// TODO Auto-generated method stub
 				super.windowActivated(e);
-				System.out.println("activated");
 				javaHome = tfJavaHome.getText();
 				mahoutHome = tfMahoutHome.getText();
 				hadoopHome = tfHadoopHome.getText();
@@ -68,7 +67,6 @@ public class PreferencesPanel extends JFrame {
 
 			@Override
 			public void windowDeactivated(WindowEvent e) {
-				// TODO Auto-generated method stub
 				super.windowDeactivated(e);
 				if (!apply) {
 					onCloseCancel();
@@ -80,7 +78,6 @@ public class PreferencesPanel extends JFrame {
 					onCloseCancel();
 				}
 			}
-
 		});
 
 		JPanel panelButtons = new JPanel();
@@ -110,10 +107,18 @@ public class PreferencesPanel extends JFrame {
 		JPanel panelPreferences = new JPanel();
 		panelPreferences.setMinimumSize(new Dimension(15, 15));
 		getContentPane().add(panelPreferences, BorderLayout.NORTH);
-		panelPreferences.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC, }));
+		panelPreferences
+				.setLayout(new FormLayout(new ColumnSpec[] {
+						FormFactory.RELATED_GAP_COLSPEC,
+						FormFactory.DEFAULT_COLSPEC,
+						FormFactory.RELATED_GAP_COLSPEC,
+						ColumnSpec.decode("default:grow"), }, new RowSpec[] {
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC,
+						FormFactory.RELATED_GAP_ROWSPEC,
+						FormFactory.DEFAULT_ROWSPEC, }));
 
 		JLabel lblJavahome = new JLabel("JAVA_HOME");
 		panelPreferences.add(lblJavahome, "2, 2, right, default");
@@ -147,27 +152,27 @@ public class PreferencesPanel extends JFrame {
 		frmPreferences.setVisible(false);
 	}
 
-	public static JTextField getJavaHome() {
-		return tfJavaHome;
+	public static String getJavaHome() {
+		return tfJavaHome.getText();
 	}
 
-	public static void setJavaHome(JTextField tfJavaHome) {
-		PreferencesPanel.tfJavaHome = tfJavaHome;
+	public static void setJavaHome(String tfJavaHome) {
+		PreferencesPanel.tfJavaHome.setText(tfJavaHome);
 	}
 
-	public static JTextField getMahoutHome() {
-		return tfMahoutHome;
+	public static String getMahoutHome() {
+		return tfMahoutHome.getText();
 	}
 
-	public static void setMahoutHome(JTextField tfMahoutHome) {
-		PreferencesPanel.tfMahoutHome = tfMahoutHome;
+	public static void setMahoutHome(String tfMahoutHome) {
+		PreferencesPanel.tfMahoutHome.setText(tfMahoutHome);
 	}
 
-	public static JTextField getHadoopHome() {
-		return tfHadoopHome;
+	public static String getHadoopHome() {
+		return tfHadoopHome.getText();
 	}
 
-	public static void setHadoopHome(JTextField tfHadoopHome) {
-		PreferencesPanel.tfHadoopHome = tfHadoopHome;
+	public static void setHadoopHome(String tfHadoopHome) {
+		PreferencesPanel.tfHadoopHome.setText(tfHadoopHome);
 	}
 }

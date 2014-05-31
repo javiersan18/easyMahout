@@ -192,7 +192,6 @@ public class MainRecommenderPanel extends JPanel {
 		panelRecommender.add(jobPanel);
 		jobPanel.setLayout(null);
 		jobPanel.setVisible(false);
-
 	}
 
 	public JPanel getTreePanel() {
@@ -453,7 +452,7 @@ public class MainRecommenderPanel extends JPanel {
 										log.debug("modified, no save");
 									}
 								} else {
-									// añadir directamente
+									// aï¿½adir directamente
 									// configurationNew = true;
 									addPreferencesFile();
 									log.debug("no modified");

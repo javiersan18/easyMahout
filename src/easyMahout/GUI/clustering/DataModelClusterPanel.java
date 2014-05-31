@@ -154,7 +154,7 @@ public class DataModelClusterPanel extends JPanel {
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
-		textInputPath.setEditable(false);
+		textInputPath.setEditable(true);
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textInputPath.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -224,7 +224,7 @@ public class DataModelClusterPanel extends JPanel {
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
-		textOutputPath.setEditable(false);
+		textOutputPath.setEditable(true);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textOutputPath.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {

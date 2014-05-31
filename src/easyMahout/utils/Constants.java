@@ -316,9 +316,9 @@ public class Constants {
 
 	public class EnviromentVariables {
 
-		public static final String JAVA_HOME = "";
-		public static final String MAHOUT_HOME = "";
-		public static final String HADOOP_HOME = "";
+		public static final String JAVA_HOME = "/usr/lib/java/jdk1.8.0_05";
+		public static final String MAHOUT_HOME = "mahout-distribution-0.8";
+		public static final String HADOOP_HOME = "hadoop-1.1.2";
 
 	}
 

@@ -3,16 +3,14 @@ package easyMahout.GUI.recommender.builder;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import org.apache.log4j.Logger;
+import easyMahout.GUI.PreferencesPanel;
 
 public class ShellScriptBuilder {
-	private static final Logger log = Logger
-			.getLogger(ShellScriptBuilder.class);
 
 	public static String buildRecommenderScript(String[] args) {
 
 		StringBuilder textBuilder = new StringBuilder();
-		String mahoutHome = "mahout-distribution-0.8/";
+		String mahoutHome = PreferencesPanel.getMahoutHome();
 
 		textBuilder.append("#!/bin/bash").append("\n\n")
 				.append("MAHOUT=./bin/mahout").append("\n\n")
