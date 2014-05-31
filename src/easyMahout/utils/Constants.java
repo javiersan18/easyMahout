@@ -314,4 +314,12 @@ public class Constants {
 
 	}
 
+	public class EnviromentVariables {
+
+		public static final String JAVA_HOME = "";
+		public static final String MAHOUT_HOME = "";
+		public static final String HADOOP_HOME = "";
+
+	}
+
 }

@@ -1,27 +1,21 @@
 package easyMahout.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -31,11 +25,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JSeparator;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.Timer;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -77,9 +67,10 @@ public class MainGUI extends JFrame {
 
 	private static JRadioButtonMenuItem distributedMenuItem;
 	
-	private static boolean canopy;
+	private static JFrame preferencesPanel;
 	
-	private long time;
+	private static boolean canopy;
+
 
 	/**
 	 * Launch the application.
@@ -161,7 +152,9 @@ public class MainGUI extends JFrame {
 
 		clusterTab = new MainClusterPanel();
 		tabbedPane.addTab("Clustering", null, clusterTab, null);
-
+		
+		preferencesPanel = new PreferencesPanel();
+		
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
 				onClose();
@@ -393,6 +386,13 @@ public class MainGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				@SuppressWarnings("unused")
 				AboutUsPopupDialogBox dialogBox = new AboutUsPopupDialogBox();
+			}
+		});
+		
+		
+		mntmPreferences.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				preferencesPanel.setVisible(true);	
 			}
 		});
 
