@@ -4,17 +4,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.recommender.AllSimilarItemsCandidateItemsStrategy;
 import org.apache.mahout.cf.taste.impl.recommender.AllUnknownItemsCandidateItemsStrategy;
 import org.apache.mahout.cf.taste.impl.recommender.PreferredItemsNeighborhoodCandidateItemsStrategy;
@@ -29,14 +29,9 @@ import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 
-import javax.swing.JLabel;
-import javax.swing.JCheckBox;
-
 public class FactorizerRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final char slash = File.separatorChar;
 
 	private static JComboBox<String> comboBoxFactorizer;
 
@@ -54,7 +49,7 @@ public class FactorizerRecommenderPanel extends JPanel {
 
 	private static JCheckBox chckbxEvaluateFactorizer;
 
-	private final static Logger log = Logger.getLogger(FactorizerRecommenderPanel.class);
+	//private final static Logger log = Logger.getLogger(FactorizerRecommenderPanel.class);
 
 	public FactorizerRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Rating Matrix Factorization ", TitledBorder.CENTER, TitledBorder.TOP, null,

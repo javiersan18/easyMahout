@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.swing.ImageIcon;
@@ -33,7 +32,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileAlreadyExistsException;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.log4j.Logger;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.PreferencesPanel;
@@ -58,7 +56,7 @@ public class JobRecommenderPanel extends JPanel {
 
 	private JScrollPane shellScrollPane;
 
-	private final static Logger log = Logger.getLogger(JobRecommenderPanel.class);
+	//private final static Logger log = Logger.getLogger(JobRecommenderPanel.class);
 
 	private static JTextField tfNumRecommendations;
 
@@ -165,10 +163,11 @@ public class JobRecommenderPanel extends JPanel {
 									String scriptTemp = ShellScriptBuilder.buildRecommenderScript(argsRecommender);
 
 									String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
-									String hadoopHome = "HADOOP_HOME=" + System.getProperty("user.dir") + "/" + PreferencesPanel.getHadoopHome();
-
+									String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/" + PreferencesPanel.getHadoopHome();									
 									Process proc = Runtime.getRuntime().exec("sh " + scriptTemp, new String[] { javaHome, hadoopHome });
-									// int exitValue = proc.waitFor();
+									//int exitValue = proc.waitFor();
+									proc.waitFor();
+
 
 									Path path = new Path(scriptTemp);
 									fs = FileSystem.get(conf);
@@ -177,18 +176,18 @@ public class JobRecommenderPanel extends JPanel {
 									}
 
 									// DEBUG
-									// BufferedReader is;
-									// String line;
-									//
-									// is = new BufferedReader(new
-									// InputStreamReader(proc.getInputStream()));
-									//
-									// while ((line = is.readLine()) != null) {
-									// System.out.println(line);
-									// }
-									//
-									// System.out.println(proc.getOutputStream());
-									// System.out.println(exitValue);
+//									 BufferedReader is;
+//									 String line;
+//									
+//									 is = new BufferedReader(new
+//									 InputStreamReader(proc.getErrorStream()));
+//									
+//									 while ((line = is.readLine()) != null) {
+//									 System.out.println(line);
+//									 }
+//									
+//									 System.out.println(proc.getOutputStream());
+//									 System.out.println(exitValue);
 									// EXIT DEBUG
 
 									if (FactorizerRecommenderPanel.getEvaluateFactorizer()) {
@@ -281,7 +280,6 @@ public class JobRecommenderPanel extends JPanel {
 					MainGUI.writeResult("Shell script created as: " + prefs.getName() + ".sh", Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
 					MainGUI.writeResult("Error generating shell script", Constants.Log.ERROR);
-					log.error("Error generating shell script");
 				}				
 			}
 		});
@@ -315,13 +313,11 @@ public class JobRecommenderPanel extends JPanel {
 						tfNumRecommendations.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).", Constants.Log.ERROR);
 						tfNumRecommendations.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost.");
 					MainGUI.writeResult("No. Recommendations has to be an integer number bigger than 0 (DEFAULT = 10).", Constants.Log.ERROR);
 					tfNumRecommendations.setBackground(new Color(240, 128, 128));
 					return false;

@@ -4,22 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
-import com.jidesoft.swing.FolderChooser;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
@@ -27,16 +20,10 @@ import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-
 public class TypeRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final char slash = File.separatorChar;
-
 	private static JComboBox<String> comboBoxType;
 
 	private DefaultComboBoxModel<String> distributedModel;
@@ -47,7 +34,7 @@ public class TypeRecommenderPanel extends JPanel {
 
 	private HelpTooltip helpTooltip;
 
-	private final static Logger log = Logger.getLogger(TypeRecommenderPanel.class);
+	//private final static Logger log = Logger.getLogger(TypeRecommenderPanel.class);
 
 	public TypeRecommenderPanel() {
 		super();

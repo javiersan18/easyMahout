@@ -1,29 +1,25 @@
 package easyMahout.GUI;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import java.awt.BorderLayout;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-
 import javax.swing.JTextField;
 
 import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
-import easyMahout.utils.Constants;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import easyMahout.utils.xml.XMLPreferences;
 
 public class PreferencesPanel extends JFrame {
 
@@ -44,7 +40,6 @@ public class PreferencesPanel extends JFrame {
 		setAlwaysOnTop(true);
 		setTitle("EasyMahout Preferences");
 		frmPreferences = this;
-		//this.setType(Type.POPUP);
 		this.setSize(510, 340);
 		this.setVisible(false);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -101,6 +96,7 @@ public class PreferencesPanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				frmPreferences.setVisible(false);
 				apply = true;
+				XMLPreferences.saveXMLFile(System.getenv("PWD")+"/easyMahout1_lib/preferences.xml");
 			}
 		});
 
@@ -126,7 +122,7 @@ public class PreferencesPanel extends JFrame {
 		tfJavaHome = new JTextField();
 		panelPreferences.add(tfJavaHome, "4, 2, fill, default");
 		tfJavaHome.setColumns(10);
-		tfJavaHome.setText(Constants.EnviromentVariables.JAVA_HOME);
+		//tfJavaHome.setText(Constants.EnviromentVariables.JAVA_HOME);
 
 		JLabel lblMahouthome = new JLabel("MAHOUT_HOME");
 		panelPreferences.add(lblMahouthome, "2, 4, right, default");
@@ -134,7 +130,7 @@ public class PreferencesPanel extends JFrame {
 		tfMahoutHome = new JTextField();
 		panelPreferences.add(tfMahoutHome, "4, 4, fill, default");
 		tfMahoutHome.setColumns(10);
-		tfMahoutHome.setText(Constants.EnviromentVariables.MAHOUT_HOME);
+		//tfMahoutHome.setText(Constants.EnviromentVariables.MAHOUT_HOME);
 
 		JLabel lblHadoophome = new JLabel("HADOOP_HOME");
 		panelPreferences.add(lblHadoophome, "2, 6, right, default");
@@ -142,7 +138,9 @@ public class PreferencesPanel extends JFrame {
 		tfHadoopHome = new JTextField();
 		panelPreferences.add(tfHadoopHome, "4, 6, fill, default");
 		tfHadoopHome.setColumns(10);
-		tfHadoopHome.setText(Constants.EnviromentVariables.HADOOP_HOME);
+		//tfHadoopHome.setText(Constants.EnviromentVariables.HADOOP_HOME);
+		
+		XMLPreferences.loadXMLFile(System.getenv("PWD")+"/easyMahout1_lib/preferences.xml");		
 	}
 
 	protected void onCloseCancel() {

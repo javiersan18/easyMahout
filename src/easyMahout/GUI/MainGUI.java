@@ -3,10 +3,10 @@ package easyMahout.GUI;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,22 +20,20 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
-import javax.swing.JSeparator;
-import javax.swing.JRadioButtonMenuItem;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import easyMahout.GUI.classification.MainClassifierPanel;
 import easyMahout.GUI.clustering.MainClusterPanel;
 import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
-import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
+import easyMahout.utils.xml.RecommenderXMLPreferences;
 
 public class MainGUI extends JFrame {
 
@@ -61,7 +59,7 @@ public class MainGUI extends JFrame {
 
 	private static JMenuItem mntmSave;
 
-	private final static Logger log = Logger.getLogger(MainGUI.class);
+	//private final static Logger log = Logger.getLogger(MainGUI.class);
 
 	private static JRadioButtonMenuItem nonDistributedMenuItem;
 
@@ -110,8 +108,8 @@ public class MainGUI extends JFrame {
 	 */
 	private void initialize() {
 
-		BasicConfigurator.configure();
-		PropertyConfigurator.configure("src/easyMahout/log4j.properties");
+		//BasicConfigurator.configure();
+		//PropertyConfigurator.configure("log4j.properties");
 
 		distributed = false;
 		main = this;
@@ -203,7 +201,6 @@ public class MainGUI extends JFrame {
 						MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
 					} else if (i == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
-						log.error("Error saving preferences file");
 					}
 					MainRecommenderPanel.setConfigurationModified(false);
 					// crear fichero (jfilechooser)
@@ -255,8 +252,7 @@ public class MainGUI extends JFrame {
 					mntmSave.setEnabled(true);
 					MainGUI.writeResult("Preferences file loaded: " + prefs.getName(), Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);
-					log.error("Error loading preferences file");
+					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);					
 				}
 			}
 		});
@@ -285,8 +281,7 @@ public class MainGUI extends JFrame {
 					mntmSave.setEnabled(true);
 					MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
-					log.error("Error saving preferences file");
+					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);					
 				}
 			}
 		});
@@ -328,7 +323,6 @@ public class MainGUI extends JFrame {
 								MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
 							} else if (i == JFileChooser.ERROR_OPTION) {
 								MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
-								log.error("Error saving preferences file");
 							}
 							// crear fichero (jfilechooser)
 							// salvar config en fichero

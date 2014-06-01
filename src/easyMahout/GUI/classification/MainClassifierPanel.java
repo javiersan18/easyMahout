@@ -18,11 +18,11 @@ import org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
-import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
 import easyMahout.utils.DynamicTree;
+import easyMahout.utils.xml.RecommenderXMLPreferences;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -316,7 +316,7 @@ public class MainClassifierPanel extends JPanel {
 										log.debug("modified, no save");
 									}
 								} else {
-									// añadir directamente
+									// aï¿½adir directamente
 									// configurationNew = true;
 									addPreferencesFile();
 									log.debug("no modified");

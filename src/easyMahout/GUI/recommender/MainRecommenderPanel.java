@@ -20,21 +20,20 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import easyMahout.GUI.MainGUI;
-import easyMahout.recommender.RecommenderXMLPreferences;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
+import easyMahout.utils.xml.RecommenderXMLPreferences;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class MainRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final char slash = File.separatorChar;
-
 	private JPanel panelRecommender;
 
 	private JPanel treePanel;
@@ -214,7 +213,7 @@ public class MainRecommenderPanel extends JPanel {
 				"Evaluator", // 7
 				"Queries", // 8
 				"Hadoop Job", // 9
-				"Saves", // 10
+				/*"Saves", // 10*/
 		};
 
 		treeNodes = new ArrayList<DisabledNode>();
@@ -231,7 +230,7 @@ public class MainRecommenderPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(7));
 		treeNodes.get(1).add(treeNodes.get(8));
 		treeNodes.get(1).add(treeNodes.get(9));
-		treeNodes.get(0).add(treeNodes.get(10));
+		//treeNodes.get(0).add(treeNodes.get(10));
 
 		nodeNeighborhood = treeNodes.get(5);
 		nodeQueries = treeNodes.get(8);
@@ -241,16 +240,16 @@ public class MainRecommenderPanel extends JPanel {
 		nodeJob.setEnabled(false);
 		nodeFactorization = treeNodes.get(6);
 		nodeFactorization.setEnabled(false);
-		nodeSaves = treeNodes.get(10);
+		//nodeSaves = treeNodes.get(10);
 		nodeConfigure = treeNodes.get(1);
 
-		ArrayList<DisabledNode> savesNodes = getSavesFiles();
+		/*ArrayList<DisabledNode> savesNodes = getSavesFiles();
 		if (savesNodes != null) {
 			treeNodes.addAll(savesNodes);
 			for (int i = categories.length; i < treeNodes.size(); i++) {
 				nodeSaves.add(treeNodes.get(i));
 			}
-		}
+		}*/
 
 		return treeNodes.toArray(new DisabledNode[treeNodes.size()]);
 	}
@@ -265,7 +264,6 @@ public class MainRecommenderPanel extends JPanel {
 
 				if (nodeSelected != null) {
 					if (nodeSelected.equals(nodeConfigure)) {
-						log.info("configureNode");
 						configPanel.setVisible(true);
 						typePanel.setVisible(false);
 						dataModelPanel.setVisible(false);
@@ -276,11 +274,8 @@ public class MainRecommenderPanel extends JPanel {
 						queriesPanel.setVisible(false);
 						disableHelpTips();
 					} else if (nodeConfigure.isNodeChild(nodeSelected)) {
-						log.info("recomender configure  children B1");
-
 						String category = (String) nodeSelected.getUserObject();
 						if (category.equals("Type")) {
-							log.info("typeB1");
 							configPanel.setVisible(false);
 							typePanel.setVisible(true);
 							dataModelPanel.setVisible(false);
@@ -293,7 +288,6 @@ public class MainRecommenderPanel extends JPanel {
 							disableHelpTips();
 
 						} else if (category.equals("Data Model")) {
-							log.info("dataB1");
 							configPanel.setVisible(false);
 							typePanel.setVisible(false);
 							dataModelPanel.setVisible(true);
@@ -306,8 +300,6 @@ public class MainRecommenderPanel extends JPanel {
 							disableHelpTips();
 
 						} else if (category.equals("Similarity")) {
-							log.info("similarityB1");
-							log.info(MainGUI.isDistributed());
 							if (!MainGUI.isDistributed() || (MainGUI.isDistributed() && !matrixBased)) {
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
@@ -321,9 +313,7 @@ public class MainRecommenderPanel extends JPanel {
 								disableHelpTips();
 							}
 						} else if (category.equals("Neighborhood")) {
-							log.info(MainGUI.isDistributed());
-							if (!MainGUI.isDistributed() && !itembased) {
-								log.info("neighB1");
+							if (!MainGUI.isDistributed() && !itembased) {						
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
 								dataModelPanel.setVisible(false);
@@ -338,7 +328,6 @@ public class MainRecommenderPanel extends JPanel {
 
 						} else if (category.equals("Factorization")) {
 							if (matrixBased) {
-								log.info("factB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
 								dataModelPanel.setVisible(false);
@@ -352,7 +341,6 @@ public class MainRecommenderPanel extends JPanel {
 							}
 						} else if (category.equals("Evaluator")) {
 							if (!MainGUI.isDistributed() && !matrixBased) {
-								log.info("evalB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
 								dataModelPanel.setVisible(false);
@@ -366,7 +354,6 @@ public class MainRecommenderPanel extends JPanel {
 							}
 
 						} else if (category.equals("Queries")) {
-							log.info("queriesB1");
 							if (!MainGUI.isDistributed()) {
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
@@ -383,7 +370,6 @@ public class MainRecommenderPanel extends JPanel {
 
 						else if (category.equals("Hadoop Job")) {
 							if (MainGUI.isDistributed()) {
-								log.info("jobB1");
 								configPanel.setVisible(false);
 								typePanel.setVisible(false);
 								dataModelPanel.setVisible(false);
@@ -410,7 +396,6 @@ public class MainRecommenderPanel extends JPanel {
 
 				if (nodeSelected != null) {
 					if (nodeSelected.equals(nodeSaves)) {
-						log.info("node: " + nodeSelected.toString());
 						JPopupMenu popupMenuAdd = new JPopupMenu();
 						JMenuItem addItem = new JMenuItem("Add");
 						addItem.addActionListener(new ActionListener() {
@@ -433,7 +418,6 @@ public class MainRecommenderPanel extends JPanel {
 												MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
 											} else if (i == JFileChooser.ERROR_OPTION) {
 												MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
-												log.error("Error saving preferences file");
 											}
 											// y nuevo
 											addPreferencesFile();
@@ -466,7 +450,6 @@ public class MainRecommenderPanel extends JPanel {
 						popupMenuAdd.show(me.getComponent(), me.getX(), me.getY());
 
 					} else if (nodeSaves.isNodeChild(nodeSelected)) {
-						log.info("node: " + nodeSelected.toString());
 						JPopupMenu popupMenuSaves = new JPopupMenu();
 						JMenuItem loadItem = new JMenuItem("Load");
 						loadItem.addActionListener(new ActionListener() {
@@ -588,7 +571,7 @@ public class MainRecommenderPanel extends JPanel {
 			return nodes;
 
 		} else {
-			log.error("Preferences folder (" + Constants.SavesPaths.RECOMMENDER + ") doesnt exist.");
+			//log.error("Preferences folder (" + Constants.SavesPaths.RECOMMENDER + ") doesnt exist.");
 			return null;
 		}
 

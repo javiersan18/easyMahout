@@ -30,12 +30,13 @@ public class NumberClusterPanel extends JPanel {
 	
 	private JLabel number;
 	
-	private JTextField campoNum;
+	private JTextField fieldNum;
 	
 	private int numeroClusters;
 
 	private HelpTooltip helpTooltip;
 	
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(NumberClusterPanel.class);
 	
 	private final static String HELP = "[1..9999]";
@@ -51,31 +52,29 @@ public class NumberClusterPanel extends JPanel {
 		number.setBounds(38,36, 189, 14);
 		add(number);
 
-		campoNum = new JTextField();
-		campoNum.setBounds(38, 61, 93, 23);
-		campoNum.setToolTipText(HELP);
-		add(campoNum);
-		campoNum.setColumns(10);
-		campoNum.setText("5");  //quitar al acabar
-		campoNum.setInputVerifier(new InputVerifier() {
+		fieldNum = new JTextField();
+		fieldNum.setBounds(38, 61, 93, 23);
+		fieldNum.setToolTipText(HELP);
+		add(fieldNum);
+		fieldNum.setColumns(10);
+		fieldNum.setText("5");  
+		fieldNum.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
 				JTextField tf = (JTextField) input;
 				String text = tf.getText();
 				try {
 					Integer i = Integer.parseInt(text);
 					if (i >= 1 && i <= 9999) {
-						campoNum.setBackground(Color.WHITE);
+						fieldNum.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
-						campoNum.setBackground(new Color(240, 128, 128));
+						fieldNum.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
-					campoNum.setBackground(new Color(240, 128, 128));
+					fieldNum.setBackground(new Color(240, 128, 128));
 					return false;
 				}
 			}
@@ -119,7 +118,7 @@ public class NumberClusterPanel extends JPanel {
 	}
 	
 	public JTextField getCampoNum(){
-		return campoNum;
+		return fieldNum;
 	}
 	 
 }

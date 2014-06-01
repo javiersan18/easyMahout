@@ -40,6 +40,7 @@ public class ConvergenceTresholdPanel extends JPanel {
 
 	private double convergenceTreshold2;
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(ConvergenceTresholdPanel.class);
 
 	private HelpTooltip helpTooltip;
@@ -73,13 +74,11 @@ public class ConvergenceTresholdPanel extends JPanel {
 						fieldNum.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Size has to be a number in range [0..1]", Constants.Log.ERROR);
 						fieldNum.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Size has to be a number in range [0..1]", Constants.Log.ERROR);
 					fieldNum.setBackground(new Color(240, 128, 128));
 					return false;
@@ -112,13 +111,11 @@ public class ConvergenceTresholdPanel extends JPanel {
 						fieldNum2.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Size has to be a real number in range [0..1]", Constants.Log.ERROR);
 						fieldNum2.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Size has to be a real number in range [0..1]", Constants.Log.ERROR);
 					fieldNum2.setBackground(new Color(240, 128, 128));
 					return false;

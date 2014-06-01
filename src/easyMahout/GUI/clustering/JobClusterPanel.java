@@ -14,8 +14,6 @@ import java.io.PrintWriter;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JLabel;
-
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.clustering.builder.ClusterBuilder;
 import easyMahout.GUI.clustering.builder.CreateSequenceFile;
@@ -28,18 +26,9 @@ import easyMahout.utils.help.RecommenderTips;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
-import javax.swing.JTextArea;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.UIManager;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;

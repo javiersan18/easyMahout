@@ -88,6 +88,7 @@ public class DataModelClusterPanel extends JPanel {
 
 	private static JCheckBox chckbxRemoveIfExist;
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(DataModelClusterPanel.class);
 
 	public DataModelClusterPanel() {
@@ -132,13 +133,11 @@ public class DataModelClusterPanel extends JPanel {
 						textInputPath.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is empty");
 						MainGUI.writeResult("You have to choose an input!", Constants.Log.ERROR);
 						textInputPath.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is empty");
 					MainGUI.writeResult("You have to choose an input!", Constants.Log.ERROR);
 					textInputPath.setBackground(new Color(240, 128, 128));
 					return false;
@@ -207,13 +206,11 @@ public class DataModelClusterPanel extends JPanel {
 						textOutputPath.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is empty");
 						MainGUI.writeResult("You have to choose an output!", Constants.Log.ERROR);
 						textOutputPath.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is empty");
 					MainGUI.writeResult("You have to choose an output!", Constants.Log.ERROR);
 					textOutputPath.setBackground(new Color(240, 128, 128));
 					return false;
@@ -235,8 +232,7 @@ public class DataModelClusterPanel extends JPanel {
 						textInputPath.setText(absPath);
 					} else if (returnVal == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
-						log.error("Error searching input directory");
-					}
+									}
 				} else {
 					JFileChooser selectedFile = new JFileChooser();
 					int i = selectedFile.showOpenDialog(DataModelClusterPanel.this);
@@ -246,7 +242,6 @@ public class DataModelClusterPanel extends JPanel {
 						textInputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error openig the file.", Constants.Log.ERROR);
-						log.error("Error opening data file");
 					}
 				}
 			}
@@ -263,7 +258,6 @@ public class DataModelClusterPanel extends JPanel {
 						textOutputPath.setText(absPath);
 					} else if (returnVal == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
-						log.error("Error searching input directory");
 					}
 				} else {
 					JFileChooser selectedFile = new JFileChooser();
@@ -274,7 +268,6 @@ public class DataModelClusterPanel extends JPanel {
 						textOutputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error searching the file.", Constants.Log.ERROR);
-						log.error("Error searching output data file");
 					}
 				}
 			}
@@ -348,14 +341,11 @@ public class DataModelClusterPanel extends JPanel {
 					comboBoxDatamodel.setModel(booleanModels);
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
-					log.info("boolean");
 					EvaluatorRecommenderPanel.setBooleanPreferences(true);
 				} else {
 					comboBoxDatamodel.setModel(restModels);
 					EvaluatorRecommenderPanel.setBooleanPreferences(false);
-					log.info("rest");
 				}
-
 			}
 		});
 
@@ -370,7 +360,6 @@ public class DataModelClusterPanel extends JPanel {
 					lblDelimiter.setEnabled(false);
 					tfDelimiter.setEnabled(false);
 				}
-
 			}
 		});
 

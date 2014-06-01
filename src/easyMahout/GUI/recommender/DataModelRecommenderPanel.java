@@ -26,8 +26,8 @@ import org.apache.mahout.cf.taste.model.DataModel;
 import com.jidesoft.swing.FolderChooser;
 
 import easyMahout.GUI.MainGUI;
-import easyMahout.recommender.ExtendedDataModel;
 import easyMahout.utils.Constants;
+import easyMahout.utils.ExtendedDataModel;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
@@ -39,8 +39,6 @@ import javax.swing.border.TitledBorder;
 public class DataModelRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final char slash = File.separatorChar;
 
 	private DefaultComboBoxModel booleanModels, restModels;
 
@@ -171,7 +169,6 @@ public class DataModelRecommenderPanel extends JPanel {
 						textInputPath.setText(absPath);
 					} else if (returnVal == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
-						log.error("Error searching input directory");
 					}
 				} else {
 					JFileChooser selectedFile = new JFileChooser();
@@ -182,7 +179,6 @@ public class DataModelRecommenderPanel extends JPanel {
 						textInputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error openig the file.", Constants.Log.ERROR);
-						log.error("Error opening data file");
 					}
 				}
 			}
@@ -199,7 +195,6 @@ public class DataModelRecommenderPanel extends JPanel {
 						textOutputPath.setText(absPath);
 					} else if (returnVal == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error searching the input directory.", Constants.Log.ERROR);
-						log.error("Error searching input directory");
 					}
 				} else {
 					JFileChooser selectedFile = new JFileChooser();
@@ -210,7 +205,6 @@ public class DataModelRecommenderPanel extends JPanel {
 						textOutputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
 						MainGUI.writeResult("Error searching the file.", Constants.Log.ERROR);
-						log.error("Error searching output data file");
 					}
 				}
 			}
@@ -231,7 +225,6 @@ public class DataModelRecommenderPanel extends JPanel {
 							String delimiter = tfDelimiter.getText();
 							if (StringUtils.isBlank(delimiter)) {
 								tfDelimiter.setBackground(new Color(240, 128, 128));
-								log.error("Delimiter for ExtendedDataModel is empty.");
 								MainGUI.writeResult("Delimiter for Extended Data Model is empty.", Constants.Log.ERROR);
 							} else {
 								tfDelimiter.setBackground(Color.WHITE);
@@ -247,10 +240,8 @@ public class DataModelRecommenderPanel extends JPanel {
 					// consola
 				} catch (IllegalArgumentException e1) {
 					MainGUI.writeResult("Error reading data file: " + e1.getMessage() + ".", Constants.Log.ERROR);
-					log.error("Error reading data file", e1);
 				} catch (Exception e1) {
 					MainGUI.writeResult("File " + e1.getMessage() + " not found.", Constants.Log.ERROR);
-					log.error("File not found", e1);
 				}
 			}
 		});

@@ -41,6 +41,7 @@ public class AlgorithmClusterPanel extends JPanel {
 	private static JCheckBox emitMostLikely;
 	private JLabel fuzzyFactor;
 	private static JTextField campoFuzzyFactor;
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(MaxIterationsPanel.class);
 
 	private final static String ayuda = "[2..9999]";
@@ -69,13 +70,11 @@ public class AlgorithmClusterPanel extends JPanel {
 						comboBoxAlg.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(name + " is not a valid algorithm");
 						MainGUI.writeResult("You have to choose a valid algorithm from the list", Constants.Log.ERROR);
 						comboBoxAlg.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(name + " is not a valid algorithm, focus not lost");
 					MainGUI.writeResult("You have to choose a valid algorithm from the list", Constants.Log.ERROR);
 					comboBoxAlg.setBackground(new Color(240, 128, 128));
 					return false;
@@ -111,13 +110,11 @@ public class AlgorithmClusterPanel extends JPanel {
 						campoFuzzyFactor.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Size has to be an integer number in range [2..9999]", Constants.Log.ERROR);
 						campoFuzzyFactor.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Size has to be an integer number in range [2..9999]", Constants.Log.ERROR);
 					campoFuzzyFactor.setBackground(new Color(240, 128, 128));
 					return false;

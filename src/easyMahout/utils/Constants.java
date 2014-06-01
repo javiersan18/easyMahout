@@ -4,9 +4,9 @@ public class Constants {
 
 	public class EasyMahout {
 
-		public static final String VERSION = "0.9b";
+		public static final String VERSION = "1.0";
 
-		public static final String VERSION_DATE = "May 2014";
+		public static final String VERSION_DATE = "June 2014";
 
 		public static final String WEBSITE = "www.easymahout.coomingsoon.xxx";
 
@@ -157,6 +157,18 @@ public class Constants {
 
 		public static final String RMS_RECOMMENDER = "Root Mean Square";
 
+	}
+	
+	public class PreferencesXML {
+		
+		public static final String PREFERENCES = "bin_folders";
+
+		public static final String JAVA_HOME = "java_home";
+
+		public static final String MAHOUT_HOME = "mahout_home";
+
+		public static final String HADOOP_HOME = "hadoop_home";
+		
 	}
 
 	public class RecommenderXML {
@@ -317,8 +329,8 @@ public class Constants {
 	public class EnviromentVariables {
 
 		public static final String JAVA_HOME = "/usr/lib/java/jdk1.8.0_05";
-		public static final String MAHOUT_HOME = "mahout-distribution-0.8";
-		public static final String HADOOP_HOME = "hadoop-1.1.2";
+		public static final String MAHOUT_HOME = "easyMahout1_lib/mahout-distribution-0.8";
+		public static final String HADOOP_HOME = "easyMahout1_lib/hadoop-1.1.2";
 
 	}
 

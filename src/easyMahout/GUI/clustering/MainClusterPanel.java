@@ -15,12 +15,13 @@ import org.apache.log4j.Logger;
 import easyMahout.GUI.MainGUI;
 import easyMahout.utils.DisabledNode;
 import easyMahout.utils.DisabledRenderer;
+
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 
 public class MainClusterPanel extends JPanel {
@@ -61,23 +62,14 @@ public class MainClusterPanel extends JPanel {
 
 	private static DisabledNode nodeNClusters;
 
-	private static DisabledNode nodeNIterations;
-
 	private static DisabledNode nodeDataModel;
 	
 	private DisabledNode nodeJob;
 	
-	private static DisabledNode nodeRoot;
-
 	private static DisabledNode nodeConfigure;
 
-	private static DisabledNode nodeSelected;
-
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(MainClusterPanel.class);
-
-	private JButton btnRun;
-
-	private JButton btnEvaluate;
 
 	public MainClusterPanel() {
 		panelCluster = this;
@@ -197,11 +189,7 @@ public class MainClusterPanel extends JPanel {
 
 	public static AlgorithmClusterPanel getAlgorithmClusterPanel() {
 		return algorithmClusterPanel;
-	}
-	
-	
-	
-	
+	}	
 	
 	public DisabledNode[] populateTree() {
 
@@ -214,9 +202,7 @@ public class MainClusterPanel extends JPanel {
 				"Maximum Iterations",// 6
 				"Data Model",// 7
 				"Hadoop Job"//8
-
 		};
-
 		
 		treeNodes = new ArrayList<DisabledNode>();
 		for (int i = 0; i < categories.length; i++) {
@@ -262,7 +248,6 @@ public class MainClusterPanel extends JPanel {
 						.getLastPathComponent();
 				if (node != null) {
 					if (node.equals(root) || node.equals(cluster)) {
-						log.info("root or cluster node B1");
 						configureClusterPanel.setVisible(true);
 						algorithmClusterPanel.setVisible(false);
 						distanceClusterPanel.setVisible(false);
@@ -273,11 +258,9 @@ public class MainClusterPanel extends JPanel {
 						jobClusterPanel.setVisible(false);
 						
 					} else if (cluster.isNodeChild(node))  {
-						log.info("cluster children B1");
 						String category = (String) node.getUserObject();
 					
 						if (category.equals("Configure")) {
-							log.info("configureB1");
 							configureClusterPanel.setVisible(true);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
@@ -287,7 +270,6 @@ public class MainClusterPanel extends JPanel {
 							dataModelClusterPanel.setVisible(false);
 							jobClusterPanel.setVisible(false);
 						} else if (category.equals("Algorithm")) {
-							log.info("algorithmB1");
 							if (!MainGUI.isDistributed()) {
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(true);
@@ -298,9 +280,7 @@ public class MainClusterPanel extends JPanel {
 							dataModelClusterPanel.setVisible(false);
 							jobClusterPanel.setVisible(false);
 							}
-						} else if (category.equals("Distance Measure")) {
-							log.info("distanceB1");
-							
+						} else if (category.equals("Distance Measure")) {							
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(true);
@@ -308,12 +288,9 @@ public class MainClusterPanel extends JPanel {
 							numberClusterPanel.setVisible(false);
 							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(false);
-							jobClusterPanel.setVisible(false);
-							
+							jobClusterPanel.setVisible(false);							
 						}
-							else if (category.equals("Convergence Treshold")) {
-								log.info("convergenceB1");
-							
+							else if (category.equals("Convergence Treshold")) {							
 								configureClusterPanel.setVisible(false);
 								algorithmClusterPanel.setVisible(false);
 								distanceClusterPanel.setVisible(false);
@@ -321,10 +298,8 @@ public class MainClusterPanel extends JPanel {
 								numberClusterPanel.setVisible(false);
 								maxIterationsPanel.setVisible(false);
 								dataModelClusterPanel.setVisible(false);
-								jobClusterPanel.setVisible(false);
-							
+								jobClusterPanel.setVisible(false);							
 						} else if (category.equals("Number of Clusters")) {
-							log.info("numberOfClustersB1");
 							if (!MainGUI.isDistributed()){
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
@@ -337,7 +312,6 @@ public class MainClusterPanel extends JPanel {
 							jobClusterPanel.setVisible(false);
 							}
 						} else if (category.equals("Maximum Iterations")) {
-							log.info("numberOfIterationsB1");
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
@@ -345,11 +319,8 @@ public class MainClusterPanel extends JPanel {
 							numberClusterPanel.setVisible(false);
 							maxIterationsPanel.setVisible(true);
 							dataModelClusterPanel.setVisible(false);
-							jobClusterPanel.setVisible(false);
-							
+							jobClusterPanel.setVisible(false);							
 						} else if (category.equals("Data Model")) {
-							log.info("data Model B1");
-							
 							configureClusterPanel.setVisible(false);
 							algorithmClusterPanel.setVisible(false);
 							distanceClusterPanel.setVisible(false);
@@ -357,11 +328,9 @@ public class MainClusterPanel extends JPanel {
 							numberClusterPanel.setVisible(false);
 							maxIterationsPanel.setVisible(false);
 							dataModelClusterPanel.setVisible(true);
-							jobClusterPanel.setVisible(false);
-							
+							jobClusterPanel.setVisible(false);							
 						}else if (category.equals("Hadoop Job")) {
 							if (MainGUI.isDistributed()){
-								log.info("jobB1");
 								configureClusterPanel.setVisible(false);
 								algorithmClusterPanel.setVisible(false);
 								distanceClusterPanel.setVisible(false);
@@ -372,50 +341,13 @@ public class MainClusterPanel extends JPanel {
 								jobClusterPanel.setVisible(true);
 							}
 						}
-						
-
 					}
 				}
 			} catch (Exception e1) {
-
+				e1.printStackTrace();
 			}
-
-		}
-		if (me.getButton() == MouseEvent.BUTTON3) {
-
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeMenu.getModel().getRoot();
-			try {
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeMenu.getPathForLocation(me.getX(), me.getY())
-						.getLastPathComponent();
-				if (node != null) {
-					if (node.equals(root)) {
-						log.info("root");
-
-					} else if (root.isNodeChild(node)) {
-						log.info("cats");
-
-						JPopupMenu popupMenuRoot = new JPopupMenu();
-
-						JMenuItem _new = new JMenuItem("New");
-						_new.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								String category = (String) node.getUserObject();
-								// TODO: iniciar panel para cada tipo;
-								if (category.equals("Algorithm")) {
-									log.info("Algorithm");
-									
-
-								}
-							}
-						});
-
-					}
-				}
-			} catch (Exception e1) {
-			}// try
-		}// if
-
-	}// doMouseClicked
+		}		
+	}
 	
 	
 	private void disableHelpTips() {
@@ -451,8 +383,7 @@ public class MainClusterPanel extends JPanel {
 	public static void setCanopy(boolean can) {
 		canopy=can;
 		nodeNClusters.setEnabled(!can);//deshabilitamos el nodo clusters
-		treeMenu.repaint();
-		
+		treeMenu.repaint();		
 	}
 
 	public static boolean isCanopy() {

@@ -1,23 +1,22 @@
 package easyMahout.GUI.recommender;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Component;
-import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JButton;
+import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
@@ -33,8 +32,6 @@ import easyMahout.utils.listeners.TableChangeListener;
 public class QueriesRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private static final char slash = File.separatorChar;
 
 	private JScrollPane scrollPane;
 

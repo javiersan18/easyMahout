@@ -1,21 +1,30 @@
 package easyMahout.GUI.recommender;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.utils.Constants;
@@ -24,25 +33,9 @@ import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
-import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
-import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
-import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-
-import javax.swing.border.TitledBorder;
-
 public class NeighborhoodRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private static final char slash = File.separatorChar;
 
 	@SuppressWarnings("rawtypes")
 	private static JComboBox comboBoxNeighborhood;
@@ -63,7 +56,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 	private HelpTooltip helpTooltip;
 
-	private final static Logger log = Logger.getLogger(NeighborhoodRecommenderPanel.class);
+	//private final static Logger log = Logger.getLogger(NeighborhoodRecommenderPanel.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public NeighborhoodRecommenderPanel() {
@@ -96,13 +89,11 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 						tfSize.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
 						tfSize.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Size has to be an integer number in range [1..9999]", Constants.Log.ERROR);
 					tfSize.setBackground(new Color(240, 128, 128));
 					return false;
@@ -127,13 +118,11 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 						tfThreshold.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Threshold has to be an real number in range [-1..1]", Constants.Log.ERROR);
 						tfThreshold.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Threshold has to be an real number in range [-1..1]", Constants.Log.ERROR);
 					tfThreshold.setBackground(new Color(240, 128, 128));
 					return false;
@@ -179,13 +168,11 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 						tfSamplingRate.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Sampling Rate has to be a real number in range (0,1]", Constants.Log.ERROR);
 						tfSamplingRate.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Sampling Rate has to be a real number in range (0,1]", Constants.Log.ERROR);
 					tfSamplingRate.setBackground(new Color(240, 128, 128));
 					return false;
@@ -242,7 +229,6 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 				return new NearestNUserNeighborhood(size, minSim, similarity, model, sampling);
 			} catch (TasteException e) {
 				// TODO Auto-generated catch block
-				log.error("error creating UserNeighborhood");
 				e.printStackTrace();
 				return null;
 			}

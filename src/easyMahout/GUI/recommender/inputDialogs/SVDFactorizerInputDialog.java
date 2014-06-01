@@ -13,13 +13,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.recommender.svd.ALSWRFactorizer;
 import org.apache.mahout.cf.taste.impl.recommender.svd.Factorizer;
@@ -62,14 +61,14 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 
 	private JLabel lblNoFeatures;
 
-	private final static Logger log = Logger.getLogger(SVDFactorizerInputDialog.class);
+	//private final static Logger log = Logger.getLogger(SVDFactorizerInputDialog.class);
 
 	public SVDFactorizerInputDialog() {
 		super("SVD Factorizer Inputs");
 		setResizable(false);
 		frmSVDFactorizerInputDialog = this;
 		this.setAlwaysOnTop(true);
-		this.setType(Type.POPUP);
+		//this.setType(Type.POPUP);
 		this.setSize(510, 340);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -151,13 +150,11 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 						tfNoFeatures.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("No. Features has to be an integer number bigger than 0.", Constants.Log.ERROR);
 						tfNoFeatures.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost.");
 					MainGUI.writeResult("No. Features has to be an integer number bigger than 0.", Constants.Log.ERROR);
 					tfNoFeatures.setBackground(new Color(240, 128, 128));
 					return false;
@@ -186,13 +183,11 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 						tfNoIterations.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("No. Iterations has to be an integer number bigger than 0.", Constants.Log.ERROR);
 						tfNoIterations.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost.");
 					MainGUI.writeResult("No. Iterations has to be an integer number bigger than 0.", Constants.Log.ERROR);
 					tfNoIterations.setBackground(new Color(240, 128, 128));
 					return false;
@@ -220,13 +215,11 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 						tfLambda.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Lambda factor has to be a real number in range [0..1].", Constants.Log.ERROR);
 						tfLambda.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost.");
 					MainGUI.writeResult("Lambda factor has to be a real number in range [0..1].", Constants.Log.ERROR);
 					tfLambda.setBackground(new Color(240, 128, 128));
 					return false;
@@ -257,13 +250,11 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 						tfAlpha.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Alpha factor has to be a real number bigger than 0.", Constants.Log.ERROR);
 						tfAlpha.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost.");
 					MainGUI.writeResult("Alpha factor has to be a real number bigger than 0.", Constants.Log.ERROR);
 					tfAlpha.setBackground(new Color(240, 128, 128));
 					return false;
@@ -295,13 +286,11 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 							tfNoTrainingThreads.setBackground(Color.WHITE);
 							return true;
 						} else {
-							log.error(text + " is out of range");
 							MainGUI.writeResult("No. Training Threads has to be an integer numbre bigger than 0.", Constants.Log.ERROR);
 							tfNoTrainingThreads.setBackground(new Color(240, 128, 128));
 							return false;
 						}
 					} catch (NumberFormatException e) {
-						log.error(text + " is not a number, focus not lost.");
 						MainGUI.writeResult("No. Training Threads has to be an integer numbre bigger than 0.", Constants.Log.ERROR);
 						tfNoTrainingThreads.setBackground(new Color(240, 128, 128));
 						return false;
@@ -347,13 +336,10 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 
 			if (rdbtnOption1.isSelected()) {
 				if (StringUtils.isBlank(tfNoFeatures.getText())) {
-					log.error("No. Features is empty, please fill the field.");
 					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
-					log.error("No. Iterations is empty, please fill the field.");
 					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfLambda.getText())) {
-					log.error("Lambda is empty, please fill the field.");
 					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
 				} else {
 					setReady(true);
@@ -361,16 +347,12 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 				}
 			} else if (rdbtnOption2.isSelected()) {
 				if (StringUtils.isBlank(tfNoFeatures.getText())) {
-					log.error("No. Features is empty, please fill the field.");
 					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
-					log.error("No. Iterations is empty, please fill the field.");
 					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfLambda.getText())) {
-					log.error("Lambda is empty, please fill the field.");
 					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfAlpha.getText())) {
-					log.error("Alpha is empty, please fill the field.");
 					MainGUI.writeResult("Alpha is empty, please fill the field.", Constants.Log.ERROR);
 				} else {
 					setReady(true);
@@ -378,19 +360,14 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 				}
 			} else if (rdbtnOption3.isSelected()) {
 				if (StringUtils.isBlank(tfNoFeatures.getText())) {
-					log.error("No. Features is empty, please fill the field.");
 					MainGUI.writeResult("No. Features is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfNoIterations.getText())) {
-					log.error("No. Iterations is empty, please fill the field.");
 					MainGUI.writeResult("No. Iterations is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfLambda.getText())) {
-					log.error("Lambda is empty, please fill the field.");
 					MainGUI.writeResult("Lambda is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfAlpha.getText())) {
-					log.error("Alpha is empty, please fill the field.");
 					MainGUI.writeResult("Alpha is empty, please fill the field.", Constants.Log.ERROR);
 				} else if (StringUtils.isBlank(tfNoTrainingThreads.getText())) {
-					log.error("No. Training Threads is empty, please fill the field.");
 					MainGUI.writeResult("No. Training Threads is empty (mandatory in Option 2), please fill the field.",
 							Constants.Log.ERROR);
 				} else {

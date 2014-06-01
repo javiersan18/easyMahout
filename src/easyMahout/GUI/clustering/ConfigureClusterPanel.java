@@ -1,23 +1,21 @@
 package easyMahout.GUI.clustering;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JLabel;
 
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClusterTips;
-import easyMahout.utils.help.RecommenderTips;
-import javax.swing.SwingConstants;
 
 public class ConfigureClusterPanel extends JPanel {
 

@@ -23,6 +23,7 @@ import easyMahout.utils.Constants;
 
 public class RecommenderBuilder {
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(RecommenderBuilder.class);
 
 	public static Recommender buildRecommender() {
@@ -33,7 +34,6 @@ public class RecommenderBuilder {
 				UserNeighborhood neighborhood = NeighborhoodRecommenderPanel.getNeighborhood(similarity, model);
 				return new GenericUserBasedRecommender(model, neighborhood, similarity);
 			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
 				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
 				return null;
 			}
@@ -44,7 +44,6 @@ public class RecommenderBuilder {
 				ItemSimilarity similarity = SimilarityRecommenderPanel.getItemSimilarity(model);
 				return new GenericItemBasedRecommender(model, similarity);
 			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
 				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
 				return null;
 			}
@@ -59,20 +58,15 @@ public class RecommenderBuilder {
 						try {
 							return new SVDRecommender(model, factorizer, candidate);
 						} catch (TasteException e) {
-							// TODO Auto-generated catch block
-							log.error("Error building the recommender.");
 							MainGUI.writeResult("Error building the recommender.", Constants.Log.ERROR);
 							e.printStackTrace();							
 						}
 					}
 				} else {
-					// TODO change error messages
-					log.error("Factorizer couldn't be built successfully.");
 					MainGUI.writeResult("Factorizer couldn't be built successfully.", Constants.Log.ERROR);
 					return null;
 				}
 			} else {
-				log.error("Trying to run a recommender without datamodel loaded");
 				MainGUI.writeResult("Trying to run a recommender without a dataModel loaded.", Constants.Log.ERROR);
 				return null;
 			}
@@ -80,9 +74,7 @@ public class RecommenderBuilder {
 		} else {
 			return null;
 		}
-		return null;
-				
-		
+		return null;		
 	}
 
 }

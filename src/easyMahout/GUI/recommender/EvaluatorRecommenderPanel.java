@@ -1,24 +1,24 @@
 package easyMahout.GUI.recommender;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.eval.IRStatistics;
 import org.apache.mahout.cf.taste.eval.RecommenderBuilder;
@@ -38,15 +38,9 @@ import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.RecommenderTips;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 public class EvaluatorRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final char slash = File.separatorChar;
 
 	private static JComboBox comboBoxEvaluator;
 
@@ -74,8 +68,9 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 	private static JTextField tfTopN;
 
-	private final static Logger log = Logger.getLogger(EvaluatorRecommenderPanel.class);
+	//private final static Logger log = Logger.getLogger(EvaluatorRecommenderPanel.class);
 
+	@SuppressWarnings("unchecked")
 	public EvaluatorRecommenderPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Evaluator", TitledBorder.CENTER, TitledBorder.TOP, null,
 				null));
@@ -146,13 +141,11 @@ public class EvaluatorRecommenderPanel extends JPanel {
 						tfEvaluation.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Evaluation percentage has to be an real number in range [0,0 .. 1,0]", Constants.Log.ERROR);
 						tfEvaluation.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Evaluation percentage has to be an real number in range [0,0 .. 1,0]", Constants.Log.ERROR);
 					tfEvaluation.setBackground(new Color(240, 128, 128));
 					return false;
@@ -176,13 +169,11 @@ public class EvaluatorRecommenderPanel extends JPanel {
 						tfTraining.setBackground(Color.WHITE);
 						return true;
 					} else {
-						log.error(text + " is out of range");
 						MainGUI.writeResult("Training percentage has to be an real number in range [0,0 .. 1,0]", Constants.Log.ERROR);
 						tfTraining.setBackground(new Color(240, 128, 128));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					log.error(text + " is not a number, focus not lost");
 					MainGUI.writeResult("Training percentage has to be an real number in range [0,0 .. 1,0]", Constants.Log.ERROR);
 					tfTraining.setBackground(new Color(240, 128, 128));
 					return false;
@@ -235,7 +226,6 @@ public class EvaluatorRecommenderPanel extends JPanel {
 						}
 					};
 				} else {
-					log.error("Trying to run a evaluator without data model loaded");
 					MainGUI.writeResult("Trying to run a evaluator without data model loaded", Constants.Log.ERROR);
 				}
 
@@ -281,7 +271,6 @@ public class EvaluatorRecommenderPanel extends JPanel {
 							MainGUI.writeResult("Precision: " + stats.getPrecision(), Constants.Log.RESULT);
 							MainGUI.writeResult("Recall: " + stats.getRecall(), Constants.Log.RESULT);
 						} catch (TasteException e1) {
-							log.error("Error accessing datamodel");
 							MainGUI.writeResult("Error accessing datamodel", Constants.Log.ERROR);
 						}
 					} else {
@@ -289,7 +278,6 @@ public class EvaluatorRecommenderPanel extends JPanel {
 							Double score = evaluator.evaluate(recommenderBuilder, null, model, trainingPercentage, evaluationPercentage);
 							MainGUI.writeResult("Evaluator score: " + score, Constants.Log.RESULT);
 						} catch (TasteException e1) {
-							log.error("Error accessing datamodel");
 							MainGUI.writeResult("Error accessing datamodel", Constants.Log.ERROR);
 						}
 					}

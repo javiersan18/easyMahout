@@ -1,4 +1,4 @@
-package easyMahout.recommender;
+package easyMahout.utils.xml;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,9 @@ import easyMahout.GUI.recommender.QueriesRecommenderPanel;
 import easyMahout.GUI.recommender.SimilarityRecommenderPanel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
+import easyMahout.utils.Constants.Log;
+import easyMahout.utils.Constants.Neighborhood;
+import easyMahout.utils.Constants.RecommenderXML;
 
 public class RecommenderXMLPreferences {
 

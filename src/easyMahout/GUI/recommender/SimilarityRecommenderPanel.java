@@ -1,30 +1,22 @@
 package easyMahout.GUI.recommender;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
-import javax.swing.border.LineBorder;
-
-import easyMahout.GUI.MainGUI;
-import easyMahout.utils.Constants;
-import easyMahout.utils.HelpTooltip;
-import easyMahout.utils.help.RecommenderTips;
-import easyMahout.utils.listeners.ItemChangeListener;
-import easyMahout.utils.listeners.TextFieldChangeListener;
-
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.common.Weighting;
 import org.apache.mahout.cf.taste.impl.similarity.CityBlockSimilarity;
@@ -38,16 +30,17 @@ import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
-import javax.swing.border.TitledBorder;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import easyMahout.GUI.MainGUI;
+import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.RecommenderTips;
+import easyMahout.utils.listeners.ItemChangeListener;
+import easyMahout.utils.listeners.TextFieldChangeListener;
 
 public class SimilarityRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final char slash = File.separatorChar;
-
 	private DefaultComboBoxModel<String> userSimilarity;
 
 	private DefaultComboBoxModel<String> itemSimilarity;
@@ -60,7 +53,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 
 	private HelpTooltip helpTooltip;
 
-	private final static Logger log = Logger.getLogger(SimilarityRecommenderPanel.class);
+	//private final static Logger log = Logger.getLogger(SimilarityRecommenderPanel.class);
 
 	private static JTextField tfMaxSimilarities;
 
@@ -261,8 +254,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 				}
 			}
 		} catch (TasteException e) {
-			// TODO: Taste exception error
-			log.error("error creating user similarity");
+			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
 			return null;
 		}
 	}
@@ -301,8 +293,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 				}
 			}
 		} catch (TasteException e) {
-			// TODO: Taste exception error
-			log.error("error creating item similarity");
+			MainGUI.writeResult(e.getMessage(), Constants.Log.ERROR);
 			return null;
 		}
 	}
