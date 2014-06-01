@@ -468,22 +468,13 @@ public class ClusterBuilder {
 					if (kmeans) {
 						Path pointsPath = new Path(DataModelClusterPanel.getOutputPath());
 						DisplayGraphicKMeans.runSequentialKMeansClusterer(conf, pointsPath, output, d, numero, iteraciones, t1);
-						try {
-							DisplayKMeans.main(null);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						// MainGUI.writeResult("OK executing the task",
-						// Constants.Log.INFO);
+						
 					}
 
 					else if (isCanopy) {
 						Path pointsPath = new Path(DataModelClusterPanel.getOutputPath());
 						CanopyDriver.run(conf, pointsPath, output, d, t1, t2, true, t1, !hadoop);
 
-						// MainGUI.writeResult("OK executing the task",
-						// Constants.Log.INFO);
 					}
 
 					else {
@@ -494,14 +485,7 @@ public class ClusterBuilder {
 						float fuzzyFactor = Float.parseFloat(s);
 
 						DisplayGraphicFuzzy.runSequentialFuzzyKClusterer(conf, pointsPath, output, d, iteraciones, fuzzyFactor, t1);
-						try {
-							DisplayFuzzyKMeans.main(null);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						// MainGUI.writeResult("OK executing the task",
-						// Constants.Log.INFO);
+						
 					}
 				} catch (ClassNotFoundException e) {
 					MainGUI.writeResult("Not able to build the clusters", Constants.Log.ERROR);
@@ -611,8 +595,7 @@ public class ClusterBuilder {
 			ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
 
 			String clusterIn = DataModelClusterPanel.getOutputPath() + System.getProperty("file.separator") + "clusters";
-			// runMapReduce(new Path(DataModelClusterPanel.getInputPath()),new
-			// Path(DataModelClusterPanel.getOutputPath()));
+			
 			// crear los clusters iniciales
 			CanopyDriver.run(confHadoop, new Path(args2[3] + System.getProperty("file.separator") + "tfidf-vectors"), new Path(clusterIn), d, t1, 0.9, true,
 					t1, !hadoop);
@@ -632,57 +615,15 @@ public class ClusterBuilder {
 			writeResultHadoop(confHadoop, read);
 			MainGUI.writeResult("Hadoop Job finished with success.", Constants.Log.INFO);
 		} catch (Exception e) {
-			MainGUI.writeResult("Not able to run Hadoop Job", Constants.Log.ERROR);
+			
+			MainGUI.writeResult(e.getMessage(),Constants.Log.ERROR);
 		}
 	}
 
-	private static int runMapReduce(Path input, Path output) throws IOException, ClassNotFoundException, InterruptedException {
-		final String PREFIX_ADDITION_FILTER = PrefixAdditionFilter.class.getName();
-
-		final String[] CHUNK_SIZE_OPTION = { "chunkSize", "chunk" };
-		final String[] FILE_FILTER_CLASS_OPTION = { "fileFilterClass", "filter" };
-		final String[] CHARSET_OPTION = { "charset", "c" };
-
-		final int MAX_JOB_SPLIT_LOCATIONS = 1000000;
-
-		final String[] KEY_PREFIX_OPTION = { "keyPrefix", "prefix" };
-		final String BASE_INPUT_PATH = "baseinputpath";
-		int chunkSizeInMB = 64;
-		Configuration confHadoop = new Configuration();
-
-		Job job = null;// = HadoopUtil.prepareJob(input, output,
-						// MultipleTextFileInputFormat.class,
-						// SequenceFilesFromDirectoryMapper.class, Text.class,
-						// Text.class, SequenceFileOutputFormat.class,
-						// confHadoop);
-
-		Configuration jobConfig = job.getConfiguration();
-		String keyPrefix = null;
-		jobConfig.set(KEY_PREFIX_OPTION[0], keyPrefix);
-		FileSystem fs = FileSystem.get(jobConfig);
-		FileStatus fsFileStatus = fs.getFileStatus(input);
-		String inputDirList = HadoopUtil.buildDirList(fs, fsFileStatus);
-		jobConfig.set("baseinputpath", input.toString());
-
-		long chunkSizeInBytes = chunkSizeInMB * 1024 * 1024;
-
-		jobConfig.set("mapreduce.job.max.split.locations", String.valueOf(1000000));
-
-		FileInputFormat.setInputPaths(job, inputDirList);
-
-		FileInputFormat.setMaxInputSplitSize(job, chunkSizeInBytes);
-		FileOutputFormat.setCompressOutput(job, true);
-
-		boolean succeeded = job.waitForCompletion(true);
-		if (!succeeded) {
-			return -1;
-		}
-		return 0;
-	}
-
+	
 	public static void writeResultHadoop(Configuration confHadoop, String file) {
 		FileSystem fileSystem = null;
-		// confHadoop.set("mapred.textoutputformat.separatorText", ",");
+		
 		try {
 			fileSystem = FileSystem.get(confHadoop);
 		} catch (IOException e1) {
