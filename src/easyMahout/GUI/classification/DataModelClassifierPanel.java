@@ -114,7 +114,6 @@ public class DataModelClassifierPanel extends JPanel {
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
-		textInputPath.setEditable(false);
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textInputPath.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
@@ -189,7 +188,6 @@ public class DataModelClassifierPanel extends JPanel {
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
-		textOutputPath.setEditable(false);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textOutputPath.setInputVerifier(new InputVerifier() {
 			public boolean verify(JComponent input) {
