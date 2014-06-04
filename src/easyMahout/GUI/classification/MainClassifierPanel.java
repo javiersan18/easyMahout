@@ -82,7 +82,9 @@ public class MainClassifierPanel extends JPanel {
 
 	private DisabledNode nodeSaves;
 
-	private DisabledNode nodeSelected;	
+	private DisabledNode nodeSelected;
+
+	private static ConfigureClassificationPanel configPanel;	
 
 	public MainClassifierPanel(){
 		
@@ -120,6 +122,12 @@ public class MainClassifierPanel extends JPanel {
 		this.add(treePanel);
 		
 		// Create different panes
+		
+		configPanel = new ConfigureClassificationPanel();
+		configPanel.setBounds(228, 11, 481, 410);
+		panelClassifier.add(configPanel);
+		configPanel.setLayout(null);
+		configPanel.setVisible(true);
 		
 		dataDefinitionsClassifierPanel = new DataDefinitionsClassifierPanel();
 		dataDefinitionsClassifierPanel.setBounds(238, 11, 481, 410);

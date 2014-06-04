@@ -1,4 +1,4 @@
-package easyMahout.GUI.recommender;
+package easyMahout.GUI.classification;
 
 import javax.swing.JPanel;
 
@@ -8,17 +8,18 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
 
+import easyMahout.utils.help.ClassifierTips;
 import easyMahout.utils.help.RecommenderTips;
 
 import javax.swing.SwingConstants;
 
-public class ConfigureRecommenderPanel extends JPanel {
+public class ConfigureClassificationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private JLabel lblGuide;
 
-	public ConfigureRecommenderPanel() {
+	public ConfigureClassificationPanel() {
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Configuration Info", TitledBorder.CENTER,
 				TitledBorder.TOP, null, null));
 		setForeground(Color.BLACK);
@@ -33,9 +34,9 @@ public class ConfigureRecommenderPanel extends JPanel {
 
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
-			lblGuide.setText(RecommenderTips.RECOMM_CONFIG_DIST);
+			lblGuide.setText(ClassifierTips.CLASSIF_CONFIG_DIST);
 		} else {
-			lblGuide.setText(RecommenderTips.RECOMM_CONFIG);
+			lblGuide.setText(ClassifierTips.CLASSIF_CONFIG);
 		}
 	}
 
