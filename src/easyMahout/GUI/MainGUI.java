@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -59,16 +62,15 @@ public class MainGUI extends JFrame {
 
 	private static JMenuItem mntmSave;
 
-	//private final static Logger log = Logger.getLogger(MainGUI.class);
+	// private final static Logger log = Logger.getLogger(MainGUI.class);
 
 	private static JRadioButtonMenuItem nonDistributedMenuItem;
 
 	private static JRadioButtonMenuItem distributedMenuItem;
-	
-	private static JFrame preferencesPanel;
-	
-	private static boolean canopy;
 
+	private static JFrame preferencesPanel;
+
+	private static boolean canopy;
 
 	/**
 	 * Launch the application.
@@ -76,16 +78,16 @@ public class MainGUI extends JFrame {
 	public static void main(String[] args) {
 		try {
 			// Set System(Windows, Mac, linux) Look and fell
-			//javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName()); 
-			
+			// javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+
 		} catch (Exception e) {
 		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainGUI window = new MainGUI();
-					window.setVisible(true);					
-					
+					window.setVisible(true);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -101,22 +103,21 @@ public class MainGUI extends JFrame {
 		setResizable(false);
 		initialize();
 	}
-	
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 
-		//BasicConfigurator.configure();
-		//PropertyConfigurator.configure("log4j.properties");
+		// BasicConfigurator.configure();
+		// PropertyConfigurator.configure("log4j.properties");
 
 		distributed = false;
 		main = this;
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
-		
+
 		this.setBounds(100, 100, 740, 690);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -150,9 +151,9 @@ public class MainGUI extends JFrame {
 
 		clusterTab = new MainClusterPanel();
 		tabbedPane.addTab("Clustering", null, clusterTab, null);
-		
+
 		preferencesPanel = new PreferencesPanel();
-		
+
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
 				onClose();
@@ -215,7 +216,7 @@ public class MainGUI extends JFrame {
 				System.exit(0);
 			}
 		} else {
-			
+
 			System.exit(0);
 		}
 	}
@@ -252,10 +253,11 @@ public class MainGUI extends JFrame {
 					mntmSave.setEnabled(true);
 					MainGUI.writeResult("Preferences file loaded: " + prefs.getName(), Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);					
+					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);
 				}
 			}
 		});
+		mntmLoad.setVisible(false);
 
 		mntmSave = new JMenuItem("Save");
 		mnFile.add(mntmSave);
@@ -266,29 +268,31 @@ public class MainGUI extends JFrame {
 				MainGUI.writeResult("Preferences file saved", Constants.Log.INFO);
 			}
 		});
+		mntmSave.setVisible(false);
 
-		JMenuItem mntmSaveAs = new JMenuItem("Save As...");
+		JMenuItem mntmSaveAs = new JMenuItem("Save Log");
 		mnFile.add(mntmSaveAs);
 		mntmSaveAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser selectedFile = new JFileChooser();
 				int i = selectedFile.showOpenDialog(MainGUI.this);
 				if (i == JFileChooser.APPROVE_OPTION) {
-					File prefs = selectedFile.getSelectedFile();
-					String absPath = prefs.getAbsolutePath();
-					RecommenderXMLPreferences.saveXMLFile(absPath);
+					File logFile = selectedFile.getSelectedFile();
+					String absPath = logFile.getAbsolutePath();
+					// RecommenderXMLPreferences.saveXMLFile(absPath);
 					// MainGUI.setMainTitle(absPath);
-					mntmSave.setEnabled(true);
-					MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
+					// mntmSave.setEnabled(true);
+					saveLogAsFile(absPath);
+					MainGUI.writeResult("Log file saved as: " + logFile.getName(), Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);					
+					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
 				}
 			}
 		});
-		
+
 		JSeparator separator_3 = new JSeparator();
 		mnFile.add(separator_3);
-		
+
 		JMenuItem mntmPreferences = new JMenuItem("Preferences");
 		mnFile.add(mntmPreferences);
 
@@ -382,11 +386,10 @@ public class MainGUI extends JFrame {
 				AboutUsPopupDialogBox dialogBox = new AboutUsPopupDialogBox();
 			}
 		});
-		
-		
+
 		mntmPreferences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				preferencesPanel.setVisible(true);	
+				preferencesPanel.setVisible(true);
 			}
 		});
 
@@ -400,9 +403,29 @@ public class MainGUI extends JFrame {
 
 	}
 
+	protected void saveLogAsFile(String absPath) {
+		FileWriter fileW = null;
+		PrintWriter pw = null;
+		try {
+			fileW = new FileWriter(absPath);
+			pw = new PrintWriter(fileW);
+			pw.print(textBuilder.toString());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				if (null != fileW)
+					fileW.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
 	public static boolean isDistributed() {
 		return distributed;
 	}
+
 	public static boolean isSequential() {
 		return !distributed;
 	}
@@ -420,20 +443,20 @@ public class MainGUI extends JFrame {
 	}
 
 	public static void setDistributedRecommPanel(boolean distributed) {
-		recommenderTab.setDistributed(distributed);		
+		recommenderTab.setDistributed(distributed);
 		distributedMenuItem.setSelected(distributed);
 		nonDistributedMenuItem.setSelected(!distributed);
 	}
-	
+
 	public static boolean isCanopy() {
 		return canopy;
 	}
-	
-	public static void setCanopy(boolean c){
-		canopy=c;
+
+	public static void setCanopy(boolean c) {
+		canopy = c;
 	}
-	
-	public static void limpiar(){
+
+	public static void limpiar() {
 		main(null);
 	}
 
@@ -444,14 +467,15 @@ public class MainGUI extends JFrame {
 	public static void setLogTextPane(JTextPane logTextPane) {
 		MainGUI.logTextPane = logTextPane;
 	}
-	
-public static void clean(){
-	textBuilder=new StringBuilder();
-}
-public static String getDateTime(){
-	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	Date date = new Date();
-	String s=dateFormat.format(date)+" ";
-	return s;
-}
+
+	public static void clean() {
+		textBuilder = new StringBuilder();
+	}
+
+	public static String getDateTime() {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date date = new Date();
+		String s = dateFormat.format(date) + " ";
+		return s;
+	}
 }
