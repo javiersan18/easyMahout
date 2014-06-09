@@ -177,7 +177,7 @@ public class MainClassifierPanel extends JPanel {
 				"Training Data", // 4
 				"Data Model", // 5				
 				"Evaluator", // 6
-				"Saves" //7
+				/*"Saves" //7*/
 		};
 		
 		treeNodes = new ArrayList<DisabledNode>();
@@ -191,22 +191,22 @@ public class MainClassifierPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(4));
 		treeNodes.get(1).add(treeNodes.get(5));
 		treeNodes.get(1).add(treeNodes.get(6));
-		treeNodes.get(0).add(treeNodes.get(7));
+		//treeNodes.get(0).add(treeNodes.get(7));
 		
 		nodeConfigure = treeNodes.get(1);
 		nodeAlgorithm = treeNodes.get(2);
 		nodeDataDefs = treeNodes.get(3);
 		nodeTraining = treeNodes.get(4);		
 		nodeEvaluator = treeNodes.get(6);
-		nodeSaves = treeNodes.get(7);		
+		//nodeSaves = treeNodes.get(7);		
 		
-		ArrayList<DisabledNode> savesNodes = getSavesFiles();
-		if (savesNodes != null) {
-			treeNodes.addAll(savesNodes);
-			for (int i = categories.length; i < treeNodes.size(); i++) {
-				nodeSaves.add(treeNodes.get(i));
-			}
-		}
+//		ArrayList<DisabledNode> savesNodes = getSavesFiles();
+//		if (savesNodes != null) {
+//			treeNodes.addAll(savesNodes);
+//			for (int i = categories.length; i < treeNodes.size(); i++) {
+//				nodeSaves.add(treeNodes.get(i));
+//			}
+//		}
 		
 		return treeNodes.toArray(new DisabledNode[treeNodes.size()]);
 	}

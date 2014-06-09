@@ -113,10 +113,7 @@ public class QueriesRecommenderPanel extends JPanel {
 
 		btnRun = new JButton("Run");
 		btnRun.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// cuando se ejecuta el recomm con la celda recien modificada,
-				// no actualiza el valor
-
+			public void actionPerformed(ActionEvent e) {				
 				try {
 					Recommender recomm = RecommenderBuilder.buildRecommender();
 					if (recomm != null) {
@@ -132,28 +129,17 @@ public class QueriesRecommenderPanel extends JPanel {
 										MainGUI.writeResult("User " + user + ": " + item.toString(), Constants.Log.RESULT);
 									}
 								} else {
-									MainGUI.writeResult("User " + user + ": No recommendatios", Constants.Log.RESULT);
+									MainGUI.writeResult("User " + user + ": No recommendations", Constants.Log.RESULT);
 								}
-
-								// for (RecommendedItem r :
-								// recomm.recommend(user, (Integer)
-								// tableModel.getValueAt(i, 2))) {
-								// MainGUI.writeResult("User " + user + ": " +
-								// r.toString(), Constants.Log.RESULT);
-								// }
-
 							}
 							i++;
 						}
 
 					} else {
-						// TODO sobra??? puede fallar la creacion del recomm si
-						// tiene dataModel?
 						MainGUI.writeResult("Error building the recommender.", Constants.Log.ERROR);
 					}
 
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					MainGUI.writeResult(e1.toString(), Constants.Log.ERROR);
 					e1.printStackTrace();
 				}
@@ -191,10 +177,6 @@ public class QueriesRecommenderPanel extends JPanel {
 	}
 
 	public static void emptyTable() {
-		// if (tableModel.getRowCount() > 0) {
-		// tableModel.removeRow(0);
-		// tableModel.getDataVector().clear();
-		// }
 		tableModel.getDataVector().clear();
 	}
 
