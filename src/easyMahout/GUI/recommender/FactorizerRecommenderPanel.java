@@ -84,7 +84,7 @@ public class FactorizerRecommenderPanel extends JPanel {
 		add(helpTooltip);
 
 		JButton btnConfigure = new JButton("Configure");
-		btnConfigure.setBounds(338, 69, 89, 23);
+		btnConfigure.setBounds(327, 69, 100, 20);
 		add(btnConfigure);
 
 		JLabel lblFactorizer = new JLabel("Factorizer");
@@ -96,7 +96,7 @@ public class FactorizerRecommenderPanel extends JPanel {
 		add(lblCandidateItemStrategy);
 
 		comboBoxCandidate = new JComboBox<String>();
-		comboBoxCandidate.setBounds(38, 140, 129, 20);
+		comboBoxCandidate.setBounds(38, 140, 164, 20);
 		comboBoxCandidate.setModel(new DefaultComboBoxModel<String>(new String[] { Constants.RecommCandidate.PREFERRED_ITEMS,
 				Constants.RecommCandidate.ALL_SIMILAR_ITEMS, Constants.RecommCandidate.ALL_UKNOWN_ITEMS, Constants.RecommCandidate.SAMPLING_ITEMS }));
 		add(comboBoxCandidate);

@@ -88,7 +88,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		comboBoxEvaluator = new JComboBox();
 		comboBoxEvaluator.setMaximumRowCount(16);
 		comboBoxEvaluator.setModel(preferencesEvaluator);
-		comboBoxEvaluator.setBounds(38, 36, 197, 20);
+		comboBoxEvaluator.setBounds(38, 36, 245, 20);
 		add(comboBoxEvaluator);
 
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
@@ -122,13 +122,13 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		});
 
 		lblTrainingPercentage = new JLabel("Training percentage");
-		lblTrainingPercentage.setBounds(38, 70, 137, 14);
+		lblTrainingPercentage.setBounds(38, 70, 173, 14);
 		add(lblTrainingPercentage);
 
 		tfEvaluation = new JTextField();
 		tfEvaluation.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfEvaluation.setColumns(5);
-		tfEvaluation.setBounds(185, 98, 62, 20);
+		tfEvaluation.setBounds(221, 98, 62, 20);
 		tfEvaluation.setText("1.0");
 		add(tfEvaluation);
 		tfEvaluation.setInputVerifier(new InputVerifier() {
@@ -156,7 +156,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 		tfTraining = new JTextField();
 		tfTraining.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfTraining.setBounds(185, 67, 62, 20);
+		tfTraining.setBounds(221, 67, 62, 20);
 		tfTraining.setText("0.7");
 		add(tfTraining);
 		tfTraining.setInputVerifier(new InputVerifier() {
@@ -183,7 +183,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		tfTraining.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		lblEvaluationPercentage = new JLabel("Evaluation percentage");
-		lblEvaluationPercentage.setBounds(38, 101, 115, 14);
+		lblEvaluationPercentage.setBounds(38, 101, 173, 14);
 		add(lblEvaluationPercentage);
 
 		btnEvaluate = new JButton("Evaluate");
@@ -192,14 +192,14 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		add(btnEvaluate);
 
 		lblTopN = new JLabel("Top-N Relevant documents");
-		lblTopN.setBounds(38, 132, 137, 14);
+		lblTopN.setBounds(38, 132, 173, 17);
 		add(lblTopN);
 
 		tfTopN = new JTextField();
 		tfTopN.setText("2");
 		tfTopN.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfTopN.setColumns(5);
-		tfTopN.setBounds(185, 129, 62, 20);
+		tfTopN.setBounds(221, 129, 62, 20);
 		add(tfTopN);
 
 		lblTopN.setEnabled(false);

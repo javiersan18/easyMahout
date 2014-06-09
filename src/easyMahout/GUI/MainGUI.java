@@ -78,8 +78,8 @@ public class MainGUI extends JFrame {
 	public static void main(String[] args) {
 		try {
 			// Set System(Windows, Mac, linux) Look and fell
-			// javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
-
+		 //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());	
+		 //javax.swing.UIManager.setLookAndFeel(com.sun.java.swing.plaf.gtk.GTKLookAndFeel);	
 		} catch (Exception e) {
 		}
 		EventQueue.invokeLater(new Runnable() {

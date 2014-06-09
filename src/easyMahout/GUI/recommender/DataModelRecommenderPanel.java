@@ -139,15 +139,17 @@ public class DataModelRecommenderPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
 		add(helpTooltip);
 
-		lblOutputDataSource = new JLabel("Output data source (Optional):");
+		lblOutputDataSource = new JLabel("Output data source:");
 		lblOutputDataSource.setBounds(38, 206, 216, 14);
 		add(lblOutputDataSource);
+		lblOutputDataSource.setEnabled(false);
 
 		textOutputPath = new JTextField();
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
+		textOutputPath.setEnabled(false);
 
 		btnSelectOutput = new JButton("Select File...");
 		btnSelectOutput.setBounds(111, 267, 126, 23);
@@ -209,6 +211,7 @@ public class DataModelRecommenderPanel extends JPanel {
 				}
 			}
 		});
+		btnSelectOutput.setEnabled(false);
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -291,21 +294,21 @@ public class DataModelRecommenderPanel extends JPanel {
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
 			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
-			lblOutputDataSource.setText("Output directory:");
 			lblInputDataSource.setText("Input directory:");
 			btnSelectOutput.setText("Select Folder...");
 			btnSelectInput.setText("Select Folder...");
 		} else {
-			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);
-			lblOutputDataSource.setText("Output data file (Optional):");
+			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);			
 			lblInputDataSource.setText("Input data source:");
 			btnSelectOutput.setText("Select File...");
 			btnSelectInput.setText("Select File...");
 		}
-
 		comboBoxDatamodel.setEnabled(!distributed);
 		btnCreate.setEnabled(!distributed);
 		chckbxRemoveIfExist.setEnabled(distributed);
+		lblOutputDataSource.setEnabled(distributed);
+		btnSelectOutput.setEnabled(distributed);
+		textOutputPath.setEnabled(distributed);		
 	}
 
 	public static String getInputPath() {
