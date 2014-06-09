@@ -76,7 +76,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 		tfSize = new JTextField();
 		tfSize.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfSize.setBounds(177, 67, 62, 20);
+		tfSize.setBounds(190, 67, 50, 20);
 		add(tfSize);
 		tfSize.setText("10");
 		tfSize.setInputVerifier(new InputVerifier() {
@@ -104,7 +104,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 		tfThreshold = new JTextField();
 		tfThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfThreshold.setBounds(177, 67, 62, 20);
+		tfThreshold.setBounds(190, 67, 50, 20);
 		add(tfThreshold);
 		tfThreshold.setVisible(false);
 		tfThreshold.setText("0.7");
@@ -137,7 +137,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 		tfMinimun = new JTextField();
 		tfMinimun.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfMinimun.setBounds(177, 98, 62, 20);
+		tfMinimun.setBounds(190, 98, 50, 20);
 		add(tfMinimun);
 		tfMinimun.setColumns(5);
 		tfMinimun.getDocument().addDocumentListener(new TextFieldChangeListener());
@@ -152,7 +152,7 @@ public class NeighborhoodRecommenderPanel extends JPanel {
 
 		tfSamplingRate = new JTextField();
 		tfSamplingRate.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfSamplingRate.setBounds(206, 129, 33, 20);
+		tfSamplingRate.setBounds(190, 129, 50, 20);
 		add(tfSamplingRate);
 		tfSamplingRate.setColumns(5);
 		tfSamplingRate.setText("1.0");

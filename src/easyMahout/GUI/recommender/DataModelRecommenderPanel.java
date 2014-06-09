@@ -105,7 +105,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnSelectInput = new JButton("Select File...");
-		btnSelectInput.setBounds(111, 165, 126, 23);
+		btnSelectInput.setBounds(90, 165, 145, 23);
 		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
@@ -152,7 +152,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		textOutputPath.setEnabled(false);
 
 		btnSelectOutput = new JButton("Select File...");
-		btnSelectOutput.setBounds(111, 267, 126, 23);
+		btnSelectOutput.setBounds(90, 267, 145, 23);
 		add(btnSelectOutput);
 
 		chckbxRemoveIfExist = new JCheckBox("Remove if exist");

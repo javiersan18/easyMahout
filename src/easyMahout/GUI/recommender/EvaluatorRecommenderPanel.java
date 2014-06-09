@@ -88,7 +88,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		comboBoxEvaluator = new JComboBox();
 		comboBoxEvaluator.setMaximumRowCount(16);
 		comboBoxEvaluator.setModel(preferencesEvaluator);
-		comboBoxEvaluator.setBounds(38, 36, 245, 20);
+		comboBoxEvaluator.setBounds(38, 36, 275, 20);
 		add(comboBoxEvaluator);
 
 		final JButton btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
@@ -128,7 +128,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 		tfEvaluation = new JTextField();
 		tfEvaluation.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfEvaluation.setColumns(5);
-		tfEvaluation.setBounds(221, 98, 62, 20);
+		tfEvaluation.setBounds(250, 98, 62, 20);
 		tfEvaluation.setText("1.0");
 		add(tfEvaluation);
 		tfEvaluation.setInputVerifier(new InputVerifier() {
@@ -156,7 +156,7 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 		tfTraining = new JTextField();
 		tfTraining.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfTraining.setBounds(221, 67, 62, 20);
+		tfTraining.setBounds(250, 67, 62, 20);
 		tfTraining.setText("0.7");
 		add(tfTraining);
 		tfTraining.setInputVerifier(new InputVerifier() {
@@ -188,18 +188,18 @@ public class EvaluatorRecommenderPanel extends JPanel {
 
 		btnEvaluate = new JButton("Evaluate");
 		btnEvaluate.setAlignmentX(0.5f);
-		btnEvaluate.setBounds(371, 364, 89, 23);
+		btnEvaluate.setBounds(340, 364, 120, 23);
 		add(btnEvaluate);
 
 		lblTopN = new JLabel("Top-N Relevant documents");
-		lblTopN.setBounds(38, 132, 173, 17);
+		lblTopN.setBounds(38, 132, 190, 17);
 		add(lblTopN);
 
 		tfTopN = new JTextField();
 		tfTopN.setText("2");
 		tfTopN.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfTopN.setColumns(5);
-		tfTopN.setBounds(221, 129, 62, 20);
+		tfTopN.setBounds(250, 129, 62, 20);
 		add(tfTopN);
 
 		lblTopN.setEnabled(false);

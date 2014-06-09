@@ -51,7 +51,7 @@ public class TypeRecommenderPanel extends JPanel {
 
 		comboBoxType = new JComboBox<String>();
 		comboBoxType.setModel(nonDistributedModel);
-		comboBoxType.setBounds(38, 45, 205, 20);
+		comboBoxType.setBounds(38, 45, 245, 20);
 		add(comboBoxType);
 		comboBoxType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
