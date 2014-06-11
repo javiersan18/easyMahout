@@ -89,7 +89,7 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 		getContentPane().add(lblParameters);
 
 		rdbtnOption1 = new JRadioButton("Option 1");
-		rdbtnOption1.setBounds(166, 18, 72, 23);
+		rdbtnOption1.setBounds(166, 18, 90, 23);
 		getContentPane().add(rdbtnOption1);
 		optionsButtonGroup.add(rdbtnOption1);
 		rdbtnOption1.setSelected(true);
@@ -103,7 +103,7 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 		});
 
 		rdbtnOption2 = new JRadioButton("Option 2");
-		rdbtnOption2.setBounds(240, 18, 72, 23);
+		rdbtnOption2.setBounds(260, 18, 90, 23);
 		getContentPane().add(rdbtnOption2);
 		optionsButtonGroup.add(rdbtnOption2);
 		rdbtnOption2.addActionListener(new ActionListener() {
@@ -116,7 +116,7 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 		});
 
 		rdbtnOption3 = new JRadioButton("Option 3");
-		rdbtnOption3.setBounds(314, 18, 72, 23);
+		rdbtnOption3.setBounds(360, 18, 90, 23);
 		getContentPane().add(rdbtnOption3);
 		optionsButtonGroup.add(rdbtnOption3);
 		rdbtnOption3.addActionListener(new ActionListener() {
@@ -138,6 +138,7 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 
 		tfNoFeatures = new JTextField();
 		tfNoFeatures.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfNoFeatures.setText("10");
 		tfNoFeatures.setBounds(200, 67, 62, 20);
 		getContentPane().add(tfNoFeatures);
 		tfNoFeatures.setInputVerifier(new InputVerifier() {
@@ -203,6 +204,7 @@ public class SVDFactorizerInputDialog extends FactorizerInputDialog {
 		tfLambda = new JTextField();
 		tfLambda.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfLambda.setColumns(5);
+		tfLambda.setText("0.065");
 		tfLambda.setBounds(200, 127, 62, 20);
 		getContentPane().add(tfLambda);
 		tfLambda.setInputVerifier(new InputVerifier() {

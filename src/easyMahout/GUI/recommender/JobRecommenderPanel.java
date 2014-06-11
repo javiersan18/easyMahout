@@ -1,6 +1,7 @@
 package easyMahout.GUI.recommender;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,14 +48,13 @@ public class JobRecommenderPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unused")
-	private static final char slash = File.separatorChar;
-
 	private HelpTooltip helpTooltip;
 
 	private static JTextPane shellTextPane;
 
 	private JScrollPane shellScrollPane;
+
+	private JButton btnRun;
 
 	// private final static Logger log =
 	// Logger.getLogger(JobRecommenderPanel.class);
@@ -95,7 +95,7 @@ public class JobRecommenderPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_JOB);
 		add(helpTooltip);
 
-		JButton btnRun = new JButton("Run");
+		btnRun = new JButton("Run");
 		btnRun.setBounds(367, 358, 89, 23);
 		add(btnRun);
 		btnRun.addActionListener(new ActionListener() {
@@ -123,6 +123,10 @@ public class JobRecommenderPanel extends JPanel {
 					String[] args = JobBuilder.buildRecommenderJob();
 					if (args != null) {
 						try {
+							// mouse loading
+							btnRun.setCursor(Cursor
+									.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
 							MainGUI.writeResult(
 									"Recommending... please wait...",
 									Constants.Log.INFO);
@@ -130,6 +134,9 @@ public class JobRecommenderPanel extends JPanel {
 									.run(new org.apache.mahout.cf.taste.hadoop.item.RecommenderJob(),
 											args);
 							writeResultRecommender(args[5] + "/part-r-00000");
+
+							// mouse finished loading
+							btnRun.setCursor(Cursor.getDefaultCursor());
 
 						} catch (FileAlreadyExistsException e1) {
 							MainGUI.writeResult(e1.getMessage(),
@@ -149,6 +156,10 @@ public class JobRecommenderPanel extends JPanel {
 						String[] argsSplit = JobBuilder.buildSplitDatasetJob();
 						if (argsSplit != null) {
 							try {
+
+								// mouse loading
+								btnRun.setCursor(Cursor
+										.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 								if (FactorizerRecommenderPanel
 										.getEvaluateFactorizer()) {
@@ -236,18 +247,24 @@ public class JobRecommenderPanel extends JPanel {
 									writeResultRecommender(argsRecommender[3]
 											+ "/part-m-00000");
 
+									// mouse finished loading
+									btnRun.setCursor(Cursor.getDefaultCursor());
+
 								} catch (IOException e1) {
 									e1.printStackTrace();
 								}
 							} catch (FileAlreadyExistsException e1) {
+								btnRun.setCursor(Cursor.getDefaultCursor());
 								MainGUI.writeResult(e1.getMessage(),
 										Constants.Log.ERROR);
 								e1.printStackTrace();
 							} catch (IOException e2) {
+								btnRun.setCursor(Cursor.getDefaultCursor());
 								MainGUI.writeResult(e2.getMessage(),
 										Constants.Log.ERROR);
 								e2.printStackTrace();
 							} catch (Exception e2) {
+								btnRun.setCursor(Cursor.getDefaultCursor());
 								MainGUI.writeResult(e2.getMessage(),
 										Constants.Log.ERROR);
 								e2.printStackTrace();

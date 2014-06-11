@@ -85,7 +85,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		getContentPane().add(lblParameters);
 
 		rdbtnOption1 = new JRadioButton("Option 1");
-		rdbtnOption1.setBounds(166, 18, 77, 23);
+		rdbtnOption1.setBounds(166, 18, 100, 23);
 		getContentPane().add(rdbtnOption1);
 		optionsButtonGroup.add(rdbtnOption1);
 		rdbtnOption1.setSelected(true);
@@ -97,7 +97,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 		});
 
 		rdbtnOption2 = new JRadioButton("Option 2");
-		rdbtnOption2.setBounds(245, 18, 94, 23);
+		rdbtnOption2.setBounds(265, 18, 94, 23);
 		getContentPane().add(rdbtnOption2);
 		optionsButtonGroup.add(rdbtnOption2);
 		rdbtnOption2.addActionListener(new ActionListener() {
@@ -117,6 +117,7 @@ public class ALSWRFactorizerInputDialog extends FactorizerInputDialog {
 
 		tfNoFeatures = new JTextField();
 		tfNoFeatures.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfNoFeatures.setText("10");
 		tfNoFeatures.setBounds(200, 67, 62, 20);
 		getContentPane().add(tfNoFeatures);
 		tfNoFeatures.setInputVerifier(new InputVerifier() {

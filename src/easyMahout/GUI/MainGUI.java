@@ -136,7 +136,7 @@ public class MainGUI extends JFrame {
 		setLogTextPane(new JTextPane());
 		logScrollPane.setViewportView(getLogTextPane());
 		getLogTextPane().setBackground(Color.WHITE);
-		getLogTextPane().setBounds(42, 501, 735, 131);
+		getLogTextPane().setBounds(2, 463, 735, 131);
 		getLogTextPane().setEditable(false);
 		getLogTextPane().setContentType("text/html");
 
