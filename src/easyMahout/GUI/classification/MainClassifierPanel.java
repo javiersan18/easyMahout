@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 import org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression;
 
 import easyMahout.GUI.MainGUI;
+import easyMahout.GUI.classification.builder.JobClassifierBuilder;
+import easyMahout.GUI.recommender.JobRecommenderPanel;
 import easyMahout.GUI.recommender.MainRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.DisabledNode;
@@ -39,35 +41,38 @@ import javax.swing.JSeparator;
 public class MainClassifierPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private final static Logger log = Logger.getLogger(MainClassifierPanel.class);
+
+	private final static Logger log = Logger
+			.getLogger(MainClassifierPanel.class);
 
 	private JPanel panelClassifier;
 
-	private JPanel treePanel; 
-	
+	private JPanel treePanel;
+
 	private static DataDefinitionsClassifierPanel dataDefinitionsClassifierPanel;
 
 	private static DataModelClassifierPanel dataModelClassifierPanel;
-	
+
 	private static TrainingDataClassificationPanel trainingDataClassificationPanel;
-	
+
 	private static AlgorithmClassifierPanel algorithmClassifierPanel;
-	
+
 	private static EvaluatorClassifierPanel evaluatorClassifierPanel;
 	
+	private JobClassifierPanel jobPanel;
+
 	private static boolean configurationModified;
 
 	private boolean controlModified;
 
 	private String activeConfigutation;
-	
+
 	private static String fileName;
 
-	private static JTree treeMenu;	
+	private static JTree treeMenu;
 
-	private static DisabledNode nodeRoot;	
-	
+	private static DisabledNode nodeRoot;
+
 	private ArrayList<DisabledNode> treeNodes;
 
 	private DisabledNode nodeConfigure;
@@ -75,28 +80,28 @@ public class MainClassifierPanel extends JPanel {
 	private DisabledNode nodeTraining;
 
 	private DisabledNode nodeAlgorithm;
-	
+
 	private DisabledNode nodeDataDefs;
 
 	private DisabledNode nodeEvaluator;
 
-	private DisabledNode nodeSaves;
+	private DisabledNode nodeJob;
 
 	private DisabledNode nodeSelected;
 
-	private static ConfigureClassificationPanel configPanel;	
+	private static ConfigureClassificationPanel configPanel;
 
-	public MainClassifierPanel(){
-		
+	public MainClassifierPanel() {
+
 		this.setLayout(null);
-		
+
 		panelClassifier = this;
-		
+
 		treeMenu = new JTree(populateTree()[0]);
 
 		DisabledRenderer renderer = new DisabledRenderer();
 		treeMenu.setCellRenderer(renderer);
-		
+
 		treeMenu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				doMouseClicked(me);
@@ -108,7 +113,8 @@ public class MainClassifierPanel extends JPanel {
 		treePanel.setBounds(20, 11, 202, 410);
 
 		treeMenu.setBounds(0, 0, 202, 410);
-		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
+		treeMenu.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0),
+				1, true), "Options", TitledBorder.CENTER, TitledBorder.TOP,
 				null, null));
 		treeMenu.setRootVisible(false);
 		treeMenu.setShowsRootHandles(true);
@@ -120,15 +126,15 @@ public class MainClassifierPanel extends JPanel {
 		nodeRoot = (DisabledNode) treeMenu.getModel().getRoot();
 
 		this.add(treePanel);
-		
+
 		// Create different panes
-		
+
 		configPanel = new ConfigureClassificationPanel();
 		configPanel.setBounds(228, 11, 481, 410);
 		panelClassifier.add(configPanel);
 		configPanel.setLayout(null);
 		configPanel.setVisible(true);
-		
+
 		dataDefinitionsClassifierPanel = new DataDefinitionsClassifierPanel();
 		dataDefinitionsClassifierPanel.setBounds(238, 11, 481, 410);
 		panelClassifier.add(dataDefinitionsClassifierPanel);
@@ -158,6 +164,13 @@ public class MainClassifierPanel extends JPanel {
 		panelClassifier.add(evaluatorClassifierPanel);
 		evaluatorClassifierPanel.setLayout(null);
 		evaluatorClassifierPanel.setVisible(false);
+		
+		jobPanel = new JobClassifierPanel();
+		jobPanel.setBounds(228, 11, 481, 410);
+		panelClassifier.add(jobPanel);
+		jobPanel.setLayout(null);
+		jobPanel.setVisible(false);
+		
 	}
 
 	public JPanel getTreePanel() {
@@ -173,54 +186,47 @@ public class MainClassifierPanel extends JPanel {
 		String[] categories = { "Root", // 0
 				"Configure", // 1
 				"Algorithm", // 2
-				"Data Definitions", //3
+				"Data Definitions", // 3
 				"Training Data", // 4
-				"Data Model", // 5				
+				"Data Model", // 5
 				"Evaluator", // 6
-				/*"Saves" //7*/
+				"Hadoop Job" // 7
 		};
-		
+
 		treeNodes = new ArrayList<DisabledNode>();
 		for (int i = 0; i < categories.length; i++) {
 			treeNodes.add(new DisabledNode(categories[i]));
 		}
-		
+
 		treeNodes.get(0).add(treeNodes.get(1));
 		treeNodes.get(1).add(treeNodes.get(2));
 		treeNodes.get(1).add(treeNodes.get(3));
 		treeNodes.get(1).add(treeNodes.get(4));
 		treeNodes.get(1).add(treeNodes.get(5));
 		treeNodes.get(1).add(treeNodes.get(6));
-		//treeNodes.get(0).add(treeNodes.get(7));
-		
+		treeNodes.get(1).add(treeNodes.get(7));
+
 		nodeConfigure = treeNodes.get(1);
 		nodeAlgorithm = treeNodes.get(2);
 		nodeDataDefs = treeNodes.get(3);
-		nodeTraining = treeNodes.get(4);		
+		nodeTraining = treeNodes.get(4);
 		nodeEvaluator = treeNodes.get(6);
-		//nodeSaves = treeNodes.get(7);		
-		
-//		ArrayList<DisabledNode> savesNodes = getSavesFiles();
-//		if (savesNodes != null) {
-//			treeNodes.addAll(savesNodes);
-//			for (int i = categories.length; i < treeNodes.size(); i++) {
-//				nodeSaves.add(treeNodes.get(i));
-//			}
-//		}
-		
+		nodeJob = treeNodes.get(7);
+
 		return treeNodes.toArray(new DisabledNode[treeNodes.size()]);
 	}
 
-///////////////////	
-//MOUSE CLICK EVENT
-///////////////////
-	
+	// /////////////////
+	// MOUSE CLICK EVENT
+	// /////////////////
+
 	void doMouseClicked(MouseEvent me) {
-		//Left click
+		// Left click
 		if (me.getButton() == MouseEvent.BUTTON1) {
-			try {				
-				nodeSelected = (DisabledNode) treeMenu.getPathForLocation(me.getX(), me.getY()).getLastPathComponent();
-				
+			try {
+				nodeSelected = (DisabledNode) treeMenu.getPathForLocation(
+						me.getX(), me.getY()).getLastPathComponent();
+
 				if (nodeSelected != null) {
 					if (nodeSelected.equals(nodeConfigure)) {
 						dataDefinitionsClassifierPanel.setVisible(false);
@@ -229,16 +235,18 @@ public class MainClassifierPanel extends JPanel {
 						algorithmClassifierPanel.setVisible(false);
 						evaluatorClassifierPanel.setVisible(false);
 						configPanel.setVisible(true);
+						jobPanel.setVisible(false);
 					} else if (nodeConfigure.isNodeChild(nodeSelected)) {
-
+						
 						String category = (String) nodeSelected.getUserObject();
 						
-						if (category.equals("Data Definitions")){
+						if (category.equals("Data Definitions")) {
 							dataDefinitionsClassifierPanel.setVisible(true);
 							dataModelClassifierPanel.setVisible(false);
 							trainingDataClassificationPanel.setVisible(false);
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(false);
+							jobPanel.setVisible(false);
 						} else if (category.equals("Data Model")) {
 							log.info("dataB1");
 							dataDefinitionsClassifierPanel.setVisible(false);
@@ -247,6 +255,7 @@ public class MainClassifierPanel extends JPanel {
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(false);
 							configPanel.setVisible(false);
+							jobPanel.setVisible(false);
 						} else if (category.equals("Training Data")) {
 							dataDefinitionsClassifierPanel.setVisible(false);
 							dataModelClassifierPanel.setVisible(false);
@@ -254,6 +263,7 @@ public class MainClassifierPanel extends JPanel {
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(false);
 							configPanel.setVisible(false);
+							jobPanel.setVisible(false);
 						} else if (category.equals("Algorithm")) {
 							dataDefinitionsClassifierPanel.setVisible(false);
 							dataModelClassifierPanel.setVisible(false);
@@ -261,6 +271,7 @@ public class MainClassifierPanel extends JPanel {
 							algorithmClassifierPanel.setVisible(true);
 							evaluatorClassifierPanel.setVisible(false);
 							configPanel.setVisible(false);
+							jobPanel.setVisible(false);
 						} else if (category.equals("Evaluator")) {
 							dataDefinitionsClassifierPanel.setVisible(false);
 							dataModelClassifierPanel.setVisible(false);
@@ -268,6 +279,15 @@ public class MainClassifierPanel extends JPanel {
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(true);
 							configPanel.setVisible(false);
+							jobPanel.setVisible(false);
+						} else if (category.equals("Hadoop Job")) {
+							dataDefinitionsClassifierPanel.setVisible(false);
+							dataModelClassifierPanel.setVisible(false);
+							trainingDataClassificationPanel.setVisible(false);
+							algorithmClassifierPanel.setVisible(false);
+							evaluatorClassifierPanel.setVisible(false);
+							configPanel.setVisible(false);
+							jobPanel.setVisible(true);
 						}
 					}
 				}
@@ -275,226 +295,13 @@ public class MainClassifierPanel extends JPanel {
 				// The place where we clicked is not a tree node, do nothing.
 			}
 		}
-		//Right click
-		if (me.getButton() == MouseEvent.BUTTON3) {
-			try {
-				
-				nodeSelected = (DisabledNode) treeMenu.getPathForLocation(me.getX(), me.getY()).getLastPathComponent();
-				
-				if (nodeSelected != null) {
-					if (nodeSelected.equals(nodeSaves)) {
-						log.info("node: " + nodeSelected.toString());
-						JPopupMenu popupMenuAdd = new JPopupMenu();
-						JMenuItem addItem = new JMenuItem("Add");
-						addItem.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								if (configurationModified) {
-									int dialogResult = JOptionPane.showConfirmDialog(null,
-											"The actual Classifier configuration is not saved, would you like to save it?",
-											"Save preferences",
-											JOptionPane.YES_NO_CANCEL_OPTION);
-									if (dialogResult == JOptionPane.YES_OPTION) {
-										if (StringUtils.isBlank(activeConfigutation)) {
-											// TODO poner carpeta saves por
-											// defecto en el chooser
-											JFileChooser selectedFile = new JFileChooser();
-											int i = selectedFile.showOpenDialog(MainClassifierPanel.this);
-											if (i == JFileChooser.APPROVE_OPTION) {
-												File prefs = selectedFile.getSelectedFile();
-												String absPath = prefs.getAbsolutePath();
-												RecommenderXMLPreferences.saveXMLFile(absPath);
-												MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
-											} else if (i == JFileChooser.ERROR_OPTION) {
-												MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
-												log.error("Error saving preferences file");
-											}
-											// y nuevo
-											addPreferencesFile();
-											log.debug("modified, default config");
-										} else {
-											// salvar y nuevo
-											RecommenderXMLPreferences.saveXMLFile(activeConfigutation);
-											// configurationNew = true;
-											addPreferencesFile();
-											log.debug("modified, saving added configuration");
-										}
-									} else if (dialogResult == JOptionPane.NO_OPTION) {
-										// nuevo directamente
-										// configurationNew = true;
-										addPreferencesFile();
-										log.debug("modified, no save");
-									}
-								} else {
-									// a�adir directamente
-									// configurationNew = true;
-									addPreferencesFile();
-									log.debug("no modified");
-								}
-								treeMenu.expandRow(8);
-							}
-						});
-
-						popupMenuAdd.add(addItem);
-						this.add(popupMenuAdd);
-						popupMenuAdd.show(me.getComponent(), me.getX(), me.getY());
-
-					} else if (nodeSaves.isNodeChild(nodeSelected)) {
-						log.info("node: " + nodeSelected.toString());
-						JPopupMenu popupMenuSaves = new JPopupMenu();
-						JMenuItem loadItem = new JMenuItem("Load");
-						loadItem.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								String filePath = ((DisabledNode) nodeSelected).getPathFile();
-								RecommenderXMLPreferences.loadXMLFile(filePath);
-								activeConfigutation = filePath;
-								configurationModified = false;
-								controlModified = true;
-								MainGUI.setSaveItemEnabled(true);
-							}
-						});
-
-						JMenuItem deleteItem = new JMenuItem("Delete");
-						deleteItem.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								String name = (String) nodeSelected.getUserObject();
-								String filePath = ((DisabledNode) nodeSelected).getPathFile();
-								int dialogButton = JOptionPane.YES_NO_OPTION;
-								int dialogResult = JOptionPane.showConfirmDialog(null,
-										"Would you like to delete \"" + name + "\"?",
-										"Delete File",
-										dialogButton);
-								if (dialogResult == JOptionPane.YES_OPTION) {
-									File fichero = new File(filePath);
-									if (fichero.delete()) {
-
-										treeNodes.remove(nodeSelected);
-										nodeSaves.remove(nodeSelected);
-
-										DefaultTreeModel model = new DefaultTreeModel(nodeRoot);
-
-										treeMenu.setModel(model);
-										treeMenu.expandRow(0);
-										treeMenu.expandRow(8);
-
-										if (filePath.equals(activeConfigutation)) {
-											activeConfigutation = "";
-											MainGUI.setMainTitle(activeConfigutation);
-											MainGUI.setSaveItemEnabled(false);
-											configurationModified = false;
-											controlModified = false;
-										}
-										MainGUI.writeResult("Preferences file \"" + name + "\" successfully deleted.", Constants.Log.INFO);
-
-									} else {
-										MainGUI.writeResult("Preferences file \"" + name + "\" cannot be deleted.", Constants.Log.ERROR);
-									}
-								}
-							}
-						});
-
-						popupMenuSaves.add(loadItem);
-						popupMenuSaves.add(deleteItem);
-
-						this.add(popupMenuSaves);
-						popupMenuSaves.show(me.getComponent(), me.getX(), me.getY());
-					}
-				}
-			} catch (Exception e1) {
-				// The place where we clicked is not a tree node, do nothing.
-			}
-		}
-	}
-	
-	private ArrayList<DisabledNode> getSavesFiles() {
-
-		File dir = new File(Constants.SavesPaths.CLASSIFIER);
-
-		if (dir.exists()) {
-			File[] files = dir.listFiles();
-			ArrayList<DisabledNode> nodes = new ArrayList<DisabledNode>();
-			for (int i = 0; i < files.length; i++) {
-				nodes.add(new DisabledNode(RecommenderXMLPreferences.getTagName(files[i].getPath()), files[i].getPath()));
-				System.out.println(files[i].getName());
-
-			}
-			return nodes;
-
-		} else {
-			log.error("Preferences folder (" + Constants.SavesPaths.CLASSIFIER + ") doesnt exist.");
-			return null;
-		}
-
-	}
-
-	private void addPreferencesFile() {
-		fileName = JOptionPane.showInputDialog(null, "Write a new preferences file name?", "Enter a name", JOptionPane.QUESTION_MESSAGE);
-	
-		if (fileName != null && !fileName.isEmpty()) {
-	
-			File directory = new File(Constants.SavesPaths.RECOMMENDER);
-			if (!directory.exists()) {
-				directory.mkdirs();
-			}
-
-			String filePath = Constants.SavesPaths.RECOMMENDER + fileName + Constants.SavesPaths.EXTENSION;
-	
-			activeConfigutation = filePath;
-			configurationModified = false;
-			controlModified = true;
-	
-			treeNodes.add(new DisabledNode(fileName, filePath));
-			nodeSaves.add(treeNodes.get(treeNodes.size() - 1));
-			DefaultTreeModel model = new DefaultTreeModel(nodeRoot);
-	
-			File file = new File(filePath);
-			try {
-				if (file.createNewFile())
-					System.out.println("El fichero se ha creado correctamente");
-				else
-					System.out.println("No ha podido ser creado el fichero");
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-	
-			treeMenu.setModel(model);
-			treeMenu.expandRow(0);
-			treeMenu.expandRow(9);
-	
-			MainGUI.setMainTitle(activeConfigutation);
-			MainGUI.setSaveItemEnabled(true);
-			MainGUI.writeResult("Preferences file added: " + fileName, Constants.Log.INFO);
-		}
-	}
-	
-	public boolean isConfigurationModified() {
-		return configurationModified;
-	}
-
-	public boolean isControlModified() {
-		return controlModified;
-	}
-
-	public static void setConfigurationModified(boolean configurationModified) {
-		MainClassifierPanel.configurationModified = configurationModified;
-	}
-
-	public String getActiveConfiguration() {
-		return activeConfigutation;
-	}
-
-	public void setActiveConfiguration(String activeConfigutation) {
-		this.activeConfigutation = activeConfigutation;
-	}
-
-	public static String getFileName() {
-		return fileName;
 	}
 
 	public static AlgorithmClassifierPanel getAlgorithmClassifierPanel() {
 		// TODO Auto-generated method stub
 		return algorithmClassifierPanel;
 	}
-	
+
 	public static DataDefinitionsClassifierPanel getDataDefinitionsClassifierPanel() {
 		// TODO Auto-generated method stub
 		return dataDefinitionsClassifierPanel;

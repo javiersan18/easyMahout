@@ -115,7 +115,9 @@ public class MainGUI extends JFrame {
 		main = this;
 
 		this.setTitle("easyMahout " + Constants.EasyMahout.VERSION);
-		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				this.getClass().getResource(
+						"/easyMahout/GUI/images/mahoutIcon45.png")));
 
 		this.setBounds(100, 100, 740, 690);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -168,15 +170,26 @@ public class MainGUI extends JFrame {
 		// TODO: poner la hora a los logs, scroll o popup para ver los
 		// resultados comodamente.
 		if (type.equalsIgnoreCase(Constants.Log.ERROR)) {
-			textBuilder.append("<font color=red>ERROR: ").append(getDateTime()).append(text).append("</font><br>");
+			textBuilder.append("<font color=red>ERROR: ").append(getDateTime())
+					.append(text).append("</font><br>");
 		} else if (type.equalsIgnoreCase(Constants.Log.WARNING)) {
-			textBuilder.append("<font color=yellow>WARNING: ").append(getDateTime()).append(text).append("</font><br>");
+			textBuilder.append("<font color=yellow>WARNING: ")
+					.append(getDateTime()).append(text).append("</font><br>");
 		} else if (type.equalsIgnoreCase(Constants.Log.RESULT)) {
-			textBuilder.append("<font color=black>RESULT: ").append(getDateTime()).append(text).append("</font><br>");
+			textBuilder.append("<font color=black>RESULT: ")
+					.append(getDateTime()).append(text).append("</font><br>");
 		} else if (type.equalsIgnoreCase(Constants.Log.INFO)) {
-			textBuilder.append("<font color=green>INFO: ").append(getDateTime()).append(text).append("</font><br>");
+			textBuilder.append("<font color=green>INFO: ")
+					.append(getDateTime()).append(text).append("</font><br>");
 		}
 
+		getLogTextPane().setText(textBuilder.toString());
+		main.update(main.getGraphics());
+	}
+
+	public static void writeResultClassifier(String text) {
+		textBuilder.append("<font color=black>").append(text)
+				.append("</font><br>");
 		getLogTextPane().setText(textBuilder.toString());
 		main.update(main.getGraphics());
 	}
@@ -184,23 +197,29 @@ public class MainGUI extends JFrame {
 	private void onClose() {
 		// Hacer clase padre comun de las clases main, para llamar genericamente
 		// al panel actual
-		if (recommenderTab.isControlModified() && recommenderTab.isConfigurationModified()) {
-			int dialogResult = JOptionPane.showConfirmDialog(null,
-					"The actual configuration is not saved, would yo like to save it?",
-					"Recommender preferences",
-					JOptionPane.YES_NO_CANCEL_OPTION);
+		if (recommenderTab.isControlModified()
+				&& recommenderTab.isConfigurationModified()) {
+			int dialogResult = JOptionPane
+					.showConfirmDialog(
+							null,
+							"The actual configuration is not saved, would yo like to save it?",
+							"Recommender preferences",
+							JOptionPane.YES_NO_CANCEL_OPTION);
 			if (dialogResult == JOptionPane.YES_OPTION) {
 				// modified configuration
-				if (StringUtils.isBlank(recommenderTab.getActiveConfigutation())) {
+				if (StringUtils
+						.isBlank(recommenderTab.getActiveConfigutation())) {
 					JFileChooser selectedFile = new JFileChooser();
 					int i = selectedFile.showOpenDialog(MainGUI.this);
 					if (i == JFileChooser.APPROVE_OPTION) {
 						File prefs = selectedFile.getSelectedFile();
 						String absPath = prefs.getAbsolutePath();
 						RecommenderXMLPreferences.saveXMLFile(absPath);
-						MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
+						MainGUI.writeResult("Preferences file saved as: "
+								+ prefs.getName(), Constants.Log.INFO);
 					} else if (i == JFileChooser.ERROR_OPTION) {
-						MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+						MainGUI.writeResult("Error saving the file",
+								Constants.Log.ERROR);
 					}
 					MainRecommenderPanel.setConfigurationModified(false);
 					// crear fichero (jfilechooser)
@@ -208,7 +227,8 @@ public class MainGUI extends JFrame {
 					// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
 				} else {
 					// salvar config en fichero
-					RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
+					RecommenderXMLPreferences.saveXMLFile(recommenderTab
+							.getActiveConfigutation());
 					MainRecommenderPanel.setConfigurationModified(false);
 				}
 			} else if (dialogResult == JOptionPane.NO_OPTION) {
@@ -250,9 +270,12 @@ public class MainGUI extends JFrame {
 					RecommenderXMLPreferences.loadXMLFile(absPath);
 					// MainGUI.setMainTitle(absPath);
 					mntmSave.setEnabled(true);
-					MainGUI.writeResult("Preferences file loaded: " + prefs.getName(), Constants.Log.INFO);
+					MainGUI.writeResult(
+							"Preferences file loaded: " + prefs.getName(),
+							Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error loading the file", Constants.Log.ERROR);
+					MainGUI.writeResult("Error loading the file",
+							Constants.Log.ERROR);
 				}
 			}
 		});
@@ -263,8 +286,10 @@ public class MainGUI extends JFrame {
 		mntmSave.setEnabled(false);
 		mntmSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
-				MainGUI.writeResult("Preferences file saved", Constants.Log.INFO);
+				RecommenderXMLPreferences.saveXMLFile(recommenderTab
+						.getActiveConfigutation());
+				MainGUI.writeResult("Preferences file saved",
+						Constants.Log.INFO);
 			}
 		});
 		mntmSave.setVisible(false);
@@ -282,9 +307,12 @@ public class MainGUI extends JFrame {
 					// MainGUI.setMainTitle(absPath);
 					// mntmSave.setEnabled(true);
 					saveLogAsFile(absPath);
-					MainGUI.writeResult("Log file saved as: " + logFile.getName(), Constants.Log.INFO);
+					MainGUI.writeResult(
+							"Log file saved as: " + logFile.getName(),
+							Constants.Log.INFO);
 				} else if (i == JFileChooser.ERROR_OPTION) {
-					MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+					MainGUI.writeResult("Error saving the file",
+							Constants.Log.ERROR);
 				}
 			}
 		});
@@ -304,39 +332,50 @@ public class MainGUI extends JFrame {
 
 		ButtonGroup distributedGroup = new ButtonGroup();
 
-		nonDistributedMenuItem = new JRadioButtonMenuItem("Non Distributed", true);
+		nonDistributedMenuItem = new JRadioButtonMenuItem("Non Distributed",
+				true);
 		mnProperties.add(nonDistributedMenuItem);
 		distributedGroup.add(nonDistributedMenuItem);
 		nonDistributedMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (recommenderTab.isControlModified() && recommenderTab.isConfigurationModified()) {
-					int dialogResult = JOptionPane.showConfirmDialog(null,
-							"The actual configuration is not saved, would yo like to save it?",
-							"Non distributed recommender preferences",
-							JOptionPane.YES_NO_CANCEL_OPTION);
+				if (recommenderTab.isControlModified()
+						&& recommenderTab.isConfigurationModified()) {
+					int dialogResult = JOptionPane
+							.showConfirmDialog(
+									null,
+									"The actual configuration is not saved, would yo like to save it?",
+									"Non distributed recommender preferences",
+									JOptionPane.YES_NO_CANCEL_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						// modified configuration
-						if (StringUtils.isBlank(recommenderTab.getActiveConfigutation())) {
+						if (StringUtils.isBlank(recommenderTab
+								.getActiveConfigutation())) {
 							JFileChooser selectedFile = new JFileChooser();
 							int i = selectedFile.showOpenDialog(MainGUI.this);
 							if (i == JFileChooser.APPROVE_OPTION) {
 								File prefs = selectedFile.getSelectedFile();
 								String absPath = prefs.getAbsolutePath();
 								RecommenderXMLPreferences.saveXMLFile(absPath);
-								MainGUI.writeResult("Preferences file saved as: " + prefs.getName(), Constants.Log.INFO);
+								MainGUI.writeResult(
+										"Preferences file saved as: "
+												+ prefs.getName(),
+										Constants.Log.INFO);
 							} else if (i == JFileChooser.ERROR_OPTION) {
-								MainGUI.writeResult("Error saving the file", Constants.Log.ERROR);
+								MainGUI.writeResult("Error saving the file",
+										Constants.Log.ERROR);
 							}
 							// crear fichero (jfilechooser)
 							// salvar config en fichero
 							// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
 							setDistributed();
-							MainRecommenderPanel.setConfigurationModified(false);
+							MainRecommenderPanel
+									.setConfigurationModified(false);
 						} else {
 							// salvar config en fichero
 							// RecommenderXMLPreferences.saveXMLFile(recommenderTab.getActiveConfigutation());
 							setDistributed();
-							MainRecommenderPanel.setConfigurationModified(false);
+							MainRecommenderPanel
+									.setConfigurationModified(false);
 						}
 					} else if (dialogResult == JOptionPane.NO_OPTION) {
 						setDistributed();
@@ -360,7 +399,8 @@ public class MainGUI extends JFrame {
 
 		});
 
-		distributedMenuItem = new JRadioButtonMenuItem("Distributed (Apache Hadoop)");
+		distributedMenuItem = new JRadioButtonMenuItem(
+				"Distributed (Apache Hadoop)");
 		mnProperties.add(distributedMenuItem);
 		distributedGroup.add(distributedMenuItem);
 		distributedMenuItem.addActionListener(new ActionListener() {
@@ -393,7 +433,8 @@ public class MainGUI extends JFrame {
 		});
 
 		JMenuItem mntmHelpContents = new JMenuItem("Help Contents");
-		mntmHelpContents.setIcon(new ImageIcon(MainGUI.class.getResource("/easyMahout/GUI/images/helpIcon32.png")));
+		mntmHelpContents.setIcon(new ImageIcon(MainGUI.class
+				.getResource("/easyMahout/GUI/images/helpIcon32.png")));
 		mnHelp.add(mntmHelpContents);
 
 		JSeparator separator_1 = new JSeparator();
@@ -434,7 +475,8 @@ public class MainGUI extends JFrame {
 	}
 
 	public static void setMainTitle(String path) {
-		main.setTitle("easyMahout " + Constants.EasyMahout.VERSION + " - " + path);
+		main.setTitle("easyMahout " + Constants.EasyMahout.VERSION + " - "
+				+ path);
 	}
 
 	public static void setSaveItemEnabled(boolean enabled) {

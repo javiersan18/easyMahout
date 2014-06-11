@@ -10,6 +10,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 import easyMahout.utils.Constants;
 
@@ -26,8 +27,9 @@ public class TrainingDataClassificationPanel extends JPanel {
 	//private DefaultComboBoxModel numExModel;
 
 	public TrainingDataClassificationPanel	() {
-		//super();
-		setBorder(new LineBorder(new Color(0, 0, 0)));
+		super();setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Training data", TitledBorder.CENTER, TitledBorder.TOP,
+				null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(236, 11, 483, 382);

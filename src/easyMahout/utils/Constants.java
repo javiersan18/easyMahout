@@ -309,9 +309,9 @@ public class Constants {
 
 		public static final String SVM = "SVM";
 
-		public static final String NAIVEBAYES = "NAIVE BAYES";
+		public static final String NAIVEBAYES = "Naive Bayes";
 
-		public static final String COMPNAIVEBAYES = "COMPLEMENTARY NAIVE BAYES";
+		public static final String COMPNAIVEBAYES = "Complementary Naive Bayes";
 
 		public static final String RAMDOMFOREST = "RAMDOM FOREST";
 	}

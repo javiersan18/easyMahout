@@ -15,6 +15,7 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -50,8 +51,9 @@ public class DataDefinitionsClassifierPanel extends JPanel {
 	
 	@SuppressWarnings("unchecked")
 	public DataDefinitionsClassifierPanel() {
-		//super();
-		setBorder(new LineBorder(new Color(0, 0, 0)));
+		super();setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Data definition", TitledBorder.CENTER, TitledBorder.TOP,
+				null, null));
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(236, 11, 483, 382);
