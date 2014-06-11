@@ -4,7 +4,7 @@ public class Constants {
 
 	public class EasyMahout {
 
-		public static final String VERSION = "1.0";
+		public static final String VERSION = "1.1";
 
 		public static final String VERSION_DATE = "June 2014";
 

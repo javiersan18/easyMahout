@@ -119,7 +119,7 @@ public class MainGUI extends JFrame {
 				this.getClass().getResource(
 						"/easyMahout/GUI/images/mahoutIcon45.png")));
 
-		this.setBounds(100, 100, 740, 690);
+		this.setBounds(100, 100, 735, 685);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(null);
@@ -129,7 +129,7 @@ public class MainGUI extends JFrame {
 		createMenuBar();
 
 		logScrollPane = new JScrollPane();
-		logScrollPane.setBounds(2, 463, 730, 176);
+		logScrollPane.setBounds(2, 463, 733, 200);
 		this.getContentPane().add(logScrollPane);
 
 		// Result log textField
@@ -167,8 +167,6 @@ public class MainGUI extends JFrame {
 	}
 
 	public static void writeResult(String text, String type) {
-		// TODO: poner la hora a los logs, scroll o popup para ver los
-		// resultados comodamente.
 		if (type.equalsIgnoreCase(Constants.Log.ERROR)) {
 			textBuilder.append("<font color=red>ERROR: ").append(getDateTime())
 					.append(text).append("</font><br>");

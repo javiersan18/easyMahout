@@ -33,7 +33,7 @@ public class AboutUsPopupDialogBox extends JFrame {
 		frmAboutEasymahout = this;
 		this.setAlwaysOnTop(true);
 		//this.setType(Type.POPUP);
-		this.setSize(510, 340);
+		this.setSize(504, 340);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/easyMahout/GUI/images/mahoutIcon45.png")));
@@ -68,16 +68,16 @@ public class AboutUsPopupDialogBox extends JFrame {
 		panelText.setLayout(null);
 
 		JLabel lblDescription = new JLabel("EasyMahout GUI for begginers and advanced users.");
-		lblDescription.setBounds(20, 10, 293, 14);
+		lblDescription.setBounds(20, 10, 400, 14);
 		panelText.add(lblDescription);
 
 		JLabel lblApache = new JLabel("Powered by Apache Mahout and Apache Hadoop.");
-		lblApache.setBounds(20, 100, 386, 14);
+		lblApache.setBounds(20, 100, 400, 14);
 		panelText.add(lblApache);
 
 		JLabel lblLinkMahout = new JLabel("<html><a href=\"http://mahout.apache.org/\">http://mahout.apache.org/</a></html>");
 		lblLinkMahout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblLinkMahout.setBounds(20, 115, 185, 14);
+		lblLinkMahout.setBounds(20, 115, 400, 14);
 		panelText.add(lblLinkMahout);
 		lblLinkMahout.addMouseListener(new MouseAdapter() {
 			@Override
@@ -92,7 +92,7 @@ public class AboutUsPopupDialogBox extends JFrame {
 
 		JLabel lblLinkHadoop = new JLabel("<html><a href=\"http://hadoop.apache.org/\">http://hadoop.apache.org/</a></html>");
 		lblLinkHadoop.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblLinkHadoop.setBounds(20, 130, 131, 14);
+		lblLinkHadoop.setBounds(20, 130, 200, 14);
 		panelText.add(lblLinkHadoop);
 		lblLinkHadoop.addMouseListener(new MouseAdapter() {
 			@Override
@@ -114,13 +114,13 @@ public class AboutUsPopupDialogBox extends JFrame {
 		panelText.add(lblLicense);
 
 		JLabel lblVisit = new JLabel("Visit ");
-		lblVisit.setBounds(20, 70, 32, 14);
+		lblVisit.setBounds(20, 70, 70, 14);
 		panelText.add(lblVisit);
 
 		JLabel lblLinkEasy = new JLabel("<html><a href=\"" + Constants.EasyMahout.WEBSITE + "\">" + Constants.EasyMahout.WEBSITE
 				+ "<a></html>");
 		lblLinkEasy.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblLinkEasy.setBounds(45, 70, 231, 14);
+		lblLinkEasy.setBounds(70, 70, 300, 14);
 		panelText.add(lblLinkEasy);
 		lblLinkEasy.addMouseListener(new MouseAdapter() {
 			@Override
