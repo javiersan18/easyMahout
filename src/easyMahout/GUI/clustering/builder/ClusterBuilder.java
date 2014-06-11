@@ -595,7 +595,7 @@ public class ClusterBuilder {
 			ToolRunner.run(new SparseVectorsFromSequenceFiles(), args2);
 
 			String clusterIn = DataModelClusterPanel.getOutputPath() + System.getProperty("file.separator") + "clusters";
-			
+
 			// crear los clusters iniciales
 			CanopyDriver.run(confHadoop, new Path(args2[3] + System.getProperty("file.separator") + "tfidf-vectors"), new Path(clusterIn), d, t1, 0.9, true,
 					t1, !hadoop);
@@ -623,7 +623,7 @@ public class ClusterBuilder {
 	
 	public static void writeResultHadoop(Configuration confHadoop, String file) {
 		FileSystem fileSystem = null;
-		
+
 		try {
 			fileSystem = FileSystem.get(confHadoop);
 		} catch (IOException e1) {
