@@ -107,7 +107,7 @@ public class RecommenderTips {
 	public static final String RECOMM_CONFIG = "<html>"
 			+ "<h4>Steps to build a recommender</h4>"
 			+ "<br><p><u><b>1.</b></u> Select the type of Recommender (Item-based, User-based, Matrix Factorization).</p>"
-			+ "<br><p><u><b>2.</b></u> Create the data model selecting a .csv file (It's possible to use differents delimiters). Mark check if boolean preferences.</p>"
+			+ "<br><p><u><b>2.</b></u> Create the data model selecting a .csv file (It's possible to use different delimiters). Mark check if boolean preferences.</p>"
 			+ "<br><p><u><b>3.</b></u> Choose the similarity metric from the list. </p>" 
 			+ "<br><p><u><b>4.1.</b></u> Select neighborhood function and fill the parameters. (Only for user-based recommender)</p>" 
 			+ "<br><p><u><b>4.2.</b></u> Select ALSWR or SVD factorization and fill the parameters. (Only for factorized recommender)</p>"
