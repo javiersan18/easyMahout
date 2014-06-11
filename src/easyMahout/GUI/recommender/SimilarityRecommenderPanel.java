@@ -128,7 +128,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		lblMaxsimilaritiesperitem.setVisible(false);
 
 		tfMaxSimilarities = new JTextField();
-		tfMaxSimilarities.setBounds(256, 80, 86, 20);
+		tfMaxSimilarities.setBounds(310, 80, 86, 20);
 		add(tfMaxSimilarities);
 		tfMaxSimilarities.setColumns(10);
 		tfMaxSimilarities.setVisible(false);
@@ -140,7 +140,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		lblMaxPreferencesPer.setVisible(false);
 
 		tfMaxPreferences = new JTextField();
-		tfMaxPreferences.setBounds(256, 115, 86, 20);
+		tfMaxPreferences.setBounds(310, 115, 86, 20);
 		add(tfMaxPreferences);
 		tfMaxPreferences.setColumns(10);
 		tfMaxPreferences.setVisible(false);
@@ -152,7 +152,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		lblMinPreferencesPer.setVisible(false);
 
 		tfMinPreferences = new JTextField();
-		tfMinPreferences.setBounds(256, 150, 86, 20);
+		tfMinPreferences.setBounds(310, 150, 86, 20);
 		add(tfMinPreferences);
 		tfMinPreferences.setColumns(10);
 		tfMinPreferences.setVisible(false);
@@ -165,7 +165,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		
 
 		tfThreshold = new JTextField();
-		tfThreshold.setBounds(256, 220, 86, 20);
+		tfThreshold.setBounds(310, 220, 86, 20);
 		add(tfThreshold);
 		tfThreshold.setColumns(10);
 		tfThreshold.setVisible(false);
@@ -177,7 +177,7 @@ public class SimilarityRecommenderPanel extends JPanel {
 		lblMaxPrefsItemSimilarity.setVisible(false);
 		
 		tfMaxPrefsInItemSimilarity = new JTextField();
-		tfMaxPrefsInItemSimilarity.setBounds(256, 185, 86, 20);
+		tfMaxPrefsInItemSimilarity.setBounds(310, 185, 86, 20);
 		add(tfMaxPrefsInItemSimilarity);
 		tfMaxPrefsInItemSimilarity.setColumns(10);
 		tfMaxPrefsInItemSimilarity.setVisible(false);

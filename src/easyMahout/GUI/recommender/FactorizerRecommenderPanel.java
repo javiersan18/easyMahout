@@ -60,13 +60,12 @@ public class FactorizerRecommenderPanel extends JPanel {
 
 		distributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommFactorizer.ALSWR_SHORT, Constants.RecommFactorizer.SVD });
 
-		nonDistributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommFactorizer.ALSWR_SHORT, Constants.RecommFactorizer.SVD,
-				Constants.RecommFactorizer.SVD_PLUS_PLUS, Constants.RecommFactorizer.PARALLEL_SGD, Constants.RecommFactorizer.RATING_SGD });
+		nonDistributedModel = new DefaultComboBoxModel<String>(new String[] { Constants.RecommFactorizer.ALSWR_SHORT, Constants.RecommFactorizer.SVD });
 
 		comboBoxFactorizer = new JComboBox<String>();
 		comboBoxFactorizer.setMaximumRowCount(16);
 		comboBoxFactorizer.setModel(nonDistributedModel);
-		comboBoxFactorizer.setBounds(38, 70, 249, 20);
+		comboBoxFactorizer.setBounds(38, 70, 280, 20);
 		add(comboBoxFactorizer);
 		comboBoxFactorizer.addItemListener(new ItemChangeListener());
 
@@ -84,7 +83,7 @@ public class FactorizerRecommenderPanel extends JPanel {
 		add(helpTooltip);
 
 		JButton btnConfigure = new JButton("Configure");
-		btnConfigure.setBounds(338, 69, 89, 23);
+		btnConfigure.setBounds(330, 69, 127, 20);
 		add(btnConfigure);
 
 		JLabel lblFactorizer = new JLabel("Factorizer");
@@ -96,7 +95,7 @@ public class FactorizerRecommenderPanel extends JPanel {
 		add(lblCandidateItemStrategy);
 
 		comboBoxCandidate = new JComboBox<String>();
-		comboBoxCandidate.setBounds(38, 140, 129, 20);
+		comboBoxCandidate.setBounds(38, 140, 164, 20);
 		comboBoxCandidate.setModel(new DefaultComboBoxModel<String>(new String[] { Constants.RecommCandidate.PREFERRED_ITEMS,
 				Constants.RecommCandidate.ALL_SIMILAR_ITEMS, Constants.RecommCandidate.ALL_UKNOWN_ITEMS, Constants.RecommCandidate.SAMPLING_ITEMS }));
 		add(comboBoxCandidate);

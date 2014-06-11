@@ -27,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
-import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.lang.StringUtils;
 

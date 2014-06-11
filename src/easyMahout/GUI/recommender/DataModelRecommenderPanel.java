@@ -105,7 +105,7 @@ public class DataModelRecommenderPanel extends JPanel {
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 
 		btnSelectInput = new JButton("Select File...");
-		btnSelectInput.setBounds(130, 165, 107, 23);
+		btnSelectInput.setBounds(90, 165, 145, 23);
 		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
@@ -139,18 +139,20 @@ public class DataModelRecommenderPanel extends JPanel {
 		helpTooltip = new HelpTooltip(btnHelp, RecommenderTips.RECOMM_DATAMODEL);
 		add(helpTooltip);
 
-		lblOutputDataSource = new JLabel("Output data source (Optional):");
+		lblOutputDataSource = new JLabel("Output data source:");
 		lblOutputDataSource.setBounds(38, 206, 216, 14);
 		add(lblOutputDataSource);
+		lblOutputDataSource.setEnabled(false);
 
 		textOutputPath = new JTextField();
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
 		add(textOutputPath);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
+		textOutputPath.setEnabled(false);
 
 		btnSelectOutput = new JButton("Select File...");
-		btnSelectOutput.setBounds(130, 267, 107, 23);
+		btnSelectOutput.setBounds(90, 267, 145, 23);
 		add(btnSelectOutput);
 
 		chckbxRemoveIfExist = new JCheckBox("Remove if exist");
@@ -209,6 +211,7 @@ public class DataModelRecommenderPanel extends JPanel {
 				}
 			}
 		});
+		btnSelectOutput.setEnabled(false);
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -291,21 +294,21 @@ public class DataModelRecommenderPanel extends JPanel {
 	public void setDistributed(boolean distributed) {
 		if (distributed) {
 			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL_DIST);
-			lblOutputDataSource.setText("Output directory:");
 			lblInputDataSource.setText("Input directory:");
 			btnSelectOutput.setText("Select Folder...");
 			btnSelectInput.setText("Select Folder...");
 		} else {
-			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);
-			lblOutputDataSource.setText("Output data file (Optional):");
+			helpTooltip.setText(RecommenderTips.RECOMM_DATAMODEL);			
 			lblInputDataSource.setText("Input data source:");
 			btnSelectOutput.setText("Select File...");
 			btnSelectInput.setText("Select File...");
 		}
-
 		comboBoxDatamodel.setEnabled(!distributed);
 		btnCreate.setEnabled(!distributed);
 		chckbxRemoveIfExist.setEnabled(distributed);
+		lblOutputDataSource.setEnabled(distributed);
+		btnSelectOutput.setEnabled(distributed);
+		textOutputPath.setEnabled(distributed);		
 	}
 
 	public static String getInputPath() {
