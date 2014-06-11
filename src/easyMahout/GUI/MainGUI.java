@@ -100,7 +100,7 @@ public class MainGUI extends JFrame {
 	 */
 	public MainGUI() {
 		super();
-		setResizable(false);
+		setResizable(true);
 		initialize();
 	}
 

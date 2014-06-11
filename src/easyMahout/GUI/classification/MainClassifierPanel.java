@@ -223,14 +223,17 @@ public class MainClassifierPanel extends JPanel {
 				
 				if (nodeSelected != null) {
 					if (nodeSelected.equals(nodeConfigure)) {
-						log.info("configureNode");
+						dataDefinitionsClassifierPanel.setVisible(false);
+						dataModelClassifierPanel.setVisible(false);
+						trainingDataClassificationPanel.setVisible(false);
+						algorithmClassifierPanel.setVisible(false);
+						evaluatorClassifierPanel.setVisible(false);
+						configPanel.setVisible(true);
 					} else if (nodeConfigure.isNodeChild(nodeSelected)) {
-						log.info("classifier configure children B1");
 
 						String category = (String) nodeSelected.getUserObject();
 						
 						if (category.equals("Data Definitions")){
-							log.info("dataDefsB1");
 							dataDefinitionsClassifierPanel.setVisible(true);
 							dataModelClassifierPanel.setVisible(false);
 							trainingDataClassificationPanel.setVisible(false);
@@ -243,30 +246,28 @@ public class MainClassifierPanel extends JPanel {
 							trainingDataClassificationPanel.setVisible(false);
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(false);
-
+							configPanel.setVisible(false);
 						} else if (category.equals("Training Data")) {
-							log.info("trainingDataB1");
 							dataDefinitionsClassifierPanel.setVisible(false);
 							dataModelClassifierPanel.setVisible(false);
 							trainingDataClassificationPanel.setVisible(true);
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(false);
-
+							configPanel.setVisible(false);
 						} else if (category.equals("Algorithm")) {
-							log.info("algorithmB1");
 							dataDefinitionsClassifierPanel.setVisible(false);
 							dataModelClassifierPanel.setVisible(false);
 							trainingDataClassificationPanel.setVisible(false);
 							algorithmClassifierPanel.setVisible(true);
 							evaluatorClassifierPanel.setVisible(false);
-
+							configPanel.setVisible(false);
 						} else if (category.equals("Evaluator")) {
-							log.info("evalB1");
 							dataDefinitionsClassifierPanel.setVisible(false);
 							dataModelClassifierPanel.setVisible(false);
 							trainingDataClassificationPanel.setVisible(false);
 							algorithmClassifierPanel.setVisible(false);
 							evaluatorClassifierPanel.setVisible(true);
+							configPanel.setVisible(false);
 						}
 					}
 				}

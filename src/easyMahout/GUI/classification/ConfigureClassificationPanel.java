@@ -26,7 +26,7 @@ public class ConfigureClassificationPanel extends JPanel {
 		setLayout(null);
 		setBounds(228, 11, 480, 408);
 
-		lblGuide = new JLabel(RecommenderTips.RECOMM_CONFIG);
+		lblGuide = new JLabel(ClassifierTips.CLASSIF_CONFIG);
 		lblGuide.setVerticalAlignment(SwingConstants.TOP);
 		lblGuide.setBounds(23, 23, 436, 363);
 		add(lblGuide);

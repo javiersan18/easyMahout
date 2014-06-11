@@ -136,88 +136,88 @@ public class ClassifierBuilder {
 
 		// Sequence files from directory
 
-		MainGUI.writeResult("SeqDirectory", Constants.Log.INFO);
+//		MainGUI.writeResult("SeqDirectory", Constants.Log.INFO);
 
-		ToolRunner.run(new SequenceFilesFromDirectory(), argsClassifier[0]);
+//		ToolRunner.run(new SequenceFilesFromDirectory(), argsClassifier[0]);
 
-		// String scriptTemp =
-		// ShellClassifierScriptBuilder.buildClassifierScript(JobClassifierBuilder.buildNaiveBayesJob(false));
-		//
-		// String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
-		// String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/" +
-		// PreferencesPanel.getHadoopHome();
-		// Process proc = Runtime.getRuntime().exec("sh " + scriptTemp, new
-		// String[] { javaHome, hadoopHome });
-		// int exitValue = proc.waitFor();
-		//
-		// // DEBUG
-		// BufferedReader is;
-		// String line;
-		// System.out.println("input");
-		// is = new BufferedReader(new
-		// InputStreamReader(proc.getInputStream()));
-		//
-		// while ((line = is.readLine()) != null) {
-		// System.out.println(line);
-		// }
-		//
-		// System.out.println("output");
-		// is = new BufferedReader(new
-		// InputStreamReader(proc.getErrorStream()));
-		//
-		// while ((line = is.readLine()) != null) {
-		// System.out.println(line);
-		// }
-		//
-		// System.out.println(exitValue);
-		// // EXIT DEBUG
+		 String scriptTemp =
+		 ShellClassifierScriptBuilder.buildClassifierScript(JobClassifierBuilder.buildNaiveBayesJob(false));
+		
+		 String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
+		 String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/" +
+		 PreferencesPanel.getHadoopHome();
+		 Process proc = Runtime.getRuntime().exec("/bin/sh " + scriptTemp, new
+		 String[] { javaHome, hadoopHome });
+		 int exitValue = proc.waitFor();
+		
+		 // DEBUG
+		 BufferedReader is;
+		 String line;
+		 System.out.println("input");
+		 is = new BufferedReader(new
+		 InputStreamReader(proc.getInputStream()));
+		
+		 while ((line = is.readLine()) != null) {
+		 System.out.println(line);
+		 }
+		
+		 System.out.println("output");
+		 is = new BufferedReader(new
+		 InputStreamReader(proc.getErrorStream()));
+		
+		 while ((line = is.readLine()) != null) {
+		 System.out.println(line);
+		 }
+		
+		 System.out.println(exitValue);
+		 // EXIT DEBUG
 
 		// Sequence files to Sparse Vectors
 
-		MainGUI.writeResult("SparseVectors", Constants.Log.INFO);
-		//
-		// ToolRunner.run(new SparseVectorsFromSequenceFiles(),
-		// argsClassifier[1]);
-
-		// Split input
-
-		MainGUI.writeResult("SplitInput", Constants.Log.INFO);
-
-		// ToolRunner.run(new Configuration(), new SplitInput(),
-		// argsClassifier[2]);
-
-		// Train Bayes
-
-		MainGUI.writeResult("TrainNaiveBayes", Constants.Log.INFO);
-
-		// ToolRunner.run(new Configuration(), new TrainNaiveBayesJob(),
-		// argsClassifier[3]);
-
-		// Test Bayes
-
-		MainGUI.writeResult("TestNaiveBayes", Constants.Log.INFO);
-
-		// ToolRunner.run(new Configuration(), new TestNaiveBayesDriver(),
-		// argsClassifier[4]);
-
-		MainGUI.writeResult("TestNaiveBayes2", Constants.Log.INFO);
-
-		// ToolRunner.run(new Configuration(), new TestNaiveBayesDriver(),
-		// argsClassifier[5]);
-
-		MainGUI.writeResult("fin", Constants.Log.INFO);
-
-		// load the labels
-		Map<Integer, String> labelMap = BayesUtils.readLabelIndex(fs.getConf(), new Path(argsClassifier[5][8]));
-
-		// loop over the results and create the confusion matrix
-		SequenceFileDirIterable<Text, VectorWritable> dirIterable = new SequenceFileDirIterable<Text, VectorWritable>(new Path(argsClassifier[5][5]),
-				PathType.LIST, PathFilters.partFilter(), fs.getConf());
-		ResultAnalyzer analyzer = new ResultAnalyzer(labelMap.values(), "DEFAULT");
-		analyzeResults(labelMap, dirIterable, analyzer);
-
-		boolean complementary = false;
-		System.out.println(analyzer.toString());
+//		MainGUI.writeResult("SparseVectors", Constants.Log.INFO);
+//		//
+//		// ToolRunner.run(new SparseVectorsFromSequenceFiles(),
+//		// argsClassifier[1]);
+//
+//		// Split input
+//
+//		MainGUI.writeResult("SplitInput", Constants.Log.INFO);
+//
+//		// ToolRunner.run(new Configuration(), new SplitInput(),
+//		// argsClassifier[2]);
+//
+//		// Train Bayes
+//
+//		MainGUI.writeResult("TrainNaiveBayes", Constants.Log.INFO);
+//
+//		// ToolRunner.run(new Configuration(), new TrainNaiveBayesJob(),
+//		// argsClassifier[3]);
+//
+//		// Test Bayes
+//
+//		MainGUI.writeResult("TestNaiveBayes", Constants.Log.INFO);
+//
+//		// ToolRunner.run(new Configuration(), new TestNaiveBayesDriver(),
+//		// argsClassifier[4]);
+//
+//		MainGUI.writeResult("TestNaiveBayes2", Constants.Log.INFO);
+//
+//		// ToolRunner.run(new Configuration(), new TestNaiveBayesDriver(),
+//		// argsClassifier[5]);
+//
+//		MainGUI.writeResult("fin", Constants.Log.INFO);
+//
+//		// load the labels
+//		Map<Integer, String> labelMap = BayesUtils.readLabelIndex(fs.getConf(), new Path(argsClassifier[5][8]));
+//
+//		// loop over the results and create the confusion matrix
+//		SequenceFileDirIterable<Text, VectorWritable> dirIterable = new SequenceFileDirIterable<Text, VectorWritable>(new Path(argsClassifier[5][5]),
+//				PathType.LIST, PathFilters.partFilter(), fs.getConf());
+//		ResultAnalyzer analyzer = new ResultAnalyzer(labelMap.values(), "DEFAULT");
+//		analyzeResults(labelMap, dirIterable, analyzer);
+//
+//		boolean complementary = false;
+//		System.out.println(analyzer.toString());
 	}
 
 	private static void analyzeResults(Map<Integer, String> labelMap, SequenceFileDirIterable<Text, VectorWritable> dirIterable, ResultAnalyzer analyzer) {
