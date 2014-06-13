@@ -145,13 +145,13 @@ public class DataModelClassifierPanel extends JPanel {
 		add(btnSelectInput);
 
 		lblDelimiter = new JLabel("Delimiter");
-		lblDelimiter.setBounds(274, 71, 68, 14);
+		lblDelimiter.setBounds(294, 71, 68, 14);
 		add(lblDelimiter);
 		lblDelimiter.setEnabled(false);
 
 		tfDelimiter = new JTextField();
 		tfDelimiter.setHorizontalAlignment(SwingConstants.CENTER);
-		tfDelimiter.setBounds(329, 68, 46, 20);
+		tfDelimiter.setBounds(369, 68, 46, 20);
 		add(tfDelimiter);
 		tfDelimiter.setColumns(10);
 		tfDelimiter.setText(",");
@@ -237,7 +237,7 @@ public class DataModelClassifierPanel extends JPanel {
 						String absPath = data.getAbsolutePath();
 						textInputPath.setText(absPath);
 					} else if (i == JFileChooser.ERROR_OPTION) {
-						MainGUI.writeResult("Error openig the file.", Constants.Log.ERROR);
+						MainGUI.writeResult("Error opening the file.", Constants.Log.ERROR);
 						log.error("Error opening data file");
 					}
 				}
@@ -286,9 +286,6 @@ public class DataModelClassifierPanel extends JPanel {
 				outputFormatted = output+".csv";
 				tfDelimiter.setBackground(Color.WHITE);
 				
-				/*CreateSequenceFile.convert(filePath, output, delimiter);
-				ReadSequenceFile.readSequenceFile(output,outputFormatted);*/
-				
 				if (!filePath.isEmpty() && !output.isEmpty()){
 					try {
 						MainGUI.writeResult("Starting to build the classifier", Constants.Log.INFO);
@@ -304,7 +301,7 @@ public class DataModelClassifierPanel extends JPanel {
 						MainGUI.writeResult("Not able to build the classifier, IO", Constants.Log.ERROR);
 					} catch (Exception e1) {
 						e1.printStackTrace();
-						MainGUI.writeResult("Not able to build the classifier, GENERIC", Constants.Log.ERROR);
+						//MainGUI.writeResult("Not able to build the classifier, GENERIC", Constants.Log.ERROR);
 					}
 				}
 				else MainGUI.writeResult("You have to specify both input and output source file!", Constants.Log.ERROR);

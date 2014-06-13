@@ -81,4 +81,43 @@ public class ShellClassifierScriptBuilder {
 		return absPath;
 	}
 
+	public static String buildTestClassifierScript(String[][] args) {
+		
+		StringBuilder textBuilder = new StringBuilder();
+		String mahoutHome = PreferencesPanel.getMahoutHome();
+
+		textBuilder.append("#!/bin/bash").append("\n\n")
+				.append("MAHOUT=./bin/mahout").append("\n\n")
+				.append("cd "+ System.getenv("PWD") + "/" + mahoutHome)
+				.append("\n\n")
+				
+				.append("$MAHOUT testnb \\").append("\n\t")
+				.append(args[0][0] + " " + args[0][1] + " \\").append("\n\t")
+				.append(args[0][2] + " " + args[0][3] + " \\").append("\n\t")
+				.append(args[0][4] + " " + args[0][5] + " \\").append("\n\t")
+				.append(args[0][6] + " \\").append("\n\t")
+				.append(args[0][7] + " " + args[0][8]).append("\n\n");
+				
+		String absPath = "tempTestMahout.sh";
+
+		FileWriter fileW = null;
+		PrintWriter pw = null;
+		try {
+			fileW = new FileWriter(absPath);
+			pw = new PrintWriter(fileW);
+			pw.print(textBuilder.toString());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				if (null != fileW)
+					fileW.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
+		return absPath;
+	}
+
 }

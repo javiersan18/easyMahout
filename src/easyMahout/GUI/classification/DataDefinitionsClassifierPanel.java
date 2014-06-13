@@ -59,37 +59,37 @@ public class DataDefinitionsClassifierPanel extends JPanel {
 		setBounds(236, 11, 483, 382);
 		
 		JLabel labelTarget = new JLabel("Name of the target variable:");
-		labelTarget.setBounds(21, 11, 216, 14);
+		labelTarget.setBounds(21, 21, 216, 14);
 		add(labelTarget);
 		
 		textTarget = new JTextField();
 		textTarget.setHorizontalAlignment(SwingConstants.CENTER);
-		textTarget.setBounds(240, 9, 100, 20);
+		textTarget.setBounds(280, 19, 100, 20);
 		add(textTarget);
 		textTarget.setColumns(1);
 		textTarget.setText("");
 		textTarget.setEnabled(true);
 		
 		JLabel labelCategories = new JLabel("Number of categories of the target variable:");
-		labelCategories.setBounds(21, 40, 216, 14);
+		labelCategories.setBounds(21, 50, 330, 14);
 		add(labelCategories);
 		
 		categoriesSpinner = new JSpinner();
 		SpinnerModel categoriesModel = new SpinnerNumberModel(1,1,100,1);
 		categoriesSpinner.setModel(categoriesModel);
-		categoriesSpinner.setBounds(240, 38, 40, 20);
+		categoriesSpinner.setBounds(340, 48, 40, 20);
 		add(categoriesSpinner);
 		
 		//NUMPREDICTORS
 		
 		JLabel labelNumPredictors = new JLabel("Number of predictors variables:");
-		labelNumPredictors.setBounds(21, 70, 216, 14);
+		labelNumPredictors.setBounds(21, 80, 266, 14);
 		add(labelNumPredictors);
 		
 		numPredictorsSpinner = new JSpinner();
 		SpinnerModel numPredictorsmodel = new SpinnerNumberModel(1,1,maxPredictors ,1);
 		numPredictorsSpinner.setModel(numPredictorsmodel);
-		numPredictorsSpinner.setBounds(240, 68, 40, 20);
+		numPredictorsSpinner.setBounds(340, 78, 40, 20);
 		add(numPredictorsSpinner);
 		
 		//PREDICTORS
@@ -105,17 +105,17 @@ public class DataDefinitionsClassifierPanel extends JPanel {
 		
 		for(int i = 0; i < maxPredictors; i++){
 			
-			int posY = 100 + (30*i); 
+			int posY = 110 + (30*i); 
 			
 			labelPredictor[i] = new JLabel("Name of the predictor variable '" + i + "':");
-			labelPredictor[i].setBounds(21, posY, 216, 14);
+			labelPredictor[i].setBounds(21, posY, 266, 14);
 			labelPredictor[i].setEnabled(true);
 			labelPredictor[i].setVisible(false);
 			add(labelPredictor[i]);
 			
 			textPredictor[i] = new JTextField();
 			textPredictor[i].setHorizontalAlignment(SwingConstants.CENTER);
-			textPredictor[i].setBounds(240, posY-2, 100, 20);		
+			textPredictor[i].setBounds(280, posY-2, 100, 20);		
 			textPredictor[i].setColumns(1);
 			textPredictor[i].setText("");
 			textPredictor[i].setEnabled(true);
@@ -124,7 +124,7 @@ public class DataDefinitionsClassifierPanel extends JPanel {
 			
 			typesComboBox[i] = new JComboBox();
 			typesComboBox[i].setModel(typesModel);
-			typesComboBox[i].setBounds(360, posY-2, 80, 20);
+			typesComboBox[i].setBounds(390, posY-2, 80, 20);
 			typesComboBox[i].setEnabled(true);
 			typesComboBox[i].setVisible(false);
 			add(typesComboBox[i]);

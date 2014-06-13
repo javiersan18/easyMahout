@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.classification.AlgorithmClassifierPanel;
 import easyMahout.GUI.classification.DataModelClassifierPanel;
+import easyMahout.GUI.classification.TestModelClassifierPanel;
 import easyMahout.utils.Constants;
 
 public class JobClassifierBuilder {
@@ -42,28 +43,19 @@ public class JobClassifierBuilder {
 		inputPath = DataModelClassifierPanel.getInputPath();
 		outputPath = DataModelClassifierPanel.getOutputPath();
 
-		if (StringUtils.isBlank(inputPath)) {
-			MainGUI.writeResult("Input folder is empty, please choose one before run the classifier.", Constants.Log.ERROR);
-			return null;
-		}
-		if (StringUtils.isBlank(outputPath)) {
-			MainGUI.writeResult("Output folder is empty, please choose one before run the classifier.", Constants.Log.ERROR);
-			return null;
-		}
-
-		boolean naiveBayes, complementaryNaiveBayes, sgd;
+		boolean naiveBayes, complementaryNaiveBayes;//, sgd;
 
 		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
 		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
-		sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
+		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
 
 		if (naiveBayes || complementaryNaiveBayes) {
 			return buildNaiveBayesJob(complementaryNaiveBayes);
 		}
 
-		if (sgd) {
+		/*if (sgd) {
 			return buildSGDJob();
-		}
+		}*/
 
 		return null;
 	}
@@ -205,6 +197,53 @@ public class JobClassifierBuilder {
 		
 		
 
+		return args;
+	}
+	
+	public static final String[][] testClassifierJob() {
+
+		inputPath = TestModelClassifierPanel.getInputPath();
+		modelPath = TestModelClassifierPanel.getModelPath();
+		outputPath = TestModelClassifierPanel.getOutputPath();
+		labelIndexPath = TestModelClassifierPanel.getLabelIndexPath(); 
+
+		boolean naiveBayes, complementaryNaiveBayes;//, sgd;
+
+		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
+		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
+		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
+
+		if (naiveBayes || complementaryNaiveBayes) {
+				return testNaiveBayesJob();
+		}
+
+		/*if (sgd) {
+			return buildSGDJob();
+		}*/
+
+		return null;
+	}
+	
+	public static final String[][] testNaiveBayesJob() {
+		
+		String[][] args = null;
+		args = new String[1][];
+		
+		String[] argsTest = args[0] = new String[ARGS_TEST_NB];
+		
+		int i;
+
+		i = 0;
+		argsTest[i] = "--input";
+		argsTest[++i] = trainPath;
+		argsTest[++i] = "--model";
+		argsTest[++i] = modelPath;
+		argsTest[++i] = "--output";
+		argsTest[++i] = outputPath + "/result";
+		argsTest[++i] = "-ow";
+		argsTest[++i] = "--labelIndex";
+		argsTest[++i] = labelIndexPath;
+		
 		return args;
 	}
 

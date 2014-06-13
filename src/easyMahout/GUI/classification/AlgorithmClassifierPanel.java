@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import com.sun.corba.se.impl.orbutil.graph.NodeData;
+
 import easyMahout.utils.Constants;
 
 public class AlgorithmClassifierPanel extends JPanel {
@@ -23,6 +25,7 @@ public class AlgorithmClassifierPanel extends JPanel {
 
 	private String algorithm;
 
+	@SuppressWarnings("unchecked")
 	public AlgorithmClassifierPanel() {
 		super();
 		setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
@@ -36,8 +39,8 @@ public class AlgorithmClassifierPanel extends JPanel {
 		labelAlgorithm.setBounds(38, 45, 216, 20);
 		add(labelAlgorithm);
 
-		algorithmComboBox = new JComboBox();
-		algorithmModel = new DefaultComboBoxModel(new String[] {
+		algorithmComboBox = new JComboBox<Object>();
+		algorithmModel = new DefaultComboBoxModel<Object>(new String[] {
 				Constants.ClassificatorAlg.NAIVEBAYES,
 				Constants.ClassificatorAlg.COMPNAIVEBAYES });
 		algorithmComboBox.setModel(algorithmModel);
@@ -77,8 +80,12 @@ public class AlgorithmClassifierPanel extends JPanel {
 	}
 
 	private void SGDEnabled() {
+		MainClassifierPanel.getNodeDataDefs().setEnabled(true);
+		MainClassifierPanel.getNodeTrainingData().setEnabled(true);
 	}
 
 	private void SGDDisabled() {
+		MainClassifierPanel.getNodeDataDefs().setEnabled(false);
+		MainClassifierPanel.getNodeTrainingData().setEnabled(false);
 	}
 }

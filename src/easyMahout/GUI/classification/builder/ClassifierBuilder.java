@@ -7,41 +7,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
+
+//import org.apache.commons.math3.geometry.Vector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-import org.apache.mahout.math.Vector;
-import org.apache.mahout.math.VectorWritable;
-import org.apache.mahout.text.SequenceFilesFromDirectory;
-import org.apache.mahout.utils.SplitInput;
-import org.apache.mahout.utils.SplitInputJob;
-//import org.apache.mahout.utils.SplitInput;
-import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.apache.mahout.classifier.AbstractVectorClassifier;
-import org.apache.mahout.classifier.ClassifierResult;
-import org.apache.mahout.classifier.ResultAnalyzer;
-import org.apache.mahout.classifier.naivebayes.*;
-import org.apache.mahout.classifier.naivebayes.test.TestNaiveBayesDriver;
-import org.apache.mahout.classifier.naivebayes.training.TrainNaiveBayesJob;
-import org.apache.mahout.classifier.sgd.*;
-import org.apache.mahout.common.Pair;
-import org.apache.mahout.common.iterator.sequencefile.PathFilters;
-import org.apache.mahout.common.iterator.sequencefile.PathType;
-import org.apache.mahout.common.iterator.sequencefile.SequenceFileDirIterable;
-import org.omg.CORBA.CharSeqHolder;
+
 
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.PreferencesPanel;
+import easyMahout.GUI.classification.AlgorithmClassifierPanel;
 import easyMahout.GUI.classification.MainClassifierPanel;
 import easyMahout.GUI.clustering.builder.CreateSequenceFile;
-import easyMahout.GUI.recommender.builder.ShellScriptBuilder;
-import easyMahout.GUI.recommender.builder.ShowCommandlineBuilder;
 import easyMahout.utils.Constants;
 
 public class ClassifierBuilder {
@@ -59,45 +39,48 @@ public class ClassifierBuilder {
 
 	private static String[][] argsClassifier;
 
-	public static AbstractVectorClassifier buildClassifier() throws Exception {
+	public static void buildClassifier() throws Exception {
 
 		hayError = false;
 
-		algorithm = MainClassifierPanel.getAlgorithmClassifierPanel()
+		MainClassifierPanel.getAlgorithmClassifierPanel();
+		algorithm = AlgorithmClassifierPanel
 				.getSelectedType();
 
 		boolean naiveBayes, complementaryNaiveBayes, sgd;
 
 		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
-		complementaryNaiveBayes = algorithm
-				.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
-		sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
+		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
+		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
 
 		argsClassifier = JobClassifierBuilder.buildClassifierJob();
-
+			
+		MainGUI.writeResult("Building "+ algorithm +" classifier.", Constants.Log.INFO);
+	
 		if (naiveBayes || complementaryNaiveBayes) {
 			buildBayesClassifier();
 		}
-
-		if (sgd) {
+	
+		/*if (sgd) {
 			buildSGDClassifier();
-		}
-
-		MainGUI.writeResult("OK building the classifier: Algorithm "
-				+ algorithm, Constants.Log.INFO);
-
-		return null;
+		}*/
+	
+		MainGUI.writeResult("Sucess building the "+ algorithm +" classifier.", Constants.Log.INFO);
+		
 	}
 
 	private static void buildBayesClassifier() throws Exception {
 
-		String[][] args = JobClassifierBuilder.buildNaiveBayesJob(false);
+		String[][] args = JobClassifierBuilder.buildClassifierJob();
 		String scriptTemp = ShellClassifierScriptBuilder
 				.buildClassifierScript(args);
 
 		String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
 		String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/"
 				+ PreferencesPanel.getHadoopHome();
+		
+		MainGUI.writeResult("Starting the proccess", Constants.Log.INFO);
+		
 		Process proc = Runtime.getRuntime().exec("/bin/sh " + scriptTemp,
 				new String[] { javaHome, hadoopHome });
 		int exitValue = proc.waitFor();
@@ -106,10 +89,12 @@ public class ClassifierBuilder {
 
 			String absPath = writeResultFile(args, proc);
 
+			MainGUI.writeResult("Sucesfull proccess termination", Constants.Log.INFO);
 			MainGUI.writeResult("TXT Result file created: " + absPath,
 					Constants.Log.INFO);
 
 		} else {
+			MainGUI.writeResult("Wrong proccess termination", Constants.Log.INFO);
 			MainGUI.writeResult("Error running the classifier Job.",
 					Constants.Log.ERROR);
 		}
@@ -186,28 +171,78 @@ public class ClassifierBuilder {
 		return absPath;
 	}
 
+	public static void testClassifier() throws Exception{
+		
+		hayError = false;
+
+		MainClassifierPanel.getAlgorithmClassifierPanel();
+		algorithm = AlgorithmClassifierPanel
+				.getSelectedType();
+
+		boolean naiveBayes, complementaryNaiveBayes, sgd;
+
+		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
+		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
+		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
+		
+		//argsClassifier = JobClassifierBuilder.testClassifierJob();
+			
+		MainGUI.writeResult("Testing "+ algorithm +" classifier.", Constants.Log.INFO);
+	
+		if (naiveBayes || complementaryNaiveBayes) {
+			testBayesClassifier();
+		}
+	
+		/*if (sgd) {
+			buildSGDClassifier();
+		}*/
+	
+		MainGUI.writeResult("Sucess testing the "+ algorithm +" classifier.", Constants.Log.INFO);testClassifier();
+		
+	}	
+	
+	private static void testBayesClassifier() throws Exception {
+		
+		argsClassifier = JobClassifierBuilder.testClassifierJob();
+		String scriptTemp = ShellClassifierScriptBuilder
+				.buildTestClassifierScript(argsClassifier);
+
+		String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
+		String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/"
+				+ PreferencesPanel.getHadoopHome();
+		
+		MainGUI.writeResult("Starting the proccess", Constants.Log.INFO);
+		
+		Process proc;
+		proc = Runtime.getRuntime().exec("/bin/sh " + scriptTemp,
+					new String[] { javaHome, hadoopHome });
+
+		int exitValue = proc.waitFor();
+
+		if (exitValue == 0) {
+
+			String absPath = writeResultFile(argsClassifier, proc);
+
+			MainGUI.writeResult("Sucesfull proccess termination", Constants.Log.INFO);
+			MainGUI.writeResult("TXT Result file created: " + absPath,
+					Constants.Log.INFO);
+
+		} else {
+			MainGUI.writeResult("Wrong proccess termination", Constants.Log.INFO);
+			MainGUI.writeResult("Error running the classifier Job.",
+					Constants.Log.ERROR);
+		}
+
+		Path path = new Path(scriptTemp);
+		fs = FileSystem.get(conf);
+		if (fs.exists(path)) {
+			fs.delete(path, true);
+		}
+
+	}
+
 	private static void buildSGDClassifier() {
 
 	}
 
-	public static void constructClassifier() {
-		List<Vector> vectors = CreateSequenceFile.getVectors();
-
-		// Pasar a sparseVectors --> SparseVectorsFromSequenceFiles.run()
-
-		testData = new File("testdata");
-		if (!testData.exists()) {
-			testData.mkdir();
-		}
-
-		Configuration conf = new Configuration();
-		FileSystem fs = null;
-		try {
-			fs = FileSystem.get(conf);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 }
