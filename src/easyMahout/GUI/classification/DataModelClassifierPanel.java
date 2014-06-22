@@ -37,6 +37,7 @@ import easyMahout.GUI.recommender.EvaluatorRecommenderPanel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClassifierTips;
 import easyMahout.utils.listeners.ItemChangeListener;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
@@ -100,16 +101,18 @@ public class DataModelClassifierPanel extends JPanel {
 		add(chckbxBooleanPreferences);
 		chckbxBooleanPreferences.addItemListener(new ItemChangeListener());
 		chckbxBooleanPreferences.setEnabled(false);
+		
+//Input
 
 		lblInputDataSource = new JLabel("Input data source:");
-		lblInputDataSource.setBounds(38, 105, 107, 14);
+		lblInputDataSource.setBounds(38, 105, 150, 14);
 		add(lblInputDataSource);
 
 		textInputPath = new JTextField();
 		
 		//Entrada predefinida
 		
-		textInputPath.setText("/home/daniel/Desktop/Data");
+		textInputPath.setText("");
 		
 		textInputPath.setBounds(38, 130, 401, 20);
 		add(textInputPath);
@@ -141,8 +144,10 @@ public class DataModelClassifierPanel extends JPanel {
 
 		btnSelectInput=new JButton("Select File...");
 		
-		btnSelectInput.setBounds(182, 165, 107, 23);
+		btnSelectInput.setBounds(182, 165, 150, 23);
 		add(btnSelectInput);
+		
+//Delimiter
 
 		lblDelimiter = new JLabel("Delimiter");
 		lblDelimiter.setBounds(294, 71, 68, 14);
@@ -158,22 +163,7 @@ public class DataModelClassifierPanel extends JPanel {
 		tfDelimiter.setEnabled(false);
 		tfDelimiter.getDocument().addDocumentListener(new TextFieldChangeListener());
 
-		btnCreate=new JButton("Run Classifier");
-		btnCreate.setBounds(341, 365, 107, 23);
-		add(btnCreate);
-
-		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
-		btnHelp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnHelp.setPreferredSize(new Dimension(65, 40));
-		btnHelp.setBounds(10, 358, 40, 40);
-		add(btnHelp);
-
-		// Help Tip
-		//helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.RECOMM_DATAMODEL);
-		//add(helpTooltip);
+//Output
 
 		lblOutputDataSource = new JLabel("Output data source :");
 		lblOutputDataSource.setBounds(38, 206, 157, 14);
@@ -183,7 +173,7 @@ public class DataModelClassifierPanel extends JPanel {
 		
 		//Salida predefinida
 		
-		textOutputPath.setText("/home/daniel/Desktop/Classifier");
+		textOutputPath.setText("");
 		
 		textOutputPath.setColumns(10);
 		textOutputPath.setBounds(38, 230, 401, 20);
@@ -212,8 +202,9 @@ public class DataModelClassifierPanel extends JPanel {
 				}
 			}
 		});
+		
 		btnSelectOutput = new JButton("Select File...");
-		btnSelectOutput.setBounds(182, 265, 107, 23);
+		btnSelectOutput.setBounds(182, 265, 150, 23);
 		add(btnSelectOutput);
 
 		btnSelectInput.addActionListener(new ActionListener() {
@@ -271,6 +262,10 @@ public class DataModelClassifierPanel extends JPanel {
 				}
 			}
 		});
+		
+		btnCreate=new JButton("Run Classifier");
+		btnCreate.setBounds(280, 365, 150, 23);
+		add(btnCreate);
 
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -342,6 +337,21 @@ public class DataModelClassifierPanel extends JPanel {
 
 			}
 		});
+
+//help
+		
+		btnHelp = new JButton(new ImageIcon(DataModelClassifierPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.CLASSIFIER_DATAMODEL);
+		add(helpTooltip);
 	}
 
 	public HelpTooltip getHelpTooltip() {

@@ -28,10 +28,13 @@ import easyMahout.GUI.classification.builder.ClassifierBuilder;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
+import easyMahout.utils.help.ClassifierTips;
 import easyMahout.utils.listeners.TextFieldChangeListener;
 
 public class TestModelClassifierPanel extends JPanel{
 	
+	private static final long serialVersionUID = 1L;
+
 	private static JTextField textInputPath;
 
 	private static JTextField tfDelimiter;
@@ -78,7 +81,7 @@ public class TestModelClassifierPanel extends JPanel{
 //Input		
 		
 		lblInputDataSource = new JLabel("Input data source:");
-		lblInputDataSource.setBounds(38, 30, 150, 14);
+		lblInputDataSource.setBounds(38, 40, 150, 14);
 		add(lblInputDataSource);
 
 		textInputPath = new JTextField();
@@ -87,7 +90,7 @@ public class TestModelClassifierPanel extends JPanel{
 		
 		textInputPath.setText("/home/daniel/Desktop/Data");
 		
-		textInputPath.setBounds(38, 50, 401, 20);
+		textInputPath.setBounds(38, 60, 401, 20);
 		add(textInputPath);
 		textInputPath.setColumns(10);
 		textInputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
@@ -117,13 +120,13 @@ public class TestModelClassifierPanel extends JPanel{
 
 		btnSelectInput=new JButton("Select File...");
 		
-		btnSelectInput.setBounds(182, 75, 107, 23);
+		btnSelectInput.setBounds(182, 85, 150, 23);
 		add(btnSelectInput);
 
 //Model Input
 		
 		lblModelDataSource = new JLabel("Model path:");
-		lblModelDataSource.setBounds(38, 110, 107, 14);
+		lblModelDataSource.setBounds(38, 120, 107, 14);
 		add(lblModelDataSource);
 
 		textModelPath = new JTextField();
@@ -132,7 +135,7 @@ public class TestModelClassifierPanel extends JPanel{
 		
 		textModelPath.setText("/home/daniel/Desktop/Classifier/model");
 		
-		textModelPath.setBounds(38, 130, 401, 20);
+		textModelPath.setBounds(38, 140, 401, 20);
 		add(textModelPath);
 		textModelPath.setColumns(10);
 		textModelPath.getDocument().addDocumentListener(new TextFieldChangeListener());
@@ -162,14 +165,14 @@ public class TestModelClassifierPanel extends JPanel{
 
 		btnSelectModel=new JButton("Select File...");
 		
-		btnSelectModel.setBounds(182, 155, 107, 23);
+		btnSelectModel.setBounds(182, 165, 150, 23);
 		add(btnSelectModel);
 		
 		
 //Label Index
 		
 		lblLabelIndexSource = new JLabel("Label Index path:");
-		lblLabelIndexSource.setBounds(38, 185, 150, 14);
+		lblLabelIndexSource.setBounds(38, 195, 150, 14);
 		add(lblLabelIndexSource);
 
 		textLabelIndexPath = new JTextField();
@@ -178,7 +181,7 @@ public class TestModelClassifierPanel extends JPanel{
 				
 		textLabelIndexPath.setText("/home/daniel/Desktop/Classifier/labelIndex");
 				
-		textLabelIndexPath.setBounds(38, 205, 401, 20);
+		textLabelIndexPath.setBounds(38, 215, 401, 20);
 		add(textLabelIndexPath);
 		textLabelIndexPath.setColumns(10);
 		textLabelIndexPath.getDocument().addDocumentListener(new TextFieldChangeListener());
@@ -208,13 +211,13 @@ public class TestModelClassifierPanel extends JPanel{
 
 		btnSelectLabelIndex=new JButton("Select File...");
 				
-		btnSelectLabelIndex.setBounds(182, 230, 107, 23);
+		btnSelectLabelIndex.setBounds(182, 240, 150, 23);
 		add(btnSelectLabelIndex);
 				
 //Output 
 
 		lblOutputDataSource = new JLabel("Output data source :");
-		lblOutputDataSource.setBounds(38, 260, 157, 14);
+		lblOutputDataSource.setBounds(38, 270, 157, 14);
 		add(lblOutputDataSource);
 
 		textOutputPath = new JTextField();
@@ -224,7 +227,7 @@ public class TestModelClassifierPanel extends JPanel{
 		textOutputPath.setText("/home/daniel/Desktop/Classifier");
 		
 		textOutputPath.setColumns(10);
-		textOutputPath.setBounds(38, 280, 401, 20);
+		textOutputPath.setBounds(38, 290, 401, 20);
 		add(textOutputPath);
 		textOutputPath.getDocument().addDocumentListener(new TextFieldChangeListener());
 		textOutputPath.setInputVerifier(new InputVerifier() {
@@ -252,25 +255,12 @@ public class TestModelClassifierPanel extends JPanel{
 		});
 		
 		btnSelectOutput = new JButton("Select File...");
-		btnSelectOutput.setBounds(182, 305, 107, 23);
+		btnSelectOutput.setBounds(182, 315, 150, 23);
 		add(btnSelectOutput);
 		
 		btnCreate=new JButton("Test Classifier");
 		btnCreate.setBounds(280, 365, 150, 23);
 		add(btnCreate);
-
-		btnHelp = new JButton(new ImageIcon(TypeRecommenderPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
-		btnHelp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnHelp.setPreferredSize(new Dimension(65, 40));
-		btnHelp.setBounds(10, 358, 40, 40);
-		add(btnHelp);
-
-		// Help Tip
-		//helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.RECOMM_DATAMODEL);
-		//add(helpTooltip);
 
 		btnSelectInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -410,7 +400,22 @@ public class TestModelClassifierPanel extends JPanel{
 				//mouse finished loading
 				btnCreate.setCursor(Cursor.getDefaultCursor());				
 			}
-		});		
+		});	
+		
+//help		
+		
+		btnHelp = new JButton(new ImageIcon(TestModelClassifierPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.CLASSIFIER_TESTMODEL);
+		add(helpTooltip);
 
 	}
 

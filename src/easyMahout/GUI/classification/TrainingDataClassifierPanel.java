@@ -1,8 +1,13 @@
 package easyMahout.GUI.classification;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,6 +17,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 
 public class TrainingDataClassifierPanel extends JPanel {
@@ -21,6 +27,7 @@ public class TrainingDataClassifierPanel extends JPanel {
 	private JSpinner lambdaSpinner;
 	private JSpinner rateSpinner;
 	private JSpinner featuresSpinner;
+	private JButton btnHelp;
 	
 	//private JComboBox examplesTrainingComboBox;
 	
@@ -84,7 +91,23 @@ public class TrainingDataClassifierPanel extends JPanel {
 		SpinnerModel featuresModel = new SpinnerNumberModel(1,1,20,1);
 		featuresSpinner.setModel(featuresModel);
 		featuresSpinner.setBounds(430, 108, 40, 20);
-		add(featuresSpinner);		
+		add(featuresSpinner);	
+		
+//help
+		
+		btnHelp = new JButton(new ImageIcon(TrainingDataClassifierPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		btnHelp.setPreferredSize(new Dimension(65, 40));
+		btnHelp.setBounds(10, 358, 40, 40);
+		add(btnHelp);
+
+		// Help Tip
+		//helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.RECOMM_DATAMODEL);
+		//add(helpTooltip);
 	}
 	
 	public int getNumFeatures(){

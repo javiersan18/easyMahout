@@ -20,6 +20,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import easyMahout.utils.Constants;
+import easyMahout.utils.HelpTooltip;
 
 public class DataDefinitionsClassifierPanel extends JPanel {
 
@@ -48,6 +49,8 @@ public class DataDefinitionsClassifierPanel extends JPanel {
 	private int prevNumPredictors;
 
 	private final int maxPredictors = 10;
+	
+	private HelpTooltip helpTooltip;
 	
 	@SuppressWarnings("unchecked")
 	public DataDefinitionsClassifierPanel() {

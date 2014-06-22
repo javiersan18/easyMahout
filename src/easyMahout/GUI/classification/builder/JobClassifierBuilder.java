@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.classification.AlgorithmClassifierPanel;
 import easyMahout.GUI.classification.DataModelClassifierPanel;
+import easyMahout.GUI.classification.TestDataClassifierPanel;
 import easyMahout.GUI.classification.TestModelClassifierPanel;
 import easyMahout.utils.Constants;
 
@@ -23,10 +24,13 @@ public class JobClassifierBuilder {
 
 	private static final int ARGS_SPLIT = 12;
 
-	private static final int ARGS_TRAIN_NB = 8; // 9 si complementary
+	private static final int ARGS_TRAIN_NB = 8; 
+	
+	private static final int ARGS_TRAIN_CNB = 9; 
 
-	private static final int ARGS_TEST_NB = 9;// +1 si complementary +1 si
-												// sequential
+	private static final int ARGS_TEST_NB = 9;// +1 si sequential
+	
+	private static final int ARGS_TEST_CNB = 10;
 
 	private static final int ARGS_TRAIN_SGD = 10;
 
@@ -37,6 +41,26 @@ public class JobClassifierBuilder {
 	private static String inputPath, outputPath, modelPath, modelSGDPath;
 
 	private static String auxPath1, auxPath2, trainPath, testPath, labelIndexPath, mapRedOutPath;
+
+	private static String randomPct;
+
+	private static boolean random;
+
+	private static String randomSize;
+
+	private static boolean percent;
+
+	private static boolean location;
+
+	private static String locationPct;
+
+	private static String testPct;
+
+	private static String testSize;
+
+	private static String DefinedPct;
+
+	private static String DefinedSize;
 
 	public static final String[][] buildClassifierJob() {
 
@@ -118,6 +142,11 @@ public class JobClassifierBuilder {
 		trainPath = outputPath + "/train";
 		testPath = outputPath + "/test";
 		// mapRedOutPath = "/mapReduce";
+		
+		
+		random = TestDataClassifierPanel.getRandom();
+		percent = TestDataClassifierPanel.isPct();
+		location = TestDataClassifierPanel.getLocationSplit();			
 
 		i = 0;
 		argsSplit[i] = "--input";
@@ -131,15 +160,53 @@ public class JobClassifierBuilder {
 											// seqFiles
 		argsSplit[++i] = "--method";
 		argsSplit[++i] = "sequential";
-		argsSplit[++i] = "--randomSelectionPct"; // porcentaje
-		argsSplit[++i] = "40";
+		if(random){
+			if(percent){
+				randomPct = TestDataClassifierPanel.getPct();
+				argsSplit[++i] = "--randomSelectionPct";				
+				argsSplit[++i] = randomPct;				
+			} else {
+				randomSize = TestDataClassifierPanel.getSizeSelection();
+				argsSplit[++i] = "--randomSelectionSize";
+				argsSplit[++i] = randomSize;
+			}
+		} else {
+			if(location){
+				locationPct = TestDataClassifierPanel.getPct();
+				argsSplit[++i] = "--splitLocation";				
+				argsSplit[++i] = locationPct;	
+			} else {
+				if(percent){
+					testPct = TestDataClassifierPanel.getPct();
+					argsSplit[++i] = "--testSplitPct";				
+					argsSplit[++i] = testPct;	
+				} else {
+					testSize = TestDataClassifierPanel.getSizeSelection();
+					argsSplit[++i] = "--testSplitSize"; 
+					argsSplit[++i] = testSize;
+				}
+			}
+		}
+		
+//		--testSplitSize (-ss) testSplitSize: The number of documents held back as test data for each category              
+//		--testSplitPct (-sp) testSplitPct: The % of documents held back as test data for each category                   
+//		--splitLocation (-sl) splitLocation: Location for start of test data expressed as a percentage of the input file size (0=start,50=middle, 100=end         
+//		--randomSelectionSize (-rs) randomSelectionSize: The number of items to be randomly selected as test data                       
+//		--randomSelectionPct (-rp) randomSelectionPct: Percentage of items to be randomly selected as test data when using mapreduce mode                       
+
 
 		// Tambien se puede apartir de un porcentaje de la entrada(50 = mitad
 		// hacia arriba test) o porcentaje o tam. fijo de cada categor�a
 
 		// Args train
+		
+		String[] argsTrain;
 
-		String[] argsTrain = args[3] = new String[ARGS_TRAIN_NB];
+		if(!complementary){ 
+			argsTrain = args[3] = new String[ARGS_TRAIN_NB];
+		} else{		
+			argsTrain = args[3] = new String[ARGS_TRAIN_CNB];
+		}
 
 		labelIndexPath = outputPath + "/labelIndex";
 		modelPath = outputPath + "/model";
@@ -160,8 +227,14 @@ public class JobClassifierBuilder {
 		// alphaI, startPhase, endPhase...
 
 		// Args test
+		
+		String[] argsTestnb1;
 
-		String[] argsTestnb1 = args[4] = new String[ARGS_TEST_NB];
+		if(!complementary){ 
+			argsTestnb1 = args[4] = new String[ARGS_TEST_NB];
+		} else{		
+			argsTestnb1 = args[4] = new String[ARGS_TEST_CNB];
+		}
 
 		i = 0;
 		argsTestnb1[i] = "--input";
@@ -182,7 +255,13 @@ public class JobClassifierBuilder {
 		// tempDir, startPhase, endPhase...
 		
 		
-		String[] argsTestnb2 = args[5] = new String[ARGS_TEST_NB];
+		String[] argsTestnb2;
+		
+		if(!complementary){ 
+			argsTestnb2 = args[5] = new String[ARGS_TEST_NB];
+		} else{		
+			argsTestnb2 = args[5] = new String[ARGS_TEST_CNB];
+		}
 
 		i = 0;
 		argsTestnb2[i] = "--input";
@@ -194,6 +273,9 @@ public class JobClassifierBuilder {
 		argsTestnb2[++i] = "-ow";
 		argsTestnb2[++i] = "--labelIndex";
 		argsTestnb2[++i] = labelIndexPath;
+		if (complementary) {
+			argsTestnb2[++i] = "--testComplementary";
+		}
 		
 		
 
@@ -214,7 +296,7 @@ public class JobClassifierBuilder {
 		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
 
 		if (naiveBayes || complementaryNaiveBayes) {
-				return testNaiveBayesJob();
+				return testNaiveBayesJob(complementaryNaiveBayes);
 		}
 
 		/*if (sgd) {
@@ -224,12 +306,19 @@ public class JobClassifierBuilder {
 		return null;
 	}
 	
-	public static final String[][] testNaiveBayesJob() {
+	public static final String[][] testNaiveBayesJob(boolean complementary) {
 		
 		String[][] args = null;
 		args = new String[1][];
 		
-		String[] argsTest = args[0] = new String[ARGS_TEST_NB];
+		String[] argsTest;
+		
+		if(!complementary){ 
+			argsTest = args[0] = new String[ARGS_TEST_NB];
+		} else{		
+			argsTest = args[0] = new String[ARGS_TEST_CNB];
+		}
+
 		
 		int i;
 
@@ -243,6 +332,9 @@ public class JobClassifierBuilder {
 		argsTest[++i] = "-ow";
 		argsTest[++i] = "--labelIndex";
 		argsTest[++i] = labelIndexPath;
+		if (complementary) {
+			argsTest[++i] = "--testComplementary";
+		}
 		
 		return args;
 	}
