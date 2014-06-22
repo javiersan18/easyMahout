@@ -25,8 +25,6 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
-import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.model.DataModel;
 
 import com.jidesoft.swing.FolderChooser;
@@ -34,7 +32,6 @@ import com.jidesoft.swing.FolderChooser;
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.classification.builder.ClassifierBuilder;
 import easyMahout.GUI.recommender.EvaluatorRecommenderPanel;
-import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.Constants;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClassifierTips;

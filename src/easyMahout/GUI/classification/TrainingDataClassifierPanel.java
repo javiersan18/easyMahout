@@ -5,10 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -16,9 +14,6 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-
-import easyMahout.GUI.recommender.TypeRecommenderPanel;
-import easyMahout.utils.Constants;
 
 public class TrainingDataClassifierPanel extends JPanel {
 
@@ -28,10 +23,6 @@ public class TrainingDataClassifierPanel extends JPanel {
 	private JSpinner rateSpinner;
 	private JSpinner featuresSpinner;
 	private JButton btnHelp;
-	
-	//private JComboBox examplesTrainingComboBox;
-	
-	//private DefaultComboBoxModel numExModel;
 
 	public TrainingDataClassifierPanel	() {
 		super();
@@ -41,17 +32,6 @@ public class TrainingDataClassifierPanel extends JPanel {
 		setForeground(Color.BLACK);
 		setLayout(null);
 		setBounds(236, 11, 483, 382);
-		
-		/*JLabel labelNumEx = new JLabel("Number of training examples:");
-		labelNumEx.setBounds(21, 11, 216, 14);
-		add(labelNumEx);
-		
-		examplesTrainingComboBox = new JComboBox();
-		numExModel = new DefaultComboBoxModel(new String[] {" Unknown", " N < 10K", " 10K < N <100K",
-				" 100K < N < 1M", " 1M < N < 10M", " 10M < N < 100M", " 100M < N"});
-		examplesTrainingComboBox.setModel(numExModel);
-		examplesTrainingComboBox.setBounds(190, 9, 100, 20);
-		add(examplesTrainingComboBox);*/
 		
 		JLabel labelPasses = new JLabel("Number of passes to reexamine the input:");
 		labelPasses.setBounds(15, 21, 300, 14);
@@ -93,7 +73,7 @@ public class TrainingDataClassifierPanel extends JPanel {
 		featuresSpinner.setBounds(430, 108, 40, 20);
 		add(featuresSpinner);	
 		
-//help
+		//help
 		
 		btnHelp = new JButton(new ImageIcon(TrainingDataClassifierPanel.class.getResource("/easyMahout/GUI/images/helpIcon64.png")));
 		btnHelp.addActionListener(new ActionListener() {
@@ -104,10 +84,6 @@ public class TrainingDataClassifierPanel extends JPanel {
 		btnHelp.setPreferredSize(new Dimension(65, 40));
 		btnHelp.setBounds(10, 358, 40, 40);
 		add(btnHelp);
-
-		// Help Tip
-		//helpTooltip = new HelpTooltip(btnHelp, ClassifierTips.RECOMM_DATAMODEL);
-		//add(helpTooltip);
 	}
 	
 	public int getNumFeatures(){

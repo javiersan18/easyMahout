@@ -119,7 +119,7 @@ public class MainGUI extends JFrame {
 				this.getClass().getResource(
 						"/easyMahout/GUI/images/mahoutIcon45.png")));
 
-		this.setBounds(100, 100, 735, 685);
+		this.setBounds(100, 100, 735, 690);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(null);

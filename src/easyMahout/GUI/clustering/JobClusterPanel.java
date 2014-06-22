@@ -53,7 +53,7 @@ public class JobClusterPanel extends JPanel {
 
 		// Shell pane
 				shellScrollPane = new JScrollPane();
-				shellScrollPane.setBounds(25, 88, 430, 243);
+				shellScrollPane.setBounds(25, 30, 430, 290);
 				this.add(shellScrollPane);
 
 		shellTextPane = new JTextPane();

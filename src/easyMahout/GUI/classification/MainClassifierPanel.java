@@ -177,8 +177,8 @@ public class MainClassifierPanel extends JPanel {
 		String[] categories = { "Root", // 0
 				"Configure", // 1
 				"Algorithm", // 2
-				"Data Definitions", // 3
-				"Training Data", // 4
+				//"Data Definitions", // 3
+				//"Training Data", // 4
 				"Test Data", //5
 				"Data Model", // 6
 				"Test Model", //7
@@ -196,19 +196,19 @@ public class MainClassifierPanel extends JPanel {
 		treeNodes.get(1).add(treeNodes.get(4));
 		treeNodes.get(1).add(treeNodes.get(5));
 		treeNodes.get(1).add(treeNodes.get(6));
-		treeNodes.get(1).add(treeNodes.get(7));
-		treeNodes.get(1).add(treeNodes.get(8));
+		//treeNodes.get(1).add(treeNodes.get(7));
+		//treeNodes.get(1).add(treeNodes.get(8));
 
 		nodeConfigure = treeNodes.get(1);
 		nodeAlgorithm = treeNodes.get(2);
-		nodeDataDefs = treeNodes.get(3);
-		nodeTraining = treeNodes.get(4);
-		nodeTest = treeNodes.get(5);
-		nodeTestModel = treeNodes.get(7);
-		nodeJob = treeNodes.get(8);
+		//nodeDataDefs = treeNodes.get(3);
+		//nodeTraining = treeNodes.get(4);
+		nodeTest = treeNodes.get(3);
+		nodeTestModel = treeNodes.get(4);
+		nodeJob = treeNodes.get(5);
 		
-		nodeDataDefs.setEnabled(false);
-		nodeTraining.setEnabled(false);
+		//nodeDataDefs.setEnabled(false);
+		//nodeTraining.setEnabled(false);
 
 		return treeNodes.toArray(new DisabledNode[treeNodes.size()]);
 	}

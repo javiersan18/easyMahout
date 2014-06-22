@@ -1,72 +1,54 @@
 package easyMahout.GUI.classification.builder;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.List;
-
-
-//import org.apache.commons.math3.geometry.Vector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
-import org.apache.mahout.classifier.AbstractVectorClassifier;
-
-
 import easyMahout.GUI.MainGUI;
 import easyMahout.GUI.PreferencesPanel;
 import easyMahout.GUI.classification.AlgorithmClassifierPanel;
 import easyMahout.GUI.classification.MainClassifierPanel;
-import easyMahout.GUI.clustering.builder.CreateSequenceFile;
 import easyMahout.utils.Constants;
 
 public class ClassifierBuilder {
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(ClassifierBuilder.class);
 
 	private static String algorithm;
-	private static int numCharacteristics;
 	private static FileSystem fs;
 	private static Configuration conf;
-	private static boolean hadoop = MainGUI.isDistributed();
-	private static boolean hayError;
-
-	private static File testData;
-
 	private static String[][] argsClassifier;
 
 	public static void buildClassifier() throws Exception {
 
-		hayError = false;
-
 		MainClassifierPanel.getAlgorithmClassifierPanel();
-		algorithm = AlgorithmClassifierPanel
-				.getSelectedType();
+		algorithm = AlgorithmClassifierPanel.getSelectedType();
 
-		boolean naiveBayes, complementaryNaiveBayes, sgd;
+		boolean naiveBayes, complementaryNaiveBayes;
 
 		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
-		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
-		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
+		complementaryNaiveBayes = algorithm
+				.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
 
 		argsClassifier = JobClassifierBuilder.buildClassifierJob();
-			
-		MainGUI.writeResult("Building "+ algorithm +" classifier.", Constants.Log.INFO);
-	
+
+		MainGUI.writeResult("Building " + algorithm + " classifier.",
+				Constants.Log.INFO);
+
 		if (naiveBayes || complementaryNaiveBayes) {
 			buildBayesClassifier();
 		}
-	
-		/*if (sgd) {
-			buildSGDClassifier();
-		}*/
-	
-		MainGUI.writeResult("Sucess building the "+ algorithm +" classifier.", Constants.Log.INFO);
-		
+
+		MainGUI.writeResult(
+				"Sucess building the " + algorithm + " classifier.",
+				Constants.Log.INFO);
+
 	}
 
 	private static void buildBayesClassifier() throws Exception {
@@ -78,9 +60,9 @@ public class ClassifierBuilder {
 		String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
 		String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/"
 				+ PreferencesPanel.getHadoopHome();
-		
+
 		MainGUI.writeResult("Starting the proccess", Constants.Log.INFO);
-		
+
 		Process proc = Runtime.getRuntime().exec("/bin/sh " + scriptTemp,
 				new String[] { javaHome, hadoopHome });
 		int exitValue = proc.waitFor();
@@ -89,12 +71,14 @@ public class ClassifierBuilder {
 
 			String absPath = writeResultFile(args, proc);
 
-			MainGUI.writeResult("Sucesfull proccess termination", Constants.Log.INFO);
+			MainGUI.writeResult("Sucesfull proccess termination",
+					Constants.Log.INFO);
 			MainGUI.writeResult("TXT Result file created: " + absPath,
 					Constants.Log.INFO);
 
 		} else {
-			MainGUI.writeResult("Wrong proccess termination", Constants.Log.INFO);
+			MainGUI.writeResult("Wrong proccess termination",
+					Constants.Log.INFO);
 			MainGUI.writeResult("Error running the classifier Job.",
 					Constants.Log.ERROR);
 		}
@@ -171,38 +155,32 @@ public class ClassifierBuilder {
 		return absPath;
 	}
 
-	public static void testClassifier() throws Exception{
-		
-		hayError = false;
+	public static void testClassifier() throws Exception {
 
 		MainClassifierPanel.getAlgorithmClassifierPanel();
-		algorithm = AlgorithmClassifierPanel
-				.getSelectedType();
+		algorithm = AlgorithmClassifierPanel.getSelectedType();
 
-		boolean naiveBayes, complementaryNaiveBayes, sgd;
+		boolean naiveBayes, complementaryNaiveBayes;
 
 		naiveBayes = algorithm.equals(Constants.ClassificatorAlg.NAIVEBAYES);
-		complementaryNaiveBayes = algorithm.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
-		//sgd = algorithm.equals(Constants.ClassificatorAlg.SGD);
-		
-		//argsClassifier = JobClassifierBuilder.testClassifierJob();
-			
-		MainGUI.writeResult("Testing "+ algorithm +" classifier.", Constants.Log.INFO);
-	
+		complementaryNaiveBayes = algorithm
+				.equals(Constants.ClassificatorAlg.COMPNAIVEBAYES);
+
+		MainGUI.writeResult("Testing " + algorithm + " classifier.",
+				Constants.Log.INFO);
+
 		if (naiveBayes || complementaryNaiveBayes) {
 			testBayesClassifier();
 		}
-	
-		/*if (sgd) {
-			buildSGDClassifier();
-		}*/
-	
-		MainGUI.writeResult("Sucess testing the "+ algorithm +" classifier.", Constants.Log.INFO);testClassifier();
-		
-	}	
-	
+
+		MainGUI.writeResult("Sucess testing the " + algorithm + " classifier.",
+				Constants.Log.INFO);
+		testClassifier();
+
+	}
+
 	private static void testBayesClassifier() throws Exception {
-		
+
 		argsClassifier = JobClassifierBuilder.testClassifierJob();
 		String scriptTemp = ShellClassifierScriptBuilder
 				.buildTestClassifierScript(argsClassifier);
@@ -210,12 +188,12 @@ public class ClassifierBuilder {
 		String javaHome = "JAVA_HOME=" + PreferencesPanel.getJavaHome();
 		String hadoopHome = "HADOOP_HOME=" + System.getenv("PWD") + "/"
 				+ PreferencesPanel.getHadoopHome();
-		
+
 		MainGUI.writeResult("Starting the proccess", Constants.Log.INFO);
-		
+
 		Process proc;
 		proc = Runtime.getRuntime().exec("/bin/sh " + scriptTemp,
-					new String[] { javaHome, hadoopHome });
+				new String[] { javaHome, hadoopHome });
 
 		int exitValue = proc.waitFor();
 
@@ -223,12 +201,14 @@ public class ClassifierBuilder {
 
 			String absPath = writeResultFile(argsClassifier, proc);
 
-			MainGUI.writeResult("Sucesfull proccess termination", Constants.Log.INFO);
+			MainGUI.writeResult("Sucesfull proccess termination",
+					Constants.Log.INFO);
 			MainGUI.writeResult("TXT Result file created: " + absPath,
 					Constants.Log.INFO);
 
 		} else {
-			MainGUI.writeResult("Wrong proccess termination", Constants.Log.INFO);
+			MainGUI.writeResult("Wrong proccess termination",
+					Constants.Log.INFO);
 			MainGUI.writeResult("Error running the classifier Job.",
 					Constants.Log.ERROR);
 		}
@@ -238,10 +218,6 @@ public class ClassifierBuilder {
 		if (fs.exists(path)) {
 			fs.delete(path, true);
 		}
-
-	}
-
-	private static void buildSGDClassifier() {
 
 	}
 

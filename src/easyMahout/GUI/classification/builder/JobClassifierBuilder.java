@@ -1,6 +1,5 @@
 package easyMahout.GUI.classification.builder;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import easyMahout.GUI.MainGUI;
@@ -12,6 +11,7 @@ import easyMahout.utils.Constants;
 
 public class JobClassifierBuilder {
 
+	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger(JobClassifierBuilder.class);
 
 	private static boolean hadoop = MainGUI.isDistributed();
@@ -19,8 +19,6 @@ public class JobClassifierBuilder {
 	private static final int ARGS_SEQDIRECTORY = 7;
 
 	private static final int ARGS_SEQ2SPARSE = 9;
-
-	private static final int ARGS_SPLIT_MAPRED = 14;
 
 	private static final int ARGS_SPLIT = 12;
 
@@ -34,13 +32,11 @@ public class JobClassifierBuilder {
 
 	private static final int ARGS_TRAIN_SGD = 10;
 
-	private static final int ARGS_TEST_SGD = 10;
-
 	private static String algorithm = AlgorithmClassifierPanel.getSelectedType();
 
 	private static String inputPath, outputPath, modelPath, modelSGDPath;
 
-	private static String auxPath1, auxPath2, trainPath, testPath, labelIndexPath, mapRedOutPath;
+	private static String auxPath1, auxPath2, trainPath, testPath, labelIndexPath;
 
 	private static String randomPct;
 
@@ -57,10 +53,6 @@ public class JobClassifierBuilder {
 	private static String testPct;
 
 	private static String testSize;
-
-	private static String DefinedPct;
-
-	private static String DefinedSize;
 
 	public static final String[][] buildClassifierJob() {
 

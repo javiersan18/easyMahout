@@ -16,9 +16,6 @@ import javax.swing.JLabel;
 import easyMahout.GUI.recommender.TypeRecommenderPanel;
 import easyMahout.utils.HelpTooltip;
 import easyMahout.utils.help.ClassifierTips;
-import easyMahout.utils.help.ClusterTips;
-import easyMahout.utils.help.RecommenderTips;
-
 import javax.swing.SwingConstants;
 
 public class ConfigureClassifierPanel extends JPanel {

@@ -52,6 +52,7 @@ public class TestDataClassifierPanel extends JPanel{
 
 	private static JSpinner sizeSpinner;
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(DataModelClassifierPanel.class);
 	
 	public TestDataClassifierPanel	() {
